@@ -45,6 +45,12 @@
                     <a class="small" href="register.html">계정을 만드세요!</a>
                     </router-link>
                   </div>
+<!--                  <div class="card flex justify-content-center">-->
+<!--                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>-->
+<!--                  </div>-->
+<!--                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">-->
+<!--                    <SideTabComponent/>-->
+<!--                  </Sidebar>-->
                 </div>
               </div>
             </div>
@@ -55,8 +61,19 @@
   </div>
 </template>
 <script>
+// import SideTabComponent from "@/components/SideTabComponent.vue";
+// import Sidebar from "primevue/sidebar";
+
 export default {
   name: 'LoginPage',
+  // components: {
+  //   SideTabComponent, Sidebar
+  // },
+  data() {
+    return {
+      visibleRight: false
+    }
+  },
 }
 </script>
 
