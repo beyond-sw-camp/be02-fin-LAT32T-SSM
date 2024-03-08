@@ -1,15 +1,15 @@
 <template>
-  <HeaderComponent></HeaderComponent>
+  <ChatInputComponent></ChatInputComponent>
   <router-view></router-view>
 </template>
 
 <script>
-import HeaderComponent from './component/HeaderComponent.vue';
+import ChatInputComponent from './components/ChatInputComponent.vue';
 
 export default {
   name: 'App',
   components:{
-    HeaderComponent
+    ChatInputComponent
   }
 }
 </script>
