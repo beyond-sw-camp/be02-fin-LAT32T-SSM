@@ -43,6 +43,12 @@
                     <a class="small" href="register.html">계정을 만드세요!</a>
                     </router-link>
                   </div>
+                  <!-- 채팅방 나가기 모달창 -->
+<!--                  <ConfirmDialog></ConfirmDialog>-->
+<!--                  <div class="card flex flex-wrap gap-2 justify-content-center">-->
+<!--                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>-->
+<!--                  </div>-->
+<!--                  <Toast />-->
                   <!-- 사이드 탭 테스트-->
 <!--                  <div class="card flex justify-content-center">-->
 <!--                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>-->
@@ -67,17 +73,37 @@
 // import SideTabComponent from "@/components/SideTabComponent.vue";
 // import Sidebar from "primevue/sidebar";
 // import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
+// import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   name: 'LoginPage',
   // components: {
-  //   SideTabComponent, Sidebar, ChatBlockComponent
+  //   SideTabComponent, Sidebar, ChatBlockComponent, ConfirmDialog
   // },
   data() {
     return {
       visibleRight: false
     }
   },
+  // methods: {
+  //   confirm() {
+  //     this.$confirm.require({
+  //       message: '정말로 채팅방에서 나가시겠습니까?',
+  //       header: '채팅방 나가기',
+  //       icon: 'pi pi-info-circle',
+  //       rejectLabel: '취소하기',
+  //       acceptLabel: '나가기',
+  //       rejectClass: 'p-button-secondary p-button-outlined',
+  //       acceptClass: 'p-button-danger',
+  //       accept: () => {
+  //         // 취소 이벤트
+  //       },
+  //       reject: () => {
+  //         // 채팅방 나가기 이벤트
+  //       }
+  //     });
+  //   }
+  // }
 }
 </script>
 
