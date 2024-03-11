@@ -5,17 +5,45 @@
         <div class="box-2"></div>
         <div class="box-3">+</div>
       </article>
-
       <article class="sidebar-2">
         <section class="sidebar-user">
           <div class="sidebar-user-info">
-            <h4>John Idogun</h4>
+            <h4>김동규</h4>
             <i class="fas fa-chevron-down"></i>
           </div>
           <p class="sidebar-user-info-additional">
-            <i class="fas fa-circle"></i>Sharon Robinson
+            <i class="fas fa-circle"></i>IT 개발팀
           </p>
-          <span class="user-edit-icon"><i class="fas fa-edit"></i></span>
+          <span class="user-edit-icon">
+            <SideButton type="button" icon="pi pi-image" label="+" @click="toggle" />
+              <OverlayPanel ref="op">
+                <div class="flex flex-column gap-3 w-25rem">
+                  <div>
+                    <span class="font-medium text-900 block mb-2">사용자 초대하기</span>
+                    <InputGroup>
+                      <SideChips></SideChips>
+                      <SideButton label="초대하기" icon="pi pi-users"></SideButton>
+                    </InputGroup>
+                  </div>
+                  <div>
+                    <span class="font-medium text-900 block mb-2">사용자 목록</span>
+                    <ul class="list-none p-0 m-0 flex flex-column gap-3">
+                      <li v-for="member in members" :key="member.name" class="flex align-items-center gap-2">
+    <!--                      <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`" style="width: 32px" />-->
+                        <div>
+                          <span class="font-medium">{{ member.name }}</span>
+                          <div class="text-sm text-color-secondary">{{ member.email }}</div>
+                        </div>
+                        <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
+                          <span>{{ member.role }}</span>
+                          <i class="pi pi-angle-down"></i>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </OverlayPanel>
+          </span>
         </section>
         <section class="unread">
           <h4 class="unread-header">
@@ -23,70 +51,64 @@
               <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
               ><i class="fas fa-minus fa-xs"></i>
             </span>
-            All unread
+            읽지 않은 메시지
           </h4>
           <ul>
             <li>
               <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
             </li>
-            <li>
-              <a href="#"><i class="fas fa-at"></i>Mentions & reactions</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-arrow-down"></i>Show more</a>
-            </li>
           </ul>
         </section>
         <section class="channels">
           <h4 class="channels-header">
-            <i class="fas fa-sort-down"></i> Channels
+            <i class="fas fa-sort-down"></i> 채널
           </h4>
           <ul>
             <li>
               <a href="#"><i class="fas fa-hashtag"></i>design-crit</a>
             </li>
             <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-hashtag"></i>design-team</span
-                ><span class="counter">1</span></a
-              >
+              <a href="#">
+                <span class="make-white">
+                  <i class="fas fa-hashtag"></i>
+                  디자인팀
+                </span>
+                <span class="counter">
+                  1
+                </span>
+              </a>
             </li>
             <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-circle online"></i>Hubspot</span
-                ></a
-              >
+              <a href="#">
+                <span class="make-white">
+                  <i class="fas fa-circle online"></i>
+                  경영지원팀
+                </span>
+              </a>
             </li>
             <li class="active">
-              <a href="#"><i class="fas fa-hashtag"></i>social-media</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-lock"></i>team-chat</a>
+              <a href="#"><i class="fas fa-hashtag"></i>IT 개발팀</a>
             </li>
           </ul>
         </section>
         <section class="direct-messages">
           <h4 class="direct-messages-header">
-            <i class="fas fa-sort-down"></i> Direct Messages
+            <i class="fas fa-sort-down"></i> 다이렉트 메시지
           </h4>
           <ul>
             <li>
-              <a href="#"><i class="fas fa-heart online"></i>slackbot</a>
+              <a href="#">
+                <i class="fas fa-circle online"></i>
+                정주연
+              </a>
             </li>
             <li>
               <a href="#">
-                <i class="fas fa-circle online"></i>John Idogun(You)</a
-              >
-            </li>
-            <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-circle offline"></i
-                ></span>
-                Isabel</a
-              >
+                <span class="make-white">
+                  <i class="fas fa-circle offline"></i>
+                </span>
+                최대현
+              </a>
             </li>
           </ul>
         </section>
@@ -96,15 +118,22 @@
 <script>
 export default {
   name: "SidebarComponent",
+  data() {
+    return {
+      members: [
+        {name: "김동규", email: "test@test.com"}
+      ]
+    }
+  },
+  methods: {
+    toggle(event) {
+      this.$refs.op.toggle(event);
+    }
+  }
 };
 </script>
 
 <style>
-/*!
- * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- */
-
 .fa,.fas,.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
