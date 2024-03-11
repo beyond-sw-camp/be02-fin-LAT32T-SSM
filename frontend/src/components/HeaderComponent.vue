@@ -688,5 +688,4 @@ body::-webkit-scrollbar-thumb {
     left: 0.1rem;
   }
 }
-
 </style>
