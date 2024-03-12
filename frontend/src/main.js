@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from "./router"
 import PrimeVue from "primevue/config";
 import { createPinia } from "pinia";
 import OverlayPanel from "primevue/overlaypanel";
@@ -13,8 +13,13 @@ import Button from "primevue/button";
 //in main.js
 import 'primevue/resources/themes/aura-light-green/theme.css'
 
+import 'v-calendar/style.css';
+import VCalendar from 'v-calendar';
+
+
 const pinia = createPinia();
 const app = createApp(App)
+
 app.use(router)
 app.use(pinia);
 app.use(PrimeVue)
@@ -24,4 +29,7 @@ app.component('InputGroupAddon', InputGroupAddon)
 app.component('InputText', InputText)
 app.component('SideChips', Chips)
 app.component('SideButton', Button)
+app.use(router);
+app.use(PrimeVue);
+app.use(VCalendar, {})
 app.mount('#app')
