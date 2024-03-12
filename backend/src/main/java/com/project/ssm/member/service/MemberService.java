@@ -84,7 +84,7 @@ public class MemberService {
                             .token(JwtUtils.generateAccessToken(member, secretKey, expiredTimeMs))
                             .build())
                     .build();
-        }else {
+        } else {
             throw MemberAccountException.forInvalidPassword(req.getPassword());
         }
     }
@@ -110,13 +110,13 @@ public class MemberService {
 
 
     @Transactional
-    public BaseResponse updatePassword(Member m, PatchMemberUpdatePasswordReq req){
+    public BaseResponse updatePassword(Member m, PatchMemberUpdatePasswordReq req) {
         Optional<Member> byId = memberRepository.findById(m.getMemberIdx());
 
         if (byId.isPresent()) {
             Member member = byId.get();
             // 기존 비밀번호가 일치하지 않았을 때
-            if(!passwordEncoder.matches(req.getPassword(), member.getPassword())) {
+            if (!passwordEncoder.matches(req.getPassword(), member.getPassword())) {
                 return BaseResponse.builder()
                         .isSuccess(true)
                         .code("MEMBER_36")
@@ -133,9 +133,9 @@ public class MemberService {
                         .message("새로운 비밀번호는 기존의 비밀번호와 달라야 합니다.")
                         .result("fail")
                         .build();
-            }
-            else {
+            } else {
                 member.setMemberPw(passwordEncoder.encode(req.getNewPassword()));
+                member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
                 memberRepository.save(member);
             }
 
@@ -146,6 +146,26 @@ public class MemberService {
                 .message("비밀번호 변경이 완료되었습니다.")
                 .result("ok")
                 .build();
+    }
+
+    public BaseResponse delete(Member m) {
+        Optional<Member> byId = memberRepository.findById(m.getMemberIdx());
+
+        if (byId.isPresent()) {
+            Member member = byId.get();
+
+            member.setStatus(false);
+            member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+            memberRepository.save(member);
+
+            return BaseResponse.builder()
+                    .isSuccess(true)
+                    .code("MEMBER_48")
+                    .message("회원 삭제가 정상적으로 처리되었습니다.")
+                    .result("ok")
+                    .build();
+        }
+        return null;
     }
 
 }

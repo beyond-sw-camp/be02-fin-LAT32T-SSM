@@ -23,19 +23,16 @@ public class MemberController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
     public ResponseEntity signup(@RequestBody @Valid PostMemberSignupReq req) {
-
         return ResponseEntity.ok().body(memberService.signup(req));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResponseEntity login(@RequestBody @Valid PostMemberLoginReq req) {
-
         return ResponseEntity.ok().body(memberService.login(req));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/check/id")
     public ResponseEntity checkId(@RequestBody @Valid GetMemberCheckIdReq req) {
-
         return ResponseEntity.ok().body(memberService.checkId(req));
     }
 
@@ -45,5 +42,9 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.updatePassword(member, req));
     }
 
-
+    @RequestMapping(method = RequestMethod.PATCH, value = "/delete")
+    public ResponseEntity delete() {
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(memberService.delete(member));
+    }
 }
