@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostSignupRes {
-
-    private Long memberIdx;
-    private String memberId;
-    private String name;
+public class PostMemberLoginRes {
+    private String token;
 }
