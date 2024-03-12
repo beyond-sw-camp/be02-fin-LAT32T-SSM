@@ -1,9 +1,15 @@
 import { defineStore } from "pinia";
-import { toRaw } from "vue";
 
 export const useMessageStore = defineStore("recvList", {
     state: () => ({ recvList: [] }),
     actions: {
-
+         addMessage(message) {
+            this.recvList.push(message);
+         }
+    },
+    getters: {
+        getAllMessage(state) {
+            return state.recvList;
+        }
     }
 })

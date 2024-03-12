@@ -106,6 +106,8 @@
 import axios from "axios";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { useMessageStore } from "@/stores/useMessageStore";
+import {mapActions} from "pinia";
 
 export default {
   name: "SidebarComponent",
@@ -119,6 +121,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useMessageStore, ['addMessage']),
     toggle(event) {
       this.$refs.op.toggle(event);
     },
@@ -144,7 +147,8 @@ export default {
             console.log("연결 후 채팅방 아이디", roomId);
             console.log(res);
             console.log("구독으로 받은 메시지입니다.", res.body);
-            this.recvList.push(JSON.parse(res.body))
+            this.addMessage(JSON.parse(res.body));
+            // this.recvList.push(JSON.parse(res.body))
           });
         },
         error => {

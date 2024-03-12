@@ -24,7 +24,7 @@
         </section>
         <section class="feeds">
           <div>
-            <ChatBlockComponent v-for="(item, idx) in recvList" :key="idx" v-bind:item="item"/>
+            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
           </div>
         </section>
         <form action="." class="form" name="feedForm">
@@ -56,9 +56,13 @@
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
+
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
+import { useMessageStore } from "@/stores/useMessageStore";
+import {mapState} from "pinia";
+
 
 export default {
   name: 'MainPage',
@@ -75,6 +79,9 @@ export default {
       username: "",
       chatRoomId: ""
     }
+  },
+  computed: {
+    ...mapState(useMessageStore, ['getAllMessage'])
   },
   methods: {
     connect(chatRoomId) {
