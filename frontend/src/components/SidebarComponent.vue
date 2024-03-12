@@ -1,134 +1,179 @@
 <template>
-    <section class="sidebar">
-      <article class="sidebar-1">
-        <div class="box-1"></div>
-        <div class="box-2"></div>
-        <div class="box-3">+</div>
-      </article>
-      <article class="sidebar-2">
-        <section class="sidebar-user">
-          <div class="sidebar-user-info">
-            <h4>김동규</h4>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <p class="sidebar-user-info-additional">
-            <i class="fas fa-circle"></i>IT 개발팀
-          </p>
-          <span class="user-edit-icon">
-            <SideButton type="button" icon="pi pi-image" label="+" @click="toggle" />
-              <OverlayPanel ref="op">
-                <div class="flex flex-column gap-3 w-25rem">
-                  <div>
-                    <span class="font-medium text-900 block mb-2">사용자 초대하기</span>
-                    <InputGroup>
-                      <SideChips></SideChips>
-                      <SideButton label="초대하기" icon="pi pi-users"></SideButton>
-                    </InputGroup>
-                  </div>
-                  <div>
-                    <span class="font-medium text-900 block mb-2">사용자 목록</span>
-                    <ul class="list-none p-0 m-0 flex flex-column gap-3">
-                      <li v-for="member in members" :key="member.name" class="flex align-items-center gap-2">
-    <!--                      <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`" style="width: 32px" />-->
-                        <div>
-                          <span class="font-medium">{{ member.name }}</span>
-                          <div class="text-sm text-color-secondary">{{ member.email }}</div>
-                        </div>
-                        <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
-                          <span>{{ member.role }}</span>
-                          <i class="pi pi-angle-down"></i>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+  <section class="sidebar">
+    <article class="sidebar-1">
+      <div class="box-1"></div>
+      <div class="box-2"></div>
+      <div class="box-3">+</div>
+    </article>
+    <article class="sidebar-2">
+      <section class="sidebar-user">
+        <div class="sidebar-user-info">
+          <h4>김동규</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <p class="sidebar-user-info-additional">
+          <i class="fas fa-circle"></i>IT 개발팀
+        </p>
+        <span class="user-edit-icon">
+          <SideButton type="button" icon="pi pi-image" label="+" @click="toggle"/>
+            <OverlayPanel ref="op">
+              <div class="flex flex-column gap-3 w-25rem">
+                <div>
+                  <span class="font-medium text-900 block mb-2">사용자 초대하기</span>
                 </div>
-              </OverlayPanel>
+                <div>
+                  <InputGroup>
+                    <SideChips></SideChips>
+                    <SideButton label="초대하기" icon="pi pi-users"></SideButton>
+                  </InputGroup>
+                </div>
+                <div>
+                  <span class="font-medium text-900 block mb-2">사용자 목록</span>
+                  <ul class="list-none p-0 m-0 flex flex-column gap-3">
+                    <li v-for="member in members" :key="member.name" class="flex align-items-center gap-2">
+<!--                        <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`" style="width: 32px" />-->
+                      <div>
+                        <span class="font-medium">{{ member.name }}</span>
+                        <div class="text-sm text-color-secondary">{{ member.email }}</div>
+                      </div>
+                      <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
+                        <span>{{ member.role }}</span>
+                        <i class="pi pi-angle-down"></i>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </OverlayPanel>
+        </span>
+      </section>
+      <section class="unread">
+        <h4 class="unread-header">
+          <span class="unread-icons">
+            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
+            ><i class="fas fa-minus fa-xs"></i>
           </span>
-        </section>
-        <section class="unread">
-          <h4 class="unread-header">
-            <span class="unread-icons">
-              <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-              ><i class="fas fa-minus fa-xs"></i>
-            </span>
-            읽지 않은 메시지
-          </h4>
-          <ul>
-            <li>
-              <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
-            </li>
-          </ul>
-        </section>
-        <section class="channels">
-          <h4 class="channels-header">
-            <i class="fas fa-sort-down"></i> 채널
-          </h4>
-          <ul>
-            <li>
-              <a href="#"><i class="fas fa-hashtag"></i>design-crit</a>
-            </li>
-            <li>
-              <a href="#">
+          읽지 않은 메시지
+        </h4>
+        <ul>
+          <li>
+            <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
+          </li>
+        </ul>
+      </section>
+      <section class="channels">
+        <h4 class="channels-header">
+          <i class="fas fa-sort-down"></i> 채널
+        </h4>
+        <ul>
+          <li v-for="(item, idx) in roomList" :key="idx">
+            <router-link v-bind:to="`/${item.chatRoomId}`">
+              <a href="#" @click="enterRoom(item.chatRoomId)">
                 <span class="make-white">
-                  <i class="fas fa-hashtag"></i>
-                  디자인팀
-                </span>
-                <span class="counter">
-                  1
+                <i class="fas fa-hashtag"></i>
+                  {{ item.chatRoomName }}
                 </span>
               </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="make-white">
-                  <i class="fas fa-circle online"></i>
-                  경영지원팀
-                </span>
-              </a>
-            </li>
-            <li class="active">
-              <a href="#"><i class="fas fa-hashtag"></i>IT 개발팀</a>
-            </li>
-          </ul>
-        </section>
-        <section class="direct-messages">
-          <h4 class="direct-messages-header">
-            <i class="fas fa-sort-down"></i> 다이렉트 메시지
-          </h4>
-          <ul>
-            <li>
-              <a href="#">
-                <i class="fas fa-circle online"></i>
-                정주연
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="make-white">
-                  <i class="fas fa-circle offline"></i>
-                </span>
-                최대현
-              </a>
-            </li>
-          </ul>
-        </section>
-      </article>
-    </section>
+            </router-link>
+          </li>
+        </ul>
+      </section>
+      <section class="direct-messages">
+        <h4 class="direct-messages-header">
+          <i class="fas fa-sort-down"></i> 다이렉트 메시지
+        </h4>
+        <ul>
+          <li>
+            <a href="#">
+              <i class="fas fa-circle online"></i>
+              정주연
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="make-white">
+                <i class="fas fa-circle offline"></i>
+              </span>
+              최대현
+            </a>
+          </li>
+        </ul>
+      </section>
+    </article>
+  </section>
 </template>
 <script>
+import axios from "axios";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {
   name: "SidebarComponent",
   data() {
     return {
       members: [
         {name: "김동규", email: "test@test.com"}
-      ]
+      ],
+      roomList: [],
+      recvList: []
     }
   },
   methods: {
     toggle(event) {
       this.$refs.op.toggle(event);
+    },
+    async getRoomList() {
+      let response = await axios.get("http://localhost:8080/chat/rooms");
+      console.log(response.data)
+      this.roomList = response.data;
+
+    },
+    enterRoom(roomId) {
+      console.log(roomId);
+      const server = "http://localhost:8080/chat"
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      window.localStorage.setItem("roomId", roomId);
+      this.stompClient.connect(
+        {},
+        frame => {
+          this.connected = true;
+          console.log('소켓 연결 성공', frame);
+          this.stompClient.subscribe("/sub/room/" + roomId, res => {
+            console.log("연결 후 채팅방 아이디", roomId);
+            console.log(res);
+            console.log("구독으로 받은 메시지입니다.", res.body);
+            this.recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          console.log('소켓 연결 실패', error);
+          this.connected = false;
+        }
+      )
+    },
+    sendMessage(e) {
+      console.log(e);
+      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
+        this.send(this.chatRoomId);
+        this.message = ''
+      }
+    },
+    send() {
+      console.log('Send Message:' + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          userName: this.sender,
+          message: this.message
+        };
+        console.log(msg);
+        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      }
     }
+  },
+  mounted() {
+    this.getRoomList();
   }
 };
 </script>
@@ -635,7 +680,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--slack-main-white);
+  background-color: var(--slack-other-bckground);
 }
 
 .user-edit-icon i {

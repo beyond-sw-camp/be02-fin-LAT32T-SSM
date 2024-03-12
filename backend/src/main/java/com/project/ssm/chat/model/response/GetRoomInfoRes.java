@@ -1,4 +1,4 @@
-package com.project.ssm.model.response;
+package com.project.ssm.chat.model.response;
 
 import lombok.Builder;
 import lombok.Getter;

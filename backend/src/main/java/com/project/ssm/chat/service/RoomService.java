@@ -1,10 +1,10 @@
-package com.project.ssm.service;
+package com.project.ssm.chat.service;
 
-import com.project.ssm.model.entity.ChatRoom;
-import com.project.ssm.model.request.PostCreateRoomReq;
-import com.project.ssm.model.response.GetRoomInfoRes;
-import com.project.ssm.model.response.GetRoomListRes;
-import com.project.ssm.repository.ChatRoomRepository;
+import com.project.ssm.chat.model.entity.ChatRoom;
+import com.project.ssm.chat.model.request.PostCreateRoomReq;
+import com.project.ssm.chat.model.response.GetRoomInfoRes;
+import com.project.ssm.chat.model.response.GetRoomListRes;
+import com.project.ssm.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

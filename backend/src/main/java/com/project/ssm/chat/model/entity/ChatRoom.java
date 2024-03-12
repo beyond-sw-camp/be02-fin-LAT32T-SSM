@@ -1,4 +1,4 @@
-package com.project.ssm.model.entity;
+package com.project.ssm.chat.model.entity;
 
 import lombok.*;
 

@@ -1,9 +1,9 @@
-package com.project.ssm.model.request;
+package com.project.ssm.chat.model.request;
 
 import lombok.Data;
 
 @Data
-public class ChatInfo {
+public class MessageDto {
     private String userName;
     private String message;
 }
