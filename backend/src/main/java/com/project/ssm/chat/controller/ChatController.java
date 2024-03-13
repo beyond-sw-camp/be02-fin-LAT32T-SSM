@@ -1,25 +1,31 @@
 package com.project.ssm.chat.controller;
 
-import com.project.ssm.chat.model.request.MessageDto;
+import com.project.ssm.chat.model.request.SendMessageReq;
+import com.project.ssm.chat.model.request.UpdateMessageReq;
+import com.project.ssm.chat.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
-    private final SimpMessagingTemplate messagingTemplate;
+
+    private final MessageService messageService;
 
     @MessageMapping("/room/{roomId}")
-    public void sendMessage(@DestinationVariable(value = "roomId") String roomId, MessageDto messageDto) {
-        log.info("roomId = {}", roomId);
-        log.info("message = {}", messageDto);
+    public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
+        messageService.sendMessage(roomId, sendMessageReq);
+    }
 
-        messagingTemplate.convertAndSend("/sub/room/" + roomId, messageDto);
+    // TODO: 메시지 수정
+    @MessageMapping("/room/{roomId}/update")
+    public void updateMessage(@DestinationVariable(value = "roomId") String roomId, UpdateMessageReq updateMessageReq) {
+        messageService.updateMessage(roomId, updateMessageReq);
     }
 }
