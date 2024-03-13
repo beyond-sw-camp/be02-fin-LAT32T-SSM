@@ -12,23 +12,17 @@
                   </div>
                   <form class="user">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user"
-                             id="exampleInputEmail" aria-describedby="emailHelp"
-                             placeholder="Enter Email Address...">
+                      <input v-model="member.memberId" type="text" class="form-control form-control-user" placeholder="아이디를 입력해주세요">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user"
-                             id="exampleInputPassword" placeholder="Password">
+                      <input v-model="member.password" type="password" class="form-control form-control-user" placeholder="비밀번호를 입력해주세요">
                     </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">계정 기억</label>
-                      </div>
-                    </div>
-                    <a href="index.html" class="btn btn-primary btn-user btn-block">
-                      로그인
-                    </a>
+<!--                    <div class="form-group">-->
+<!--                      <div class="custom-control custom-checkbox small">-->
+<!--                        <input type="checkbox" class="custom-control-input" id="customCheck">-->
+<!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
+<!--                      </div>-->
+<!--                    </div>-->
                     <hr>
                     <a href="index.html" class="btn btn-google btn-user btn-block">
                       <i class="fab fa-google fa-fw"></i> 구글로 로그인
@@ -40,9 +34,12 @@
                   </div>
                   <div class="text-center">
                     <router-link to="/signup">
-                    <a class="small" href="register.html">계정을 만드세요!</a>
+                    <a class="small">계정을 만드세요!</a>
                     </router-link>
                   </div>
+                  <button @click="login(member)" class="btn btn-primary btn-user btn-block">
+                    로그인
+                  </button>
                   <!-- 채팅방 나가기 모달창 -->
 <!--                  <ConfirmDialog></ConfirmDialog>-->
 <!--                  <div class="card flex flex-wrap gap-2 justify-content-center">-->
@@ -70,6 +67,9 @@
 // import Sidebar from "primevue/sidebar";
 // import ConfirmDialog from "primevue/confirmdialog";
 
+import axios from "axios";
+import {toRaw} from "vue";
+
 export default {
   name: 'LoginPage',
   // components: {
@@ -77,9 +77,21 @@ export default {
   // },
   data() {
     return {
-      visibleRight: false
+      visibleRight: false,
+      member: {
+        memberId: "",
+        password: ""
+      }
     }
   },
+  methods: {
+    async login(member) {
+      member = toRaw(member);
+      let response = await axios.post("http://localhost:8080/member/login", member);
+      console.log(response.data);
+      localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
+    }
+  }
   // methods: {
   //   confirm() {
   //     this.$confirm.require({
