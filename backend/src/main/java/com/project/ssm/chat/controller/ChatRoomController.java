@@ -1,7 +1,7 @@
-package com.project.ssm.controller;
+package com.project.ssm.chat.controller;
 
-import com.project.ssm.model.request.PostCreateRoomReq;
-import com.project.ssm.service.RoomService;
+import com.project.ssm.chat.model.request.PostCreateRoomReq;
+import com.project.ssm.chat.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

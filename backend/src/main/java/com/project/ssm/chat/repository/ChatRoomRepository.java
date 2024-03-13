@@ -1,6 +1,6 @@
-package com.project.ssm.repository;
+package com.project.ssm.chat.repository;
 
-import com.project.ssm.model.entity.ChatRoom;
+import com.project.ssm.chat.model.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.project.ssm.interceptor;
+package com.project.ssm.chat.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;

@@ -23,33 +23,13 @@
           </button>
         </section>
         <section class="feeds">
-          <article class="feed">
-            <ChatBlockComponent></ChatBlockComponent>
-          </article>
-<!--          <article class="feed">-->
-<!--            <section class="feeds-user-avatar">-->
-<!--              <img src="images/user3.jpg" alt="User 1" width="40" />-->
-<!--            </section>-->
-<!--            <section class="feed-content">-->
-<!--              <section class="feed-user-info">-->
-<!--                <h4>-->
-<!--                  Acme Team <span class="tag">app</span>-->
-<!--                  <span class="time-stamp">12:45pm</span>-->
-<!--                </h4>-->
-<!--              </section>-->
-
-<!--              <p class="feed-text">Events starting in 15 minutes:</p>-->
-<!--              <div class="quoted">-->
-<!--                <h5>Team status meeting</h5>-->
-<!--                <p class="quoted-text">Today from 1:00PM to 1:30PM</p>-->
-<!--              </div>-->
-<!--            </section>-->
-<!--          </article>-->
+          <div>
+            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
+          </div>
         </section>
         <form action="." class="form" name="feedForm">
-          <div class="input" id="textBox" contenteditable="true">
-            <p>Message #social-media</p>
-          </div>
+          <input placeholder="이름" v-model="sender" type="text" class="input" contenteditable="true">
+          <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input" contenteditable="true">
           <div class="input-toolbar-icons">
             <div class="move-right">
               <i class="fas fa-bolt"></i>
@@ -64,13 +44,6 @@
               <i class="far fa-file-code" data-command="pre"></i>
               <i class="fas fa-print" onclick="printDoc();"></i>
             </div>
-            <div class="move-left">
-              <i class="fas fa-at"></i>
-              <i class="far fa-smile"></i>
-              <button type="submit" class="btn-borderless button">
-                <i class="fas fa-angle-double-right"></i>
-              </button>
-            </div>
           </div>
           <div class="input-toolbar-selection"></div>
         </form>
@@ -84,6 +57,13 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import axios from "axios";
+import { useMessageStore } from "@/stores/useMessageStore";
+import {mapState} from "pinia";
+
+
 export default {
   name: 'MainPage',
   components: {
@@ -91,9 +71,85 @@ export default {
   },
   data() {
     return {
-
+      sender: "",
+      message: "",
+      recvList: [],
+      roomName: "",
+      roomList: [],
+      username: "",
+      chatRoomId: ""
     }
   },
+  computed: {
+    ...mapState(useMessageStore, ['getAllMessage'])
+  },
+  methods: {
+    connect(chatRoomId) {
+      const server = "http://localhost:8080/chat"
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      console.log(chatRoomId);
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      this.stompClient.connect(
+          {},
+          frame => {
+            this.connected = true;
+            console.log('소켓 연결 성공', frame);
+            this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
+              console.log("연결 후 채팅방 아이디", chatRoomId);
+              console.log(res);
+              console.log("구독으로 받은 메시지입니다.", res.body);
+              this.recvList.push(JSON.parse(res.body))
+            });
+          },
+          error => {
+            console.log('소켓 연결 실패', error);
+            this.connected = false;
+          }
+      )
+    },
+    async createRoom(e) {
+      console.log(e);
+      const postCreateRoom = {
+        username: this.username,
+        roomName: this.roomName
+      }
+      console.log(postCreateRoom);
+      let response = await axios.post("http://localhost:8080/chat/room/create", postCreateRoom);
+      console.log(response.data);
+    },
+    async getRoomList() {
+      let response = await axios.get("http://localhost:8080/chat/rooms");
+      console.log(response.data)
+      this.roomList = response.data;
+    },
+    sendMessage(e) {
+      console.log(e);
+      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
+        this.send(this.chatRoomId);
+        this.message = ''
+      }
+    },
+    send() {
+      console.log('Send Message:' + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          userName: this.sender,
+          message: this.message
+        };
+        console.log(msg);
+        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      }
+    },
+  },
+  mounted() {
+    this.getRoomList();
+    console.log(this.$route.params.roomId);
+    if (this.$route.params.chatRoomId !== null) {
+      this.chatRoomId = this.$route.params.chatRoomId;
+      this.connect(this.chatRoomId);
+    }
+  }
 }
 </script>
 
@@ -1699,4 +1755,5 @@ body::-webkit-scrollbar-thumb {
     flex-wrap: wrap;
   }
 }
+
 </style>

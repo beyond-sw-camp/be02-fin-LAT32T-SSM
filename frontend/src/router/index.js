@@ -6,9 +6,10 @@ import CalendarPage from "@/pages/CalendarPage.vue";
 const router = createRouter({
     history:createWebHistory(),
     routes: [
+        { path: '/', component: MainPage },
         { path: '/login', component: LoginPage },
         { path: '/signup', component: SignUpPage },
-        { path: '/', component: MainPage },
+        { path: '/:roomId', component: MainPage },
         { path: '/calendar', component: CalendarPage },
 })
 

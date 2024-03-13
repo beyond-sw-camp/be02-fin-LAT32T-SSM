@@ -1,4 +1,4 @@
-package com.project.ssm.model.request;
+package com.project.ssm.chat.model.request;
 
 import lombok.*;
 
