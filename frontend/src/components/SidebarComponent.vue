@@ -129,7 +129,6 @@ export default {
       let response = await axios.get("http://localhost:8080/chat/rooms");
       console.log(response.data)
       this.roomList = response.data;
-
     },
     enterRoom(roomId) {
       console.log(roomId);

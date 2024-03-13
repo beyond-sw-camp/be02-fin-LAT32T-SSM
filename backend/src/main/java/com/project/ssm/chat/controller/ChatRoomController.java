@@ -26,9 +26,9 @@ public class ChatRoomController {
         return ResponseEntity.ok().body(roomService.createRoom(postCreateRoomReq));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/room/{roomIdx}")
-    public ResponseEntity<Object> getRoomInfo(@PathVariable String roomIdx) {
-        return ResponseEntity.ok().body(roomService.getRoomInfo(roomIdx));
+    @RequestMapping(method = RequestMethod.GET, value = "/room/{roomId}")
+    public ResponseEntity<Object> getRoomInfo(@PathVariable String roomId) {
+        return ResponseEntity.ok().body(roomService.getRoomInfo(roomId));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/update")

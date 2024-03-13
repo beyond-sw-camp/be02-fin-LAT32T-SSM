@@ -26,7 +26,7 @@ public class MessageService {
     public void sendMessage(String roomId, SendMessageReq sendMessageDto) {
 
         Optional<Member> member = memberRepository.findByMemberId(sendMessageDto.getMemberId());
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomIdx(roomId);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomId(roomId);
 
         if (member.isPresent() && chatRoom.isPresent()) {
             messageRepository.save(Message.createMessage(sendMessageDto.getMessage(), member.get(), chatRoom.get()));
@@ -41,7 +41,7 @@ public class MessageService {
     public void updateMessage(String roomId, UpdateMessageReq updateMessageReq) {
 
         // 채팅방 아이디를 통해서 사용자가 접속한 채팅방 찾기
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomIdx(roomId);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomId(roomId);
 
         // 받아온 데이터를 통해 멤버 찾기
         Optional<Member> member = memberRepository.findByMemberId(updateMessageReq.getMemberId());

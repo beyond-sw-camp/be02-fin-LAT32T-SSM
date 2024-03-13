@@ -36,14 +36,13 @@ public class RoomService {
     public List<GetRoomListRes> getRoomList(String token) {
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
         // TODO: 조회하는 코드 변경 예정
-        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMemberId(memberId);
+        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
         List<GetRoomListRes> roomListRes = new ArrayList<>();
 
         for (RoomParticipants roomParticipant : roomParticipants) {
             ChatRoom chatRoom = roomParticipant.getChatRoom();
             roomListRes.add(GetRoomListRes.buildDto(chatRoom.getRoomId(), chatRoom.getChatRoomName()));
         }
-
         return roomListRes;
     }
 
@@ -51,21 +50,20 @@ public class RoomService {
     public String createRoom(PostCreateRoomReq postCreateRoom) {
         ChatRoom room = ChatRoom.createRoom(postCreateRoom.getRoomName());
         chatRoomRepository.save(room);
-
         for (String memberId : postCreateRoom.getMemberId()) {
             Optional<Member> member = memberRepository.findByMemberId(memberId);
             if (member.isPresent()) {
-                RoomParticipants.buildRoomPart(member.get(), room);
+                roomPartRepository.save(RoomParticipants.buildRoomPart(member.get(), room));
             } else {
-
+                return null;
             }
         }
         return "ok";
     }
 
     // TODO: 채팅방 단일 조회
-    public GetRoomInfoRes getRoomInfo(String roomIdx) {
-        Optional<ChatRoom> roomInfo = chatRoomRepository.findByRoomIdx(roomIdx);
+    public GetRoomInfoRes getRoomInfo(String roomId) {
+        Optional<ChatRoom> roomInfo = chatRoomRepository.findByRoomId(roomId);
         List<ReturnMessageRes> messageList = new ArrayList<>();
 
         if (roomInfo.isPresent()) {

@@ -80,11 +80,36 @@ export default {
       chatRoomId: ""
     }
   },
+  created() {
+    this.basicConnect();
+  },
   computed: {
     ...mapState(useMessageStore, ['getAllMessage'])
   },
   methods: {
-    connect(chatRoomId) {
+    basicConnect() {
+      const server = "http://localhost:8080/chat"
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      this.stompClient.connect(
+          {},
+          frame => {
+            this.connected = true;
+            console.log('소켓 연결 성공', frame);
+            this.stompClient.subscribe("/sub/room/", res => {
+              console.log(res);
+              console.log("구독으로 받은 메시지입니다.", res.body);
+              this.recvList.push(JSON.parse(res.body))
+            });
+          },
+          error => {
+            console.log('소켓 연결 실패', error);
+            this.connected = false;
+          }
+      )
+    },
+    roomConnect(chatRoomId) {
       const server = "http://localhost:8080/chat"
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
@@ -119,7 +144,11 @@ export default {
       console.log(response.data);
     },
     async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms");
+      let response = await axios.get("http://localhost:8080/chat/rooms", {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        },
+      });
       console.log(response.data)
       this.roomList = response.data;
     },
@@ -147,7 +176,7 @@ export default {
     console.log(this.$route.params.roomId);
     if (this.$route.params.chatRoomId !== null) {
       this.chatRoomId = this.$route.params.chatRoomId;
-      this.connect(this.chatRoomId);
+      this.roomConnect(this.chatRoomId);
     }
   }
 }

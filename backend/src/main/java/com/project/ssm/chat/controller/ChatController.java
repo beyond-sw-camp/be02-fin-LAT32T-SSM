@@ -18,6 +18,11 @@ public class ChatController {
 
     private final MessageService messageService;
 
+    @MessageMapping("/room")
+    public void enterRoom() {
+
+    }
+
     @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
         messageService.sendMessage(roomId, sendMessageReq);
