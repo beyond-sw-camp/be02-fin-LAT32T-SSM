@@ -1,3 +1,8 @@
+jwt:
+  secret-key: abcdefghijklmnopqrstuvwxyz0123456789
+  token:
+    expired-time-ms: 30000000
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

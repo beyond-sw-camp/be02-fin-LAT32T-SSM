@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Setter
-public class PersonalEvent extends BaseTimeEntity {
+public class PersonalEvent{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "personalEventIdx")
     private Long idx;
-
     private String title;
     private String priority;
     private String isLooped;
@@ -35,9 +33,8 @@ public class PersonalEvent extends BaseTimeEntity {
         member.getPersonalEvents().add(this);
     }
 
-    public static PersonalEvent personalEventBuilder (Long idx, String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
+    public static PersonalEvent personalEventBuilder (String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
         return PersonalEvent.builder()
-                .idx(idx)
                 .title(title)
                 .priority(priority)
                 .isLooped(isLooped)

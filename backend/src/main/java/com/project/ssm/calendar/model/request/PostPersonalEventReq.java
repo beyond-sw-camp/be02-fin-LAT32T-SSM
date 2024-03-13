@@ -15,14 +15,13 @@ import java.time.LocalDateTime;
 @Builder
 public class PostPersonalEventReq {
 
-    private Long idx;
     private String title;
     private String priority;
     private String isLooped;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startedAt;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime closedAt;
 
     public PersonalEvent personalEventReqBuilder(Member member){

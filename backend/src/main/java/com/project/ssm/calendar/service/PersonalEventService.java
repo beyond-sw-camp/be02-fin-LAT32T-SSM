@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
+
+import static com.project.ssm.calendar.model.response.PostPersonalEventRes.personalEventResBuilder;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,6 +28,7 @@ public class PersonalEventService {
     @Transactional
     public BaseResponse create(PostPersonalEventReq request, String memberId) {
 
+        // Optional<Member> Optionalmember = memberRepository.findByMemberId(memberId);
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
 
         // to Entity
@@ -35,6 +40,7 @@ public class PersonalEventService {
                 .isSuccess(true)
                 .code("CALENDAR_001")
                 .message("새로운 일정이 생성되었습니다.")
+                .result(personalEventResBuilder(member.getMemberIdx(), personalEvent.getIdx(), personalEvent.getTitle()))
                 .build();
 //                .result(PostPersonalEventRes.personalEventResBuilder(member.getMemberIdx(), personalEvent.getIdx(), personalEvent.getTitle())
     }
