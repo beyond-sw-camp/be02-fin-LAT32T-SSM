@@ -56,10 +56,6 @@
 <!--                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">-->
 <!--                    <SideTabComponent/>-->
 <!--                  </Sidebar>-->
-                  <!-- 채팅 블록 테스트-->
-<!--                  <div>-->
-<!--                    <ChatBlockComponent></ChatBlockComponent>-->
-<!--                  </div>-->
                 </div>
               </div>
             </div>
@@ -72,13 +68,12 @@
 <script>
 // import SideTabComponent from "@/components/SideTabComponent.vue";
 // import Sidebar from "primevue/sidebar";
-// import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 // import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   name: 'LoginPage',
   // components: {
-  //   SideTabComponent, Sidebar, ChatBlockComponent, ConfirmDialog
+  //   SideTabComponent, Sidebar, ConfirmDialog
   // },
   data() {
     return {

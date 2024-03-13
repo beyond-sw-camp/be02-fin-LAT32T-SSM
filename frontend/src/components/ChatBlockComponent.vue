@@ -1,5 +1,5 @@
 <template>
-  <div aria-setsize="-1" class="c-virtual_list__item" tabindex="-1" role="listitem" id="1709869439.969209" data-qa="virtual-list-item" data-item-key="1709869439.969209" style="top: 800px">
+  <div aria-setsize="-1" class="c-virtual_list__item" tabindex="-1" role="listitem" id="1709869439.969209" data-qa="virtual-list-item" data-item-key="1709869439.969209" style="top: 400px">
     <div role="presentation" class="c-message_kit__background p-message_pane_message__message c-message_kit__message" data-qa="message_container" data-qa-unprocessed="false" data-qa-placeholder="false">
       <div role="document" aria-roledescription="메시지" class="c-message_kit__hover" data-qa-hover="true">
         <div class="c-message_kit__actions c-message_kit__actions--default" style="position: relative">

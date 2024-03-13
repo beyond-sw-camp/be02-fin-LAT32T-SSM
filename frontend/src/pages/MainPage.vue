@@ -7,17 +7,14 @@
         <section class="content-header">
           <article class="channel-content-header-details">
             <h4 class="channel-content-header-name">
-              #social-media <i class="fas fa-star"></i>
+              프로젝트 채팅방 <i class="fas fa-star"></i>
             </h4>
             <section class="content-header-icons">
               <div>
-                <i class="far fa-user"></i><span class="content-header-counter">23</span>
-              </div>
-              <div>
-                <i class="fas fa-thumbtack fa-rotate-315 last"></i><span class="content-header-counter">23</span>
+                <i class="far fa-user"></i><span class="content-header-counter">5</span>
               </div>
               <p class="content-header-text">
-                Track and cordinate social media.
+                프로젝트 채팅방 입니다.
               </p>
             </section>
           </article>
@@ -27,92 +24,27 @@
         </section>
         <section class="feeds">
           <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user2.jpg" alt="User 1" width="40" />
-              <span>Z</span>
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Zeo Maxwell <span class="time-stamp">9:56am</span></h4>
-              </section>
-              <div>
-                <p class="feed-text">
-                  No! It was my pleasure! Great to see the enthusiasm out
-                  there.
-                </p>
-              </div>
-            </section>
+            <ChatBlockComponent></ChatBlockComponent>
           </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user3.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>
-                  Acme Team <span class="tag">app</span>
-                  <span class="time-stamp">12:45pm</span>
-                </h4>
-              </section>
+<!--          <article class="feed">-->
+<!--            <section class="feeds-user-avatar">-->
+<!--              <img src="images/user3.jpg" alt="User 1" width="40" />-->
+<!--            </section>-->
+<!--            <section class="feed-content">-->
+<!--              <section class="feed-user-info">-->
+<!--                <h4>-->
+<!--                  Acme Team <span class="tag">app</span>-->
+<!--                  <span class="time-stamp">12:45pm</span>-->
+<!--                </h4>-->
+<!--              </section>-->
 
-              <p class="feed-text">Events starting in 15 minutes:</p>
-              <div class="quoted">
-                <h5>Team status meeting</h5>
-                <p class="quoted-text">Today from 1:00PM to 1:30PM</p>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user4.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Hary Boone <span class="time-stamp">12:58pm</span></h4>
-              </section>
-              <div>
-                <p class="feed-text">
-                  Quick note: today <span class="mention">@lisa</span> will
-                  join our team sync to provide updates on the launch, if
-                  you have questions, bring 'em. See you all later...er, in
-                  2 minutes.
-                </p>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user5.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Lee Hao <span class="time-stamp">1:48pm</span></h4>
-              </section>
-              <p class="feed-text">
-                Meeting notes from our sync with<span class="mention">@lisa</span>.
-              </p>
-              <div class="quoted-file">
-                <div class="preparatory-text">
-                  <p>Post</p>
-                  <i class="fas fa-sort-down"></i>
-                </div>
-                <div class="file-figure">
-                  <i class="far fa-file-alt fa-2x"></i>
-                  <div class="file-detail">
-                    <h5>1/9 Meeting Notes</h5>
-                    <small>Last edited just now</small>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="message-info">
-              <article class="zenith-org">Z</article>
-              <small><strong>Zenith Marketing</strong> is in this
-                channel.</small>
-            </section>
-          </article>
+<!--              <p class="feed-text">Events starting in 15 minutes:</p>-->
+<!--              <div class="quoted">-->
+<!--                <h5>Team status meeting</h5>-->
+<!--                <p class="quoted-text">Today from 1:00PM to 1:30PM</p>-->
+<!--              </div>-->
+<!--            </section>-->
+<!--          </article>-->
         </section>
         <form action="." class="form" name="feedForm">
           <div class="input" id="textBox" contenteditable="true">
@@ -143,90 +75,6 @@
           <div class="input-toolbar-selection"></div>
         </form>
       </section>
-      <section class="right-sidebar">
-        <section class="right-sidebar-header">
-          <article class="right-sidebar-header-details">
-            <h4 class="right-sidebar-header-name">Details</h4>
-            <p>#social-media</p>
-          </article>
-          <i class="fas fa-times"></i>
-        </section>
-        <section class="right-sidebar-contact">
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-user-plus"></i></span>
-            <p>Add</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-search-plus"></i></span>
-            <p>Find</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-phone"></i></span>
-            <p>Call</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span> <i class="fas fa-ellipsis-h"></i></span>
-            <p>More</p>
-          </article>
-        </section>
-
-        <section class="right-sidebar-about">
-          <article class="about-header">
-            <h4>About</h4>
-            <i class="fas fa-chevron-down"></i>
-          </article>
-          <article class="about-details">
-            <div class="about-detail">
-              <h5>Topic</h5>
-              <p>Track and cordinate social media</p>
-            </div>
-            <div class="about-detail">
-              <h5>Description</h5>
-              <p>Home of the social media team</p>
-            </div>
-            <div class="about-img">
-              <div class="about-img-wrapper">
-                <img src="images/user1.jpg" alt="User 1" />
-              </div>
-              <small>Created on October 8th, 2020</small>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Members</h4>
-            <div>
-              <span>21 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Organizations</h4>
-            <div>
-              <span class="zenith-org">Z</span>
-              <span class="acme-org">A</span>
-              <span> 2 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Pinned</h4>
-            <div>
-              <span>1 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Shortcuts</h4>
-            <div>
-              <span>1 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-      </section>
     </section>
   </main>
 </template>
@@ -234,11 +82,12 @@
 <script>
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
+import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 
 export default {
   name: 'MainPage',
   components: {
-    HeaderComponent, SidebarComponent
+    HeaderComponent, SidebarComponent, ChatBlockComponent
   },
   data() {
     return {
@@ -249,11 +98,6 @@ export default {
 </script>
 
 <style scoped>
-/*!
- * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- */
-
 .fa,
 .fas,
 .far {
