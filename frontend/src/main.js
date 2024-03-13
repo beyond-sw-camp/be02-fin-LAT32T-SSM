@@ -20,9 +20,6 @@ import VCalendar from 'v-calendar';
 const pinia = createPinia();
 const app = createApp(App)
 
-app.use(router)
-app.use(pinia);
-app.use(PrimeVue)
 app.component('OverlayPanel', OverlayPanel)
 app.component('InputGroup', InputGroup)
 app.component('InputGroupAddon', InputGroupAddon)
@@ -32,4 +29,5 @@ app.component('SideButton', Button)
 app.use(router);
 app.use(PrimeVue);
 app.use(VCalendar, {})
+app.use(pinia);
 app.mount('#app')
