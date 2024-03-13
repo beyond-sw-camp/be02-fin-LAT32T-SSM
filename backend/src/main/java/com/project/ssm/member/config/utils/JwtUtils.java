@@ -19,8 +19,6 @@ public class JwtUtils {
     // 일반 로그인 사용자 토큰 생성
     public static String generateAccessToken(Member member, String secretKey, Long expiredTimeMs) {
 
-
-
         Claims claims = Jwts.claims();
         claims.put("memberIdx", member.getMemberIdx());
         claims.put("memberId", member.getMemberId());

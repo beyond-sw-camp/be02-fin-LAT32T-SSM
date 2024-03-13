@@ -2,10 +2,10 @@ package com.project.ssm.chat.model.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,13 +18,34 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomIdx;
 
+    @Column(nullable = false)
     private String roomId;
+
+    @Column(nullable = false)
     private String chatRoomName;
+
+    @Column(nullable = false)
+    private Boolean chatRoomStatus;
+
+    @Column(nullable = false)
+    private String startedAt;
+
+    @Column(nullable = false)
+    private String updatedAt;
+
+    @OneToMany(mappedBy = "chatRoom")
+    private List<Message> messages;
+
+    @OneToMany(mappedBy = "chatRoom")
+    private List<RoomParticipants> roomParticipantsList;
 
     public static ChatRoom createRoom(String roomName) {
         return ChatRoom.builder()
                 .roomId(UUID.randomUUID().toString())
                 .chatRoomName(roomName)
+                .chatRoomStatus(true)
+                .startedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
                 .build();
     }
 }
