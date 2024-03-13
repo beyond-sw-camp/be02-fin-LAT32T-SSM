@@ -1,77 +1,60 @@
 <template>
-  <div aria-setsize="-1" class="c-virtual_list__item" tabindex="-1" role="listitem" id="1709869439.969209" data-qa="virtual-list-item" data-item-key="1709869439.969209" style="top: 800px">
-    <div role="presentation" class="c-message_kit__background p-message_pane_message__message c-message_kit__message" data-qa="message_container" data-qa-unprocessed="false" data-qa-placeholder="false">
-      <div role="document" aria-roledescription="메시지" class="c-message_kit__hover" data-qa-hover="true">
-        <div class="c-message_kit__actions c-message_kit__actions--default" style="position: relative">
-          <button class="c-button-unstyled c-message_kit__avatar c-avatar c-avatar--interactive" aria-hidden="true" aria-label="프로필 보기" tabindex="-1" type="button" style="height: 36px; width: 36px">
+  <section class="feeds">
+    <article class="feed">
+      <section class="feeds-user-avatar">
+        <button class="c-button-unstyled c-message_kit__avatar c-avatar c-avatar--interactive" aria-hidden="true" aria-label="프로필 보기" tabindex="-1" type="button" style="height: 36px; width: 36px">
             <span class="c-base_icon__width_only_container" style="height: 36px; width: 36px">
               <img src="" class="c-base_icon c-base_icon--image" aria-hidden="true" role="img" alt="" style="width: 36px"/>
             </span>
-          </button>
-          <div class="c-message_kit__gutter">
-            <div role="presentation" class="c-message_kit__gutter__left" data-stringify-ignore="true">
-                <span class="p-member_profile_hover_card" role="presentation"></span>
-            </div>
-            <div class="divtest">
-              <div role="presentation" class="c-message_kit__gutter__right" data-qa="message_content">
-                <button data-message-sender="U06569E3D7H" data-qa="message_sender_name" class="c-link--button c-message__sender_button" type="button" tabindex="0">
-                  테스트
-                </button>
-                  <span class="c-message__sender c-message_kit__sender" data-qa="message_sender" data-stringify-type="replace" data-stringify-text="test">
-                    <span class="p-member_profile_hover_card" role="presentation">
-                      <a aria-label="오늘, 오후 12:43:59" data-stringify-type="replace" data-stringify-text="[오후 12:43]" data-stringify-requires-siblings="true" data-ts="1709869439.969209" delay="300" data-sk="tooltip_parent" class="c-link c-timestamp">
-                        <span class="c-timestamp__label" data-qa="timestamp_label">오후 12:43</span>
-                      </a>
-                    </span>
-                  </span>
-                &nbsp;&nbsp;
-              </div>
-              <br />
-              <div class="c-message_kit__blocks c-message_kit__blocks--rich_text">
-                <div class="c-message__message_blocks c-message__message_blocks--rich_text" data-qa="message-text">
-                  <div class="p-block_kit_renderer" data-qa="block-kit-renderer">
-                    <div class="p-block_kit_renderer__block_wrapper p-block_kit_renderer__block_wrapper--first">
-                      <div class="p-rich_text_block" dir="auto">
-                      </div>
-                    </div>
+        </button>
+      </section>
+      <section class="feed-content">
+        <div class="divtest">
+          <div role="presentation" class="c-message_kit__gutter__right" data-qa="message_content">
+            <button data-message-sender="U06569E3D7H" data-qa="message_sender_name" class="c-link--button c-message__sender_button" type="button" tabindex="0">
+              {{ item.userName }}
+            </button>
+            <span class="c-message__sender c-message_kit__sender" data-qa="message_sender" data-stringify-type="replace" data-stringify-text="test">
+              <span class="p-member_profile_hover_card" role="presentation">
+                <a aria-label="오늘, 오후 12:43:59" data-stringify-type="replace" data-stringify-text="[오후 12:43]" data-stringify-requires-siblings="true" data-ts="1709869439.969209" delay="300" data-sk="tooltip_parent" class="c-link c-timestamp">
+                  <span class="c-timestamp__label" data-qa="timestamp_label">오후 12:43</span>
+                </a>
+              </span>
+            </span>
+            &nbsp;&nbsp;
+          </div>
+          <br />
+          <div class="c-message_kit__blocks c-message_kit__blocks--rich_text">
+            <div class="c-message__message_blocks c-message__message_blocks--rich_text" data-qa="message-text">
+              <div class="p-block_kit_renderer" data-qa="block-kit-renderer">
+                <div class="p-block_kit_renderer__block_wrapper p-block_kit_renderer__block_wrapper--first">
+                  <div class="p-rich_text_block" dir="auto">
                   </div>
                 </div>
               </div>
             </div>
-            <div class="p-rich_text_section">
-              테스트 메시지입니다.
-            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </section>
+      <section>
+        <div class="p-rich_text_section">
+          {{ item.message }}
+        </div>
+      </section>
+    </article>
+  </section>
 </template>
 
 <script>
 export default {
-  name: 'ChatBlockComponent'
+  name: 'ChatBlockComponent',
+  props: [
+      "item"
+  ]
 }
 </script>
 
 <style>
-.c-message_kit__gutter {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 10px;
-}
-
-.c-message_kit__gutter__left {
-  flex-shrink: 0;
-  margin-right: 8px;
-  display: flex;
-}
-.c-message_kit__actions.c-message_kit__actions--default{
-  display:flex;
-  padding:20px;
-}
-
 *,:before,:after {
   box-sizing: inherit;
 }
@@ -293,6 +276,42 @@ a:-webkit-any-link {
 
 .c-message_kit__background {
   background: rgba(var(--sk_primary_background,255,255,255),1);
+}
+
+.feeds {
+  grid-area: main;
+  overflow: auto;
+  padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
+}
+
+.feed {
+  display: flex;
+  padding: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 2rem;
+}
+
+.feed-user-info h4 {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.feed-user-info h4 .time-stamp {
+  font-size: 0.6rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.feed-user-info h4 .tag {
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  border-radius: 0.2rem;
+  background-color: var(--slack-tag-background);
+  color: var(--slack-tag-forecolor);
+  line-height: 2.6;
+  margin-right: 0.5rem;
 }
 
 </style>

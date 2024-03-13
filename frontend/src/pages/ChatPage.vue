@@ -53,7 +53,7 @@ export default {
         frame => {
           this.connected = true;
           console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/room/message", res => {
+          this.stompClient.subscribe("/sub/message", res => {
             console.log(res);
             console.log("구독으로 받은 메시지입니다.", res.body);
             this.recvList.push(JSON.parse(res.body))
@@ -91,19 +91,50 @@ export default {
     },
     enterRoom(roomId) {
       console.log(roomId)
-      location.href="/chat/room/enter/" + roomId;
-    },
-    send() {
+        const server = "http://localhost:8080/chat"
+        let socket = new SockJS(server);
+        this.stompClient = Stomp.over(socket);
+        console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+        this.stompClient.connect(
+          {},
+          frame => {
+            this.connected = true;
+            console.log('소켓 연결 성공', frame);
+            this.stompClient.subscribe("/sub/room/" + roomId + "/entered", res => {
+              console.log(res);
+              console.log("구독으로 받은 메시지입니다.", res.body);
+              this.recvList.push(JSON.parse(res.body))
+            });
+          },
+          error => {
+            console.log('소켓 연결 실패', error);
+            this.connected = false;
+          }
+        )
+        this.sendRoomMessage(roomId);
+      },
+      sendRoomMessage(roomId) {
       console.log('Send Message:' + this.message);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
-
           userName: this.sender,
           message: this.message
         };
         console.log(msg);
-        this.stompClient.send("/send/message", JSON.stringify(msg), {});
+        this.stompClient.send("/send/room/" + roomId, JSON.stringify(msg), {});
       }
+    },
+      send() {
+        console.log('Send Message:' + this.message);
+        if (this.stompClient && this.stompClient.connected) {
+          const msg = {
+
+            userName: this.sender,
+            message: this.message
+          };
+          console.log(msg);
+          this.stompClient.send("/send/room/" + roomId, JSON.stringify(msg), {});
+        }
     }
   },
   mounted() {
