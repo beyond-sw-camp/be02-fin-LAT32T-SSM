@@ -6,6 +6,7 @@ import com.project.ssm.chat.model.entity.RoomParticipants;
 import com.project.ssm.chat.model.request.PostCreateRoomReq;
 import com.project.ssm.chat.model.response.GetRoomInfoRes;
 import com.project.ssm.chat.model.response.GetRoomListRes;
+import com.project.ssm.chat.model.response.PostCreateRoomRes;
 import com.project.ssm.chat.model.response.ReturnMessageRes;
 import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
@@ -34,20 +35,30 @@ public class RoomService {
 
     // TODO: 멤버 아이디를 통해서 해당 사용자가 가지고 있는 채팅방 전체 조회 --> 나중에 페이징 처리 필요
     public List<GetRoomListRes> getRoomList(String token) {
-        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+
+        if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];
+        }
+
+         String memberId = JwtUtils.getUserMemberId(token, secretKey);
         // TODO: 조회하는 코드 변경 예정
         List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
         List<GetRoomListRes> roomListRes = new ArrayList<>();
 
-        for (RoomParticipants roomParticipant : roomParticipants) {
-            ChatRoom chatRoom = roomParticipant.getChatRoom();
-            roomListRes.add(GetRoomListRes.buildDto(chatRoom.getRoomId(), chatRoom.getChatRoomName()));
+        if (roomParticipants.isEmpty()) {
+            roomListRes.add(GetRoomListRes.buildDto("test", "test"));
+            return roomListRes;
+        } else {
+            for (RoomParticipants roomParticipant : roomParticipants) {
+                ChatRoom chatRoom = roomParticipant.getChatRoom();
+                roomListRes.add(GetRoomListRes.buildDto(chatRoom.getRoomId(), chatRoom.getChatRoomName()));
+            }
+            return roomListRes;
         }
-        return roomListRes;
     }
 
     // TODO: 새로운 채팅방 생성 --> @Transactional 적용하면 됨
-    public String createRoom(PostCreateRoomReq postCreateRoom) {
+    public PostCreateRoomRes createRoom(PostCreateRoomReq postCreateRoom) {
         ChatRoom room = ChatRoom.createRoom(postCreateRoom.getRoomName());
         chatRoomRepository.save(room);
         for (String memberId : postCreateRoom.getMemberId()) {
@@ -58,7 +69,7 @@ public class RoomService {
                 return null;
             }
         }
-        return "ok";
+        return PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getRoomId());
     }
 
     // TODO: 채팅방 단일 조회

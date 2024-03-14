@@ -41,6 +41,7 @@ public class Message {
         return Message.builder()
                 .message(message)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
                 .member(member)
                 .chatRoom(chatRoom)
                 .build();

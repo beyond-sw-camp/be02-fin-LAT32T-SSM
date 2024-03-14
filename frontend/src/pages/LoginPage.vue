@@ -41,18 +41,18 @@
                     로그인
                   </button>
                   <!-- 채팅방 나가기 모달창 -->
-<!--                  <ConfirmDialog></ConfirmDialog>-->
-<!--                  <div class="card flex flex-wrap gap-2 justify-content-center">-->
-<!--                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>-->
-<!--                  </div>-->
+                  <ConfirmDialog></ConfirmDialog>
+                  <div class="card flex flex-wrap gap-2 justify-content-center">
+                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>
+                  </div>
 <!--                  <Toast />-->
                   <!-- 사이드 탭 테스트-->
-<!--                  <div class="card flex justify-content-center">-->
-<!--                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>-->
-<!--                  </div>-->
-<!--                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">-->
-<!--                    <SideTabComponent/>-->
-<!--                  </Sidebar>-->
+                  <div class="card flex justify-content-center">
+                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>
+                  </div>
+                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">
+                    <SideTabComponent/>
+                  </Sidebar>
                 </div>
               </div>
             </div>
@@ -63,18 +63,21 @@
   </div>
 </template>
 <script>
-// import SideTabComponent from "@/components/SideTabComponent.vue";
+import SideTabComponent from "@/components/SideTabComponent.vue";
 // import Sidebar from "primevue/sidebar";
-// import ConfirmDialog from "primevue/confirmdialog";
-
+import ConfirmDialog from "primevue/confirmdialog";
 import axios from "axios";
 import {toRaw} from "vue";
+import {useConfirm} from "primevue/useconfirm";
 
 export default {
   name: 'LoginPage',
   // components: {
   //   SideTabComponent, Sidebar, ConfirmDialog
   // },
+  components: {
+    ConfirmDialog, SideTabComponent
+  },
   data() {
     return {
       visibleRight: false,
@@ -90,27 +93,26 @@ export default {
       let response = await axios.post("http://localhost:8080/member/login", member);
       console.log(response.data);
       localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
+    },
+    confirm() {
+      const confirm = useConfirm();
+      confirm.require({
+        message: '정말로 채팅방에서 나가시겠습니까?',
+        header: '채팅방 나가기',
+        icon: 'pi pi-info-circle',
+        rejectLabel: '취소하기',
+        acceptLabel: '나가기',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+          // 취소 이벤트
+        },
+        reject: () => {
+          // 채팅방 나가기 이벤트
+        }
+      });
     }
   }
-  // methods: {
-  //   confirm() {
-  //     this.$confirm.require({
-  //       message: '정말로 채팅방에서 나가시겠습니까?',
-  //       header: '채팅방 나가기',
-  //       icon: 'pi pi-info-circle',
-  //       rejectLabel: '취소하기',
-  //       acceptLabel: '나가기',
-  //       rejectClass: 'p-button-secondary p-button-outlined',
-  //       acceptClass: 'p-button-danger',
-  //       accept: () => {
-  //         // 취소 이벤트
-  //       },
-  //       reject: () => {
-  //         // 채팅방 나가기 이벤트
-  //       }
-  //     });
-  //   }
-  // }
 }
 </script>
 
