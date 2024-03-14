@@ -17,7 +17,7 @@
             <span class="c-message__sender c-message_kit__sender" data-qa="message_sender" data-stringify-type="replace" data-stringify-text="test">
               <span class="p-member_profile_hover_card" role="presentation">
                 <a aria-label="오늘, 오후 12:43:59" data-stringify-type="replace" data-stringify-text="[오후 12:43]" data-stringify-requires-siblings="true" data-ts="1709869439.969209" delay="300" data-sk="tooltip_parent" class="c-link c-timestamp">
-                  <span class="c-timestamp__label" data-qa="timestamp_label">오후 12:43</span>
+                  <span class="c-timestamp__label" data-qa="timestamp_label">{{ item.createdAt }}</span>
                 </a>
               </span>
             </span>

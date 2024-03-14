@@ -61,8 +61,9 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
-import {mapState} from "pinia";
+import {mapActions, mapState} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
+
 
 export default {
   name: 'MainPage',
@@ -88,7 +89,9 @@ export default {
     ...mapState(useMessageStore, ['getAllMessage'])
   },
   methods: {
+    ...mapActions(useMessageStore, ['addMessage']),
     basicConnect() {
+      console.log("============기본 연결================");
       const server = "http://localhost:8080/chat"
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
@@ -98,8 +101,7 @@ export default {
           frame => {
             this.connected = true;
             console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room/", res => {
-              console.log(res);
+            this.stompClient.subscribe("/sub/room", res => {
               console.log("구독으로 받은 메시지입니다.", res.body);
               this.recvList.push(JSON.parse(res.body))
             });
@@ -111,6 +113,7 @@ export default {
       )
     },
     roomConnect(chatRoomId) {
+      console.log("============채팅방 연결================");
       const server = "http://localhost:8080/chat"
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
@@ -123,7 +126,6 @@ export default {
             console.log('소켓 연결 성공', frame);
             this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
               console.log("연결 후 채팅방 아이디", chatRoomId);
-              console.log(res);
               console.log("구독으로 받은 메시지입니다.", res.body);
               this.recvList.push(JSON.parse(res.body))
             });
@@ -140,7 +142,6 @@ export default {
         username: this.username,
         roomName: this.roomName
       }
-      console.log(postCreateRoom);
       let response = await axios.post("http://localhost:8080/chat/room/create", postCreateRoom);
       console.log(response.data);
     },
@@ -150,11 +151,9 @@ export default {
           Authorization: localStorage.getItem("accessToken")
         },
       });
-      console.log(response.data)
       this.roomList = response.data;
     },
     sendMessage(e) {
-      console.log(e);
       if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
         this.send(this.chatRoomId);
         this.message = ''
@@ -168,8 +167,13 @@ export default {
           memberName: this.memberName,
           message: this.message
         };
-        console.log(msg);
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      }
+    },
+    enterRoom() {
+      if (this.stompClient && this.stompClient.connected) {
+        const token = localStorage.getItem("accessToken");
+        this.stompClient.send("/send/room", {token});
       }
     },
     setMember(token) {
@@ -183,9 +187,11 @@ export default {
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
-    if (this.$route.params.chatRoomId !== null) {
+    if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
       this.chatRoomId = this.$route.params.chatRoomId;
-      this.roomConnect(this.chatRoomId);
+      this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+    } else {
+      this.basicConnect();
     }
   }
 }

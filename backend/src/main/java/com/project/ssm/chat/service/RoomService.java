@@ -4,11 +4,9 @@ import com.project.ssm.chat.model.entity.ChatRoom;
 import com.project.ssm.chat.model.entity.Message;
 import com.project.ssm.chat.model.entity.RoomParticipants;
 import com.project.ssm.chat.model.request.PostCreateRoomReq;
-import com.project.ssm.chat.model.response.GetRoomInfoRes;
-import com.project.ssm.chat.model.response.GetRoomListRes;
-import com.project.ssm.chat.model.response.PostCreateRoomRes;
-import com.project.ssm.chat.model.response.ReturnMessageRes;
+import com.project.ssm.chat.model.response.*;
 import com.project.ssm.chat.repository.ChatRoomRepository;
+import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
 import com.project.ssm.member.config.utils.JwtUtils;
 import com.project.ssm.member.model.Member;
@@ -16,6 +14,9 @@ import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class RoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final RoomParticipantsRepository roomPartRepository;
+    private final MessageRepository messageRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -90,7 +92,19 @@ public class RoomService {
         }
         return null;
     }
-    
+
+    public List<GetChatListRes> getChatList(String token, String chatRoomId, Integer page, Integer size) {
+        List<GetChatListRes> chatList = new ArrayList<>();
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Message> list = messageRepository.findList(pageable, chatRoomId);
+
+        for (Message message : list) {
+            chatList.add(GetChatListRes.buildChatList(message.getMessage(), message.getCreatedAt(), message.getMember().getMemberName()));
+        }
+        return chatList;
+    }
+
     // TODO: 채팅방 수정
     
     

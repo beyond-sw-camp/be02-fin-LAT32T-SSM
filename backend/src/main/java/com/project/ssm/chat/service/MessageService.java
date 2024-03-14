@@ -56,4 +56,8 @@ public class MessageService {
             }
         }
     }
+
+    public void enterRoom() {
+
+    }
 }

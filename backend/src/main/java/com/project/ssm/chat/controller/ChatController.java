@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,9 @@ public class ChatController {
     private final MessageService messageService;
 
     @MessageMapping("/room")
-    public void enterRoom() {
-
+    public void enterRoom(String token) {
+        log.info("token = {}", token);
+        messageService.enterRoom();
     }
 
     @MessageMapping("/room/{roomId}")

@@ -147,20 +147,21 @@ export default {
       this.roomList = response.data;
       console.log(this.roomList);
     },
-    enterRoom(roomId) {
-      console.log(roomId);
+    enterRoom(chatRoomId) {
+      console.log(chatRoomId);
       const server = "http://localhost:8080/chat"
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      window.localStorage.setItem("roomId", roomId);
+      window.localStorage.setItem("chatRoomId", chatRoomId);
+      this.getChatList(chatRoomId, localStorage.getItem("accessToken"), 1, 4);
       this.stompClient.connect(
         {},
         frame => {
           this.connected = true;
           console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/sub/room/" + roomId, res => {
-            console.log("연결 후 채팅방 아이디", roomId);
+          this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
+            console.log("연결 후 채팅방 아이디", chatRoomId);
             console.log(res);
             console.log("구독으로 받은 메시지입니다.", res.body);
             this.addMessage(JSON.parse(res.body));
@@ -195,13 +196,25 @@ export default {
       this.member.name = token.memberName;
       this.member.department = token.department;
       this.member.memberId = token.memberId;
-    }
+    },
+    async getChatList(chatRoomId, token, page, size) {
+      let response = await axios.get(`http://localhost:8080/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+        headers: {
+          Authorization: token
+        },
+      });
+      console.log(response.data);
+      response.data.forEach((message) => {
+        this.addMessage(message);
+      })
+    },
   },
   mounted() {
     this.getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
+
   }
 };
 </script>

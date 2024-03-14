@@ -4,6 +4,7 @@ import com.project.ssm.chat.model.request.PostCreateRoomReq;
 import com.project.ssm.chat.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,19 @@ public class ChatRoomController {
         return ResponseEntity.ok().body(roomService.getRoomList(token));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/room/create")
-    public ResponseEntity<Object> createRoom(@RequestBody PostCreateRoomReq postCreateRoomReq) {
-        return ResponseEntity.ok().body(roomService.createRoom(postCreateRoomReq));
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/room/{roomId}")
     public ResponseEntity<Object> getRoomInfo(@PathVariable String roomId) {
         return ResponseEntity.ok().body(roomService.getRoomInfo(roomId));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/room/chatlist")
+    public ResponseEntity<Object> getChatList(@RequestHeader(value = "Authorization") String token, String chatRoomId, Integer page, Integer size) {
+        return ResponseEntity.ok().body(roomService.getChatList(token, chatRoomId, page, size));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/room/create")
+    public ResponseEntity<Object> createRoom(@RequestBody PostCreateRoomReq postCreateRoomReq) {
+        return ResponseEntity.ok().body(roomService.createRoom(postCreateRoomReq));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/update")
