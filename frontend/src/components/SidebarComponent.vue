@@ -150,6 +150,8 @@ export default {
     enterRoom(roomId) {
       console.log(roomId);
       const server = "http://localhost:8080/chat"
+      // 
+      this.notificaiton();
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
@@ -195,6 +197,24 @@ export default {
       this.member.name = token.memberName;
       this.member.department = token.department;
       this.member.memberId = token.memberId;
+    },
+    notificaiton(){
+      // 알림 권한 요청
+      Notification.requestPermission().then(function (permission) {
+            console.log('Notification permission: ', permission);
+        });
+
+        const evtSource = new EventSource("http://localhost:8081/alarm");
+
+        evtSource.addEventListener("alarm", function (event) {
+            // 사용자에게 알림 표시
+            if (Notification.permission === "granted") {
+                new Notification("알람 이벤트", {
+                    body: event.data,
+                    // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
+                });
+            }
+        }, false);
     }
   },
   mounted() {

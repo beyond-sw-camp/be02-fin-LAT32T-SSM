@@ -12,17 +12,19 @@
                   </div>
                   <form class="user">
                     <div class="form-group">
-                      <input v-model="member.memberId" type="text" class="form-control form-control-user" placeholder="아이디를 입력해주세요">
+                      <input v-model="member.memberId" type="text" class="form-control form-control-user"
+                        placeholder="아이디를 입력해주세요">
                     </div>
                     <div class="form-group">
-                      <input v-model="member.password" type="password" class="form-control form-control-user" placeholder="비밀번호를 입력해주세요">
+                      <input v-model="member.password" type="password" class="form-control form-control-user"
+                        placeholder="비밀번호를 입력해주세요">
                     </div>
-<!--                    <div class="form-group">-->
-<!--                      <div class="custom-control custom-checkbox small">-->
-<!--                        <input type="checkbox" class="custom-control-input" id="customCheck">-->
-<!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
-<!--                      </div>-->
-<!--                    </div>-->
+                    <!--                    <div class="form-group">-->
+                    <!--                      <div class="custom-control custom-checkbox small">-->
+                    <!--                        <input type="checkbox" class="custom-control-input" id="customCheck">-->
+                    <!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
+                    <!--                      </div>-->
+                    <!--                    </div>-->
                     <hr>
                     <a href="index.html" class="btn btn-google btn-user btn-block">
                       <i class="fab fa-google fa-fw"></i> 구글로 로그인
@@ -34,7 +36,7 @@
                   </div>
                   <div class="text-center">
                     <router-link to="/signup">
-                    <a class="small">계정을 만드세요!</a>
+                      <a class="small">계정을 만드세요!</a>
                     </router-link>
                   </div>
                   <button @click="login(member)" class="btn btn-primary btn-user btn-block">
@@ -45,13 +47,13 @@
                   <div class="card flex flex-wrap gap-2 justify-content-center">
                     <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>
                   </div>
-<!--                  <Toast />-->
+                  <!--                  <Toast />-->
                   <!-- 사이드 탭 테스트-->
                   <div class="card flex justify-content-center">
                     <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>
                   </div>
                   <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">
-                    <SideTabComponent/>
+                    <SideTabComponent />
                   </Sidebar>
                 </div>
               </div>
@@ -67,8 +69,8 @@ import SideTabComponent from "@/components/SideTabComponent.vue";
 // import Sidebar from "primevue/sidebar";
 import ConfirmDialog from "primevue/confirmdialog";
 import axios from "axios";
-import {toRaw} from "vue";
-import {useConfirm} from "primevue/useconfirm";
+import { toRaw } from "vue";
+import { useConfirm } from "primevue/useconfirm";
 
 export default {
   name: 'LoginPage',
@@ -92,8 +94,13 @@ export default {
       member = toRaw(member);
       let response = await axios.post("http://localhost:8080/member/login", member);
       console.log(response.data);
+      // 로그인 성공 했을 때 Sse 접속하는 로직 구현
+      if (response.data.isSuccess === true) {
+        console.log("로그인 성공")
+      }
       localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
     },
+    
     confirm() {
       const confirm = useConfirm();
       confirm.require({
@@ -117,7 +124,10 @@ export default {
 </script>
 
 <style>
-.container,.container-lg,.container-md,.container-xl {
+.container,
+.container-lg,
+.container-md,
+.container-xl {
   width: 100%;
   padding-right: .75rem;
   padding-left: .75rem;
@@ -132,19 +142,28 @@ export default {
 }
 
 @media (min-width:768px) {
-  .container,  .container-md {
+
+  .container,
+  .container-md {
     max-width: 720px;
   }
 }
 
 @media (min-width:992px) {
-  .container,  .container-lg,  .container-md {
+
+  .container,
+  .container-lg,
+  .container-md {
     max-width: 960px;
   }
 }
 
 @media (min-width:1200px) {
-  .container,  .container-lg,  .container-md,  .container-xl {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-xl {
     max-width: 1140px;
   }
 }
@@ -158,10 +177,61 @@ export default {
 }
 
 .justify-content-center {
-  justify-content: center!important;
+  justify-content: center !important;
 }
 
-.col,.col-1,.col-10,.col-11,.col-12,.col-2,.col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-lg,.col-lg-1,.col-lg-10,.col-lg-11,.col-lg-12,.col-lg-2,.col-lg-3,.col-lg-4,.col-lg-5,.col-lg-6,.col-lg-7,.col-lg-8,.col-lg-9,.col-md,.col-md-1,.col-md-10,.col-md-11,.col-md-12,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-xl,.col-xl-1,.col-xl-10,.col-xl-11,.col-xl-12,.col-xl-2,.col-xl-3,.col-xl-4,.col-xl-5,.col-xl-6,.col-xl-7,.col-xl-8,.col-xl-9 {
+.col,
+.col-1,
+.col-10,
+.col-11,
+.col-12,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-lg,
+.col-lg-1,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-md,
+.col-md-1,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-xl,
+.col-xl-1,
+.col-xl-10,
+.col-xl-11,
+.col-xl-12,
+.col-xl-2,
+.col-xl-3,
+.col-xl-4,
+.col-xl-5,
+.col-xl-6,
+.col-xl-7,
+.col-xl-8,
+.col-xl-9 {
   position: relative;
   width: 100%;
   padding-right: .75rem;
@@ -181,20 +251,20 @@ export default {
 }
 
 .o-hidden {
-  overflow: hidden!important;
+  overflow: hidden !important;
 }
 
 .border-0 {
-  border: 0!important;
+  border: 0 !important;
 }
 
 .shadow-lg {
-  box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;
 }
 
 .my-5 {
-  margin-top: 3rem!important;
-  margin-bottom: 3rem!important;
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
 }
 
 .card-body {
@@ -204,28 +274,34 @@ export default {
 }
 
 .p-0 {
-  padding: 0!important;
+  padding: 0 !important;
 }
 
 .p-5 {
-  padding: 15rem!important;
+  padding: 15rem !important;
 }
 
 .text-center {
-  text-align: center!important;
+  text-align: center !important;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   margin-bottom: .5rem;
 }
 
 .text-gray-900 {
-  color: #3a3b45!important;
+  color: #3a3b45 !important;
 }
 
-.mb-4,.my-4 {
-  margin-bottom: 1.5rem!important;
+.mb-4,
+.my-4 {
+  margin-bottom: 1.5rem !important;
 }
 
 .form-group {
@@ -245,7 +321,7 @@ h1,h2,h3,h4,h5,h6 {
   background-clip: padding-box;
   border: 1px solid #d1d3e2;
   border-radius: .35rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 form.user .form-control-user {
@@ -267,7 +343,8 @@ small {
   font-size: 80%;
 }
 
-.small,small {
+.small,
+small {
   font-size: 80%;
   font-weight: 400;
 }
@@ -288,7 +365,7 @@ small {
   font-size: 1rem;
   line-height: 1.5;
   border-radius: .35rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 .btn-primary {
@@ -307,7 +384,7 @@ small {
   color: #fff;
   background-color: #2e59d9;
   border-color: #2653d4;
-  box-shadow: 0 0 0 .2rem rgba(105,136,228,.5);
+  box-shadow: 0 0 0 .2rem rgba(105, 136, 228, .5);
 }
 
 form.user .btn-user {
@@ -337,7 +414,6 @@ form.user .btn-user {
   color: #fff;
   background-color: #e12717;
   border-color: #e6e6e6;
-  box-shadow: 0 0 0 .2rem rgba(255,255,255,.5);
+  box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
 }
-
 </style>
