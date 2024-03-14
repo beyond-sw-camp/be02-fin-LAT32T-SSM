@@ -4,28 +4,19 @@ import com.project.ssm.member.model.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
-public class Message {
+public class RoomParticipants {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageIdx;
-
-    @Column(nullable = false)
-    private String message;
-
-    @Column(nullable = false)
-    private String createdAt;
-
-    @Column(nullable = false)
-    private String updatedAt;
+    private Long roomParticipantsIdx;
 
     // TODO: 멤버랑 연관관계 맺기
     @ManyToOne
@@ -37,10 +28,8 @@ public class Message {
     @JoinColumn(name = "chatRoom_idx")
     private ChatRoom chatRoom;
 
-    public static Message createMessage(String message, Member member, ChatRoom chatRoom) {
-        return Message.builder()
-                .message(message)
-                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+    public static RoomParticipants buildRoomPart(Member member, ChatRoom chatRoom) {
+        return RoomParticipants.builder()
                 .member(member)
                 .chatRoom(chatRoom)
                 .build();

@@ -1,5 +1,7 @@
 package com.project.ssm.member.model;
 
+import com.project.ssm.chat.model.entity.Message;
+import com.project.ssm.chat.model.entity.RoomParticipants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Data
@@ -49,6 +52,12 @@ public class Member implements UserDetails {
     private String authority;
 
     private Boolean status;
+
+    @OneToMany(mappedBy = "member")
+    private List<Message> messages;
+
+    @OneToMany(mappedBy = "member")
+    private List<RoomParticipants> roomParticipantsList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
