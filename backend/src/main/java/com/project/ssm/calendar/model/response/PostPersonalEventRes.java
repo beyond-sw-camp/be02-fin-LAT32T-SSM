@@ -16,20 +16,13 @@ public class PostPersonalEventRes {
 
     private Long idx;
     private String title;
-    private String priority;
-    private String isLooped;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startedAt;
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime closedAt;
+    private Long memberIdx;
 
-    private Member member;
-
-    public static PostPersonalEventRes personalEventResBuilder(Long memberIdx, Long eventIdx, String title) {
+    public static PostPersonalEventRes postPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title) {
         return PostPersonalEventRes.builder()
+                .memberIdx(memberIdx)
                 .title(title)
-                .member(Member.builder().memberIdx(memberIdx).build())
                 .idx(eventIdx)
                 .build();
     }

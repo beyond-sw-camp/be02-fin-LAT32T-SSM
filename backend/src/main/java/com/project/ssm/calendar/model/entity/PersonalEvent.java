@@ -28,19 +28,19 @@ public class PersonalEvent{
     @JoinColumn(name = "memberIdx")
     private Member member;
 
-    public PersonalEvent(Member member) {
-        this.member = member;
-        member.getPersonalEvents().add(this);
-    }
+//    public PersonalEvent(Member member) {
+//        this.member = member;
+//        member.getPersonalEvents().add(this);
+//    }
 
-    public static PersonalEvent personalEventBuilder (String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
-        return PersonalEvent.builder()
-                .title(title)
-                .priority(priority)
-                .isLooped(isLooped)
-                .startedAt(startedAt)
-                .closedAt(closedAt)
-                .build();
-    }
+//    public static PersonalEvent personalEventBuilder (String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
+//        return PersonalEvent.builder()
+//                .title(title)
+//                .priority(priority)
+//                .isLooped(isLooped)
+//                .startedAt(startedAt)
+//                .closedAt(closedAt)
+//                .build();
+//    }
 
 }

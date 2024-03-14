@@ -1,21 +1,22 @@
-package com.project.ssm.calendar.model.request;
+package com.project.ssm.calendar.model.response;
 
-
-import com.project.ssm.calendar.model.entity.PersonalEvent;
-import com.project.ssm.member.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
 @Builder
-public class PostPersonalEventReq {
+public class GetPersonalEventRes {
 
+    private Long eventIdx;
     private String title;
+
+    private Long memberIdx;
     private String priority;
     private String isLooped;
 
@@ -24,17 +25,15 @@ public class PostPersonalEventReq {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime closedAt;
 
-    public PersonalEvent postPersonalEventReqBuilder(Member member){
-        PersonalEvent personalEvent = PersonalEvent.builder()
+    public static GetPersonalEventRes getPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
+        return GetPersonalEventRes.builder()
+                .memberIdx(memberIdx)
+                .eventIdx(eventIdx)
                 .title(title)
                 .priority(priority)
                 .isLooped(isLooped)
                 .startedAt(startedAt)
                 .closedAt(closedAt)
                 .build();
-
-        personalEvent.setMember(member);
-        return personalEvent;
     }
-
 }
