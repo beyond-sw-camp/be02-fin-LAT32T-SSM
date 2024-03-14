@@ -1,11 +1,11 @@
 package com.project.ssm.calendar.service;
 
 import com.project.ssm.calendar.model.entity.PersonalEvent;
+import com.project.ssm.calendar.model.request.DeletePersonalEventReq;
 import com.project.ssm.calendar.model.request.GetPersonalEventReq;
+import com.project.ssm.calendar.model.request.PatchPersonalEventReq;
 import com.project.ssm.calendar.model.request.PostPersonalEventReq;
-import com.project.ssm.calendar.model.response.GetPersonalEventRes;
-import com.project.ssm.calendar.model.response.GetPersonalEventsRes;
-import com.project.ssm.calendar.model.response.GetPersonalEventsListRes;
+import com.project.ssm.calendar.model.response.*;
 import com.project.ssm.calendar.repository.PersonalEventRepository;
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.member.model.Member;
@@ -73,5 +73,33 @@ public class PersonalEventService {
 
         return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 조회되었습니다.", GetPersonalEventRes.getPersonalEventResBuilder(member.getMemberIdx(), personalEvent.getIdx(), personalEvent.getTitle(), personalEvent.getPriority(), personalEvent.getIsLooped(), personalEvent.getStartedAt(), personalEvent.getClosedAt()));
 
+    }
+
+    public BaseResponse updateEvent(PatchPersonalEventReq request) {
+
+        Member member = memberRepository.findById(request.getMemberIdx()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
+
+        PersonalEvent personalEvent = personalEventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
+
+        personalEvent.setPriority(request.getPriority());
+        personalEvent.setTitle(request.getTitle());
+        personalEvent.setIsLooped(request.getIsLooped());
+        personalEvent.setStartedAt(request.getStartedAt());
+        personalEvent.setClosedAt(request.getClosedAt());
+
+        personalEventRepository.save(personalEvent);
+
+        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 수정되었습니다.", PatchPersonalEventRes.patchPersonalEventResBuilder(member.getMemberIdx(), personalEvent.getIdx(), personalEvent.getTitle(), personalEvent.getPriority(), personalEvent.getIsLooped(), personalEvent.getStartedAt(), personalEvent.getClosedAt()));
+    }
+
+    public BaseResponse deleteEvent(DeletePersonalEventReq request) {
+
+        Member member = memberRepository.findById(request.getMemberIdx()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
+
+        PersonalEvent personalEvent = personalEventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
+
+        personalEventRepository.deleteById(request.getEventIdx());
+
+        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 삭제되었습니다.", DeletePersonalEventRes.deletePersonalEventResBuilder(member.getMemberIdx(), personalEvent.getIdx(), personalEvent.getTitle()));
     }
 }

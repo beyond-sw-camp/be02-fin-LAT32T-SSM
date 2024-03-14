@@ -2,7 +2,9 @@ package com.project.ssm.calendar.controller;
 
 
 import com.project.ssm.calendar.model.entity.PersonalEvent;
+import com.project.ssm.calendar.model.request.DeletePersonalEventReq;
 import com.project.ssm.calendar.model.request.GetPersonalEventReq;
+import com.project.ssm.calendar.model.request.PatchPersonalEventReq;
 import com.project.ssm.calendar.model.request.PostPersonalEventReq;
 import com.project.ssm.calendar.service.PersonalEventService;
 import com.project.ssm.common.BaseResponse;
@@ -45,5 +47,22 @@ public class PersonalEventController {
         return ResponseEntity.ok(response);
     }
 
+    // 일정 수정
+    @RequestMapping(method = RequestMethod.PATCH, value = "/update")
+    public ResponseEntity getEvent(@RequestBody PatchPersonalEventReq request) {
+
+        BaseResponse response = personalEventService.updateEvent(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 일정 삭제
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
+    public ResponseEntity getEvent(@RequestBody DeletePersonalEventReq request) {
+
+        BaseResponse response = personalEventService.deleteEvent(request);
+
+        return ResponseEntity.ok(response);
+    }
 
 }
