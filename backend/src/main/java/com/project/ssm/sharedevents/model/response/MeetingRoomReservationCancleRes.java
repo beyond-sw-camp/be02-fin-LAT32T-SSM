@@ -1,4 +1,4 @@
-package com.project.ssm.reservation.model.response;
+package com.project.ssm.sharedevents.model.response;
 
 import lombok.*;
 

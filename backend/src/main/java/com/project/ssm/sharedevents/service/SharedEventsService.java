@@ -1,14 +1,16 @@
-package com.project.ssm.reservation.service;
+package com.project.ssm.sharedevents.service;
 
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import com.project.ssm.reservation.model.MeetingReservation;
-import com.project.ssm.reservation.model.request.MeetingRoomReservationReq;
-import com.project.ssm.reservation.model.response.MeetingRoomReservationCancleRes;
-import com.project.ssm.reservation.model.response.MeetingRoomReservationRes;
 import com.project.ssm.reservation.repository.MeetingRoomReservationRepository;
+import com.project.ssm.sharedevents.model.SharedEvents;
+import com.project.ssm.sharedevents.model.request.MeetingRoomReservationReq;
+import com.project.ssm.sharedevents.model.response.MeetingRoomReservationCancleRes;
+import com.project.ssm.sharedevents.model.response.MeetingRoomReservationRes;
+import com.project.ssm.sharedevents.repository.SharedEventsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +21,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-
 @Service
 @RequiredArgsConstructor
-public class MeetingRoomReservationService {
+public class SharedEventsService {
     private final MeetingRoomRepository meetingRoomRepository;
-    private final MeetingRoomReservationRepository meetingRoomReservationRepository;
+    private final SharedEventsRepository sharedEventsRepository;
     private final MemberRepository memberRepository;
+    private final MeetingRoomReservationRepository meetingRoomReservationRepository;
 
     public MeetingRoomReservationRes meetingRoomReservation(MeetingRoomReservationReq request) {
         Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(request.getMeetingRoomIdx());
@@ -34,7 +36,7 @@ public class MeetingRoomReservationService {
         }
         MeetingRoom meetingRoom = meetingRoomOptional.get();
 
-        boolean isOverlapping = meetingRoomReservationRepository.isReservationDuplication(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt());
+        boolean isOverlapping = sharedEventsRepository.isReservationDuplication(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt());
         if (isOverlapping) {
             throw new IllegalStateException("이미 예약된 시간입니다.");
         }
@@ -50,54 +52,63 @@ public class MeetingRoomReservationService {
             members.add(memberOptional.get());
         }
 
-        // 요청 데이터 저장
         MeetingReservation newReservation = MeetingReservation.builder()
                 .meetingRoom(meetingRoom)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now())
+                .build();
+        newReservation = meetingRoomReservationRepository.save(newReservation);
+
+        // 요청 데이터 저장
+        SharedEvents sharedEvents = SharedEvents.builder()
+                .reservation(newReservation)
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
                 .build();
-        MeetingReservation savedReservation = meetingRoomReservationRepository.save(newReservation);
-
+        SharedEvents savedSharedEvent = sharedEventsRepository.save(sharedEvents);
 
         // 응답
         return MeetingRoomReservationRes.builder()
                 .result(MeetingRoomReservationRes.Result.builder()
-                        .reservationIdx(savedReservation.getReservationIdx())
+                        .reservationIdx(savedSharedEvent.getEventIdx())
                         .roomName(meetingRoom.getRoomName())
                         .build())
                 .build();
     }
 
-    public MeetingRoomReservationCancleRes meetingRoomReservationCancel(Long reservationIdx) {
-        Optional<MeetingReservation> byId = meetingRoomReservationRepository.findById(reservationIdx);
+    public MeetingRoomReservationCancleRes meetingRoomReservationCancel(Long sharedEventsId) {
+        Optional<SharedEvents> byId = sharedEventsRepository.findById(sharedEventsId);
         if (!byId.isPresent()) {
             return MeetingRoomReservationCancleRes.builder().build(); // 예약 정보 없으면 빈값 반환. 추후 예외처리 구현 필요
         }
-        MeetingReservation meetingReservation = byId.get();
-        // 예약 정보 삭제
-        meetingRoomReservationRepository.deleteById(reservationIdx);
+        SharedEvents sharedEvents = byId.get();
 
-        // 예약 정보 
-        MeetingRoomReservationCancleRes.Reservation reservationInfo = null;
-        if (meetingReservation != null) {
-            reservationInfo = MeetingRoomReservationCancleRes.Reservation.builder()
-                    .reservationIdx(meetingReservation.getReservationIdx())
-                    .createdAt(meetingReservation.getCreatedAt())
-                    .startedAt(meetingReservation.getStartedAt())
-                    .closedAt(meetingReservation.getClosedAt())
-                    .build();
-        }
+        MeetingReservation relatedReservation = sharedEvents.getReservation();
+        MeetingRoom relatedMeetingRoom = relatedReservation.getMeetingRoom();
+        // 삭제 전에 updateAt 시간 저장
+        relatedReservation.setUpdatedAt(LocalDateTime.now());
+        meetingRoomReservationRepository.save(relatedReservation);
+
+        // 예약 정보 삭제
+        sharedEventsRepository.deleteById(sharedEventsId);
+
+        // 예약 정보
+        MeetingRoomReservationCancleRes.Reservation reservationInfo = MeetingRoomReservationCancleRes.Reservation.builder()
+                .reservationIdx(relatedReservation.getReservationIdx())
+                .startedAt(sharedEvents.getStartedAt())
+                .closedAt(sharedEvents.getClosedAt())
+                .build();
+
         // 예약 정보 포함해 응답
         return MeetingRoomReservationCancleRes.builder()
                 .result(MeetingRoomReservationCancleRes.Result.builder()
-                        .meetingRoomIdx(reservationIdx)
-                        .roomName(meetingReservation.getMeetingRoom().getRoomName())
-                        .roomNum(meetingReservation.getMeetingRoom().getRoomNum())
-                        .roomCapacity(meetingReservation.getMeetingRoom().getRoomCapacity())
-                        .reservations(Arrays.asList(reservationInfo))
+                        .meetingRoomIdx(relatedMeetingRoom.getMeetingRoomIdx()) // MeetingRoom의 ID 사용
+                        .roomName(relatedMeetingRoom.getRoomName())
+                        .roomNum(relatedMeetingRoom.getRoomNum())
+                        .roomCapacity(relatedMeetingRoom.getRoomCapacity())
+                        .reservations(Arrays.asList(reservationInfo)) // 취소된 예약 정보 포함
                         .build())
                 .build();
-        }
- }
+    }
+}
 

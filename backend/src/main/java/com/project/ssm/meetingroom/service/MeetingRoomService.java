@@ -8,14 +8,12 @@ import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.reservation.model.MeetingReservation;
 import com.project.ssm.reservation.repository.MeetingRoomReservationRepository;
-import com.project.ssm.sharedevents.model.SharedEvents;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -58,10 +56,9 @@ public class MeetingRoomService {
 //            for (SharedEvents sharedEvent : reservation.getSharedEvents()) {
                 MeetingSelectRes.Reservation reservationDetail = MeetingSelectRes.Reservation.builder()
                         .reservationIdx(reservation.getReservationIdx())
-                        .sharedEventIdx(null) // 추가된다면 null값이 아닌 getSharedEventIdx 값 조회
                         .createdAt(reservation.getCreatedAt().toString())
-                        .startedAt(reservation.getStartedAt())
-                        .closedAt(reservation.getClosedAt())
+                        .updatedAt(reservation.getUpdatedAt())
+                        .sharedEventIdx(null) // 추가된다면 null값이 아닌 getSharedEventIdx 값 조회
                         .build();
                 reservationList.add(reservationDetail);
 //            }
@@ -74,6 +71,7 @@ public class MeetingRoomService {
                 .roomCapacity(meetingRoom.getRoomCapacity())
                 .reservations(reservationList)                      // 예약 정보
                 .build();
+
 
         return MeetingSelectRes.builder()
                 .result(result)

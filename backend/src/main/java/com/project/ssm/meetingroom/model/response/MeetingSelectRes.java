@@ -31,8 +31,6 @@ public class MeetingSelectRes {
         private Long reservationIdx;
         private Long sharedEventIdx;
         private String createdAt;
-        private LocalDateTime startedAt;
-        private LocalDateTime closedAt;
-
+        private LocalDateTime updatedAt;
     }
 }

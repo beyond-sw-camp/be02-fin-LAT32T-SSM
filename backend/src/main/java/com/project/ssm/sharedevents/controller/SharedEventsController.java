@@ -1,24 +1,22 @@
-package com.project.ssm.reservation.controller;
+package com.project.ssm.sharedevents.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.reservation.model.request.MeetingRoomReservationReq;
-import com.project.ssm.reservation.model.response.MeetingRoomReservationCancleRes;
-import com.project.ssm.reservation.model.response.MeetingRoomReservationRes;
-import com.project.ssm.reservation.service.MeetingRoomReservationService;
+import com.project.ssm.sharedevents.model.request.MeetingRoomReservationReq;
+import com.project.ssm.sharedevents.model.response.MeetingRoomReservationCancleRes;
+import com.project.ssm.sharedevents.model.response.MeetingRoomReservationRes;
+import com.project.ssm.sharedevents.service.SharedEventsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-@RequestMapping("/meetingroom")
+@RequestMapping("/")
 @AllArgsConstructor
-public class MeetingReservationController {
-    private final MeetingRoomReservationService meetingRoomReservationService;
-
-    @PostMapping("/reservation") // 회의실 예약
+public class SharedEventsController {
+    private final SharedEventsService sharedEventsService;
+    @PostMapping("/meetingroom/reservation") // 회의실 예약
     public ResponseEntity<BaseResponse> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
-        MeetingRoomReservationRes response = meetingRoomReservationService.meetingRoomReservation(request);
+        MeetingRoomReservationRes response = sharedEventsService.meetingRoomReservation(request);
 
         BaseResponse baseResponse = BaseResponse.builder()
                 .isSuccess(true)
@@ -29,11 +27,11 @@ public class MeetingReservationController {
 
         return ResponseEntity.ok().body(baseResponse);
     }
-    @DeleteMapping("/reservation/delete/{reservationIdx}") // 예약 삭제
+    @DeleteMapping("/meetingroom/reservation/delete/{reservationIdx}") // 예약 삭제
     public ResponseEntity<BaseResponse> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
-        MeetingRoomReservationCancleRes response = meetingRoomReservationService.meetingRoomReservationCancel(reservationIdx);
+        MeetingRoomReservationCancleRes response = sharedEventsService.meetingRoomReservationCancel(reservationIdx);
 
-                BaseResponse baseResponse = BaseResponse.builder()
+        BaseResponse baseResponse = BaseResponse.builder()
                 .isSuccess(true)
                 .code("ROOM_049")
                 .message("회의실 예약이 취소 되었습니다.")
@@ -42,4 +40,5 @@ public class MeetingReservationController {
 
         return ResponseEntity.ok().body(baseResponse);
     }
+
 }

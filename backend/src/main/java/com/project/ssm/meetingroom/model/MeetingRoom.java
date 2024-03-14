@@ -4,7 +4,6 @@ import com.project.ssm.reservation.model.MeetingReservation;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,11 +15,10 @@ import java.util.List;
 public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomIdx;
+    private Long meetingRoomIdx;
     private String roomName;
     private Integer roomNum;
     private Integer roomCapacity;
-    private Boolean roomStatus;
 
     @OneToMany(mappedBy = "meetingRoom")
     private List<MeetingReservation> reservations;
