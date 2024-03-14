@@ -17,7 +17,7 @@ public class MeetingSelectRes {
     @Setter
     @Builder
     public static class MeetingRoomSelectResult {
-        private Long roomIdx;
+        private Long meetingRoomIdx;
         private String roomName;
         private Integer roomNum;
         private Integer roomCapacity;

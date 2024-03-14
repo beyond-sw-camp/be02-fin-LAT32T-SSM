@@ -1,10 +1,8 @@
 package com.project.ssm.meetingroom.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
 import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
-import com.project.ssm.meetingroom.model.response.MeetingRoomDetailsRes;
 import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
@@ -23,13 +21,7 @@ public class MeetingRoomController {
 
     @PostMapping("/add") // 회의실 추가
     public ResponseEntity<BaseResponse> addMeetingRoom(@RequestBody MeetingRoomAddReq request) {
-        MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(request);
-
-        MeetingRoomAddRes.MeetingRoomAddResult result = MeetingRoomAddRes.MeetingRoomAddResult.builder()
-                .idx(meetingRoom.getRoomIdx())
-                .roomName(meetingRoom.getRoomName())
-                .build();
-
+        MeetingRoomAddRes.MeetingRoomAddResult result = meetingRoomService.createMeetingRoom(request);
 
         BaseResponse response = BaseResponse.builder()
                 .isSuccess(true)
@@ -38,12 +30,12 @@ public class MeetingRoomController {
                 .result(result)
                 .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/select/{roomIdx}") // 회의실 단일 조회
-    public ResponseEntity<BaseResponse> getMeetingRoom(@PathVariable Long roomIdx) {
-        MeetingSelectRes details = meetingRoomService.getMeetingRoom(roomIdx);
+    @GetMapping("/select/{meetingRoomIdx}") // 회의실 단일 조회
+    public ResponseEntity<BaseResponse> getMeetingRoom(@PathVariable Long meetingRoomIdx) {
+        MeetingSelectRes details = meetingRoomService.getMeetingRoom(meetingRoomIdx);
 
         BaseResponse response = BaseResponse.builder()
                 .isSuccess(true)
@@ -52,7 +44,7 @@ public class MeetingRoomController {
                 .result(details.getResult())
                 .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
 
@@ -66,22 +58,22 @@ public class MeetingRoomController {
                 .message("회의실 조회 요청을 정상적으로 처리하였습니다.")
                 .result(meetingRooms)
                 .build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
 
 
-//    @DeleteMapping("/delete/{roomIdx}") // 회의실 삭제
-//    public ResponseEntity<BaseResponse> deleteMeetingRoom(@PathVariable Long roomIdx) {
-//        meetingRoomService.deleteMeetingRoom(roomIdx);
-//
-//        BaseResponse response = BaseResponse.builder()
-//                .code("ROOM_032")
-//                .isSuccess(true)
-//                .message("회의실이 삭제되었습니다.")
-//                .build();
-//
-//        return ResponseEntity.ok(response);
-//    }
+    @DeleteMapping("/delete/{meetingRoomIdx}") // 회의실 삭제
+    public ResponseEntity<BaseResponse> deleteMeetingRoom(@PathVariable Long meetingRoomIdx) {
+        meetingRoomService.deleteMeetingRoom(meetingRoomIdx);
+
+        BaseResponse response = BaseResponse.builder()
+                .code("ROOM_032")
+                .isSuccess(true)
+                .message("회의실이 삭제되었습니다.")
+                .build();
+
+        return ResponseEntity.ok().body(response);
+    }
 
 }

@@ -2,18 +2,19 @@ package com.project.ssm.meetingroom.service;
 
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
+import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
 import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.reservation.model.MeetingReservation;
 import com.project.ssm.reservation.repository.MeetingRoomReservationRepository;
 import com.project.ssm.sharedevents.model.SharedEvents;
-import com.project.ssm.sharedevents.repository.SharedEventsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -21,55 +22,57 @@ import java.util.Set;
 public class MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
     private final MeetingRoomReservationRepository meetingRoomReservationRepository;
-    private final SharedEventsRepository sharedEventsRepository;
 
     // 회의실 생성
-    public MeetingRoom createMeetingRoom(MeetingRoomAddReq request) {
+    public MeetingRoomAddRes.MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
         MeetingRoom meetingRoom = MeetingRoom.builder()
                 .roomName(request.getRoomName())
                 .roomNum(request.getRoomNum())
                 .roomCapacity(request.getRoomCapacity())
-                .roomStatus(true)
                 .build();
 
-        return meetingRoomRepository.save(meetingRoom);
+        meetingRoom = meetingRoomRepository.save(meetingRoom);
+
+
+        return MeetingRoomAddRes.MeetingRoomAddResult.builder()
+                .idx(meetingRoom.getMeetingRoomIdx())
+                .roomName(meetingRoom.getRoomName())
+                .build();
     }
 
     // 회의실 단일 조회
-    public MeetingSelectRes getMeetingRoom(Long roomIdx) {
-        MeetingRoom meetingRoom = meetingRoomRepository.findById(roomIdx)
-                .orElseThrow(() -> new IllegalArgumentException("회의실을 찾을 수 없습니다"));
-
-        List<MeetingReservation> reservations = meetingRoomReservationRepository.findByMeetingRoom_RoomIdx(roomIdx);
-        List<Long> reservationIdxs = new ArrayList<>();
+    public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
+        Optional<MeetingRoom> optionalMeetingRoom = meetingRoomRepository.findById(meetingRoomIdx);
+        if (!optionalMeetingRoom.isPresent()) {
+            return MeetingSelectRes.builder().build(); // 회의실이 없는 경우 빈 결과 반환 예외처리 구현 필요
+        }
+        MeetingRoom meetingRoom = optionalMeetingRoom.get();
+        // 회의실 ID에 대한 모든 예약을 List 반환
+        List<MeetingReservation> reservations = meetingRoomReservationRepository.findByMeetingRoom_MeetingRoomIdx(meetingRoomIdx);
+        // 정보 저장할 리스트 생성
         List<MeetingSelectRes.Reservation> reservationList = new ArrayList<>();
 
+        // 예약 정보 탐색
+        // sharedEventIdx 를 어떻게 처리할 것인가. 일정등록이 추가된다면 같이 조회
         for (MeetingReservation reservation : reservations) {
-            Set<SharedEvents> sharedEvents = reservation.getSharedEvents();
-            for (SharedEvents sharedEvent : sharedEvents) {
-                Long reservationIdx = reservation.getReservationIdx();
-
-                // 예약 ID가 이미 추가된 예약 ID 목록에 포함되어 있지 않은지 확인
-                if (!reservationIdxs.contains(reservationIdx)) {
-                    reservationIdxs.add(reservationIdx);
-
-                    reservationList.add(MeetingSelectRes.Reservation.builder()  // 예약idx 이벤트idx 조회해서 객체 생성
-                            .reservationIdx(reservationIdx)
-                            .sharedEventIdx(sharedEvent.getEventIdx())
-                            .createdAt(reservation.getCreatedAt())
-                            .startedAt(reservation.getStartedAt())
-                            .closedAt(reservation.getClosedAt())
-                            .build());
-                }
-            }
+//            for (SharedEvents sharedEvent : reservation.getSharedEvents()) {
+                MeetingSelectRes.Reservation reservationDetail = MeetingSelectRes.Reservation.builder()
+                        .reservationIdx(reservation.getReservationIdx())
+                        .sharedEventIdx(null) // 추가된다면 null값이 아닌 getSharedEventIdx 값 조회
+                        .createdAt(reservation.getCreatedAt().toString())
+                        .startedAt(reservation.getStartedAt())
+                        .closedAt(reservation.getClosedAt())
+                        .build();
+                reservationList.add(reservationDetail);
+//            }
         }
 
-        MeetingSelectRes.MeetingRoomSelectResult result = MeetingSelectRes.MeetingRoomSelectResult.builder()
-                .roomIdx(meetingRoom.getRoomIdx())
+        MeetingSelectRes.MeetingRoomSelectResult result = MeetingSelectRes.MeetingRoomSelectResult.builder() // 회의실 정보 저장
+                .meetingRoomIdx(meetingRoom.getMeetingRoomIdx())
                 .roomName(meetingRoom.getRoomName())
                 .roomNum(meetingRoom.getRoomNum())
                 .roomCapacity(meetingRoom.getRoomCapacity())
-                .reservations(reservationList)
+                .reservations(reservationList)                      // 예약 정보
                 .build();
 
         return MeetingSelectRes.builder()
@@ -82,13 +85,13 @@ public class MeetingRoomService {
         List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
         List<MeetingRoomListRes> meetingRoomListResList = new ArrayList<>();
 
+        // 미팅룸 전체 탐색 정보 저장
         for (MeetingRoom room : meetingRooms) {
             MeetingRoomListRes listRes = MeetingRoomListRes.builder()
-                    .roomIdx(room.getRoomIdx())
+                    .meetingRoomIdx(room.getMeetingRoomIdx())
                     .roomName(room.getRoomName())
                     .roomNum(room.getRoomNum())
                     .roomCapacity(room.getRoomCapacity())
-                    .roomStatus(room.getRoomStatus())
                     .build();
             meetingRoomListResList.add(listRes);
         }
@@ -97,10 +100,12 @@ public class MeetingRoomService {
 
 
 
-//    public void deleteMeetingRoom(Long roomIdx) {
-//        MeetingRoom meetingRoom = meetingRoomRepository.findById(roomIdx)
-//                .orElseThrow(() -> new RuntimeException("회의실을 찾을 수 없습니다"));
-//
-//        meetingRoomRepository.delete(meetingRoom);
-//    }
+    public void deleteMeetingRoom(Long meetingRoomIdx) {
+        Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(meetingRoomIdx);
+        if (meetingRoomOptional.isPresent()) {
+            meetingRoomRepository.delete(meetingRoomOptional.get());
+        }
+        // 회의실이 없으면 빈결과 반환 추후 예외처리 구현 필요
+    }
+
 }
