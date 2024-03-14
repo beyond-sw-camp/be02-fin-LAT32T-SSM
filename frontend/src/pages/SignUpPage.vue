@@ -11,19 +11,24 @@
               </div>
               <form class="user">
                 <div class="form-group">
-                  <input v-model="member.memberId" type="text" class="form-control form-control-user" placeholder="아이디를 입력해주세요">
+                  <input v-model="member.memberId" type="text" class="form-control form-control-user"
+                    placeholder="아이디를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.name" type="text" class="form-control form-control-user" placeholder="이름을 입력해주세요">
+                  <input v-model="member.name" type="text" class="form-control form-control-user"
+                    placeholder="이름을 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.password" type="password" class="form-control form-control-user" placeholder="비밀번호를 입력해주세요">
+                  <input v-model="member.password" type="password" class="form-control form-control-user"
+                    placeholder="비밀번호를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.department" type="text" class="form-control form-control-user" placeholder="부서명을 입력해주세요">
+                  <input v-model="member.department" type="text" class="form-control form-control-user"
+                    placeholder="부서명을 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.position" type="text" class="form-control form-control-user" placeholder="직책을 입력해주세요">
+                  <input v-model="member.position" type="text" class="form-control form-control-user"
+                    placeholder="직책을 입력해주세요">
                 </div>
                 <button @click="signUp" class="btn btn-primary btn-user btn-block">
                   회원 가입
@@ -72,7 +77,10 @@ export default {
 </script>
 
 <style>
-.container,.container-lg,.container-md,.container-xl {
+.container,
+.container-lg,
+.container-md,
+.container-xl {
   width: 100%;
   padding-right: .75rem;
   padding-left: .75rem;
@@ -87,19 +95,28 @@ export default {
 }
 
 @media (min-width:768px) {
-  .container,  .container-md {
+
+  .container,
+  .container-md {
     max-width: 720px;
   }
 }
 
 @media (min-width:992px) {
-  .container,  .container-lg,  .container-md {
+
+  .container,
+  .container-lg,
+  .container-md {
     max-width: 960px;
   }
 }
 
 @media (min-width:1200px) {
-  .container,  .container-lg,  .container-md,  .container-xl {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-xl {
     max-width: 1140px;
   }
 }
@@ -113,10 +130,61 @@ export default {
 }
 
 .justify-content-center {
-  justify-content: center!important;
+  justify-content: center !important;
 }
 
-.col,.col-1,.col-10,.col-11,.col-12,.col-2,.col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-lg,.col-lg-1,.col-lg-10,.col-lg-11,.col-lg-12,.col-lg-2,.col-lg-3,.col-lg-4,.col-lg-5,.col-lg-6,.col-lg-7,.col-lg-8,.col-lg-9,.col-md,.col-md-1,.col-md-10,.col-md-11,.col-md-12,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-xl,.col-xl-1,.col-xl-10,.col-xl-11,.col-xl-12,.col-xl-2,.col-xl-3,.col-xl-4,.col-xl-5,.col-xl-6,.col-xl-7,.col-xl-8,.col-xl-9 {
+.col,
+.col-1,
+.col-10,
+.col-11,
+.col-12,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-lg,
+.col-lg-1,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-md,
+.col-md-1,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-xl,
+.col-xl-1,
+.col-xl-10,
+.col-xl-11,
+.col-xl-12,
+.col-xl-2,
+.col-xl-3,
+.col-xl-4,
+.col-xl-5,
+.col-xl-6,
+.col-xl-7,
+.col-xl-8,
+.col-xl-9 {
   position: relative;
   width: 100%;
   padding-right: .75rem;
@@ -136,20 +204,20 @@ export default {
 }
 
 .o-hidden {
-  overflow: hidden!important;
+  overflow: hidden !important;
 }
 
 .border-0 {
-  border: 0!important;
+  border: 0 !important;
 }
 
 .shadow-lg {
-  box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;
 }
 
 .my-5 {
-  margin-top: 3rem!important;
-  margin-bottom: 3rem!important;
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
 }
 
 .card-body {
@@ -159,28 +227,34 @@ export default {
 }
 
 .p-0 {
-  padding: 0!important;
+  padding: 0 !important;
 }
 
 .p-5 {
-  padding: 15rem!important;
+  padding: 15rem !important;
 }
 
 .text-center {
-  text-align: center!important;
+  text-align: center !important;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   margin-bottom: .5rem;
 }
 
 .text-gray-900 {
-  color: #3a3b45!important;
+  color: #3a3b45 !important;
 }
 
-.mb-4,.my-4 {
-  margin-bottom: 1.5rem!important;
+.mb-4,
+.my-4 {
+  margin-bottom: 1.5rem !important;
 }
 
 .form-group {
@@ -200,7 +274,7 @@ h1,h2,h3,h4,h5,h6 {
   background-clip: padding-box;
   border: 1px solid #d1d3e2;
   border-radius: .35rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 form.user .form-control-user {
@@ -222,7 +296,8 @@ small {
   font-size: 80%;
 }
 
-.small,small {
+.small,
+small {
   font-size: 80%;
   font-weight: 400;
 }
@@ -243,7 +318,7 @@ small {
   font-size: 1rem;
   line-height: 1.5;
   border-radius: .35rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 .btn-primary {
@@ -262,7 +337,7 @@ small {
   color: #fff;
   background-color: #2e59d9;
   border-color: #2653d4;
-  box-shadow: 0 0 0 .2rem rgba(105,136,228,.5);
+  box-shadow: 0 0 0 .2rem rgba(105, 136, 228, .5);
 }
 
 form.user .btn-user {
@@ -292,7 +367,6 @@ form.user .btn-user {
   color: #fff;
   background-color: #e12717;
   border-color: #e6e6e6;
-  box-shadow: 0 0 0 .2rem rgba(255,255,255,.5);
+  box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
 }
-
 </style>

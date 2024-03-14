@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     connect() {
-      const server = "http://localhost:8080/chat"
+      const server = "http://localhost:8080:8080/chat"
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
@@ -72,12 +72,12 @@ export default {
         roomName: this.roomName
       }
       console.log(postCreateRoom);
-      let response = await axios.post("http://localhost:8080/chat/room/create", postCreateRoom);
+      let response = await axios.post("http://localhost:8080:8080/chat/room/create", postCreateRoom);
 
       console.log(response.data);
     },
     async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms");
+      let response = await axios.get("http://localhost:8080:8080/chat/rooms");
       console.log(response.data)
       this.roomList = response.data;
 
@@ -91,29 +91,29 @@ export default {
     },
     enterRoom(roomId) {
       console.log(roomId)
-        const server = "http://localhost:8080/chat"
-        let socket = new SockJS(server);
-        this.stompClient = Stomp.over(socket);
-        console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-        this.stompClient.connect(
-          {},
-          frame => {
-            this.connected = true;
-            console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room/" + roomId + "/entered", res => {
-              console.log(res);
-              console.log("구독으로 받은 메시지입니다.", res.body);
-              this.recvList.push(JSON.parse(res.body))
-            });
-          },
-          error => {
-            console.log('소켓 연결 실패', error);
-            this.connected = false;
-          }
-        )
-        this.sendRoomMessage(roomId);
-      },
-      sendRoomMessage(roomId) {
+      const server = "http://localhost:8080:8080/chat"
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      this.stompClient.connect(
+        {},
+        frame => {
+          this.connected = true;
+          console.log('소켓 연결 성공', frame);
+          this.stompClient.subscribe("/sub/room/" + roomId + "/entered", res => {
+            console.log(res);
+            console.log("구독으로 받은 메시지입니다.", res.body);
+            this.recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          console.log('소켓 연결 실패', error);
+          this.connected = false;
+        }
+      )
+      this.sendRoomMessage(roomId);
+    },
+    sendRoomMessage(roomId) {
       console.log('Send Message:' + this.message);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
@@ -124,17 +124,17 @@ export default {
         this.stompClient.send("/send/room/" + roomId, JSON.stringify(msg), {});
       }
     },
-      send() {
-        console.log('Send Message:' + this.message);
-        if (this.stompClient && this.stompClient.connected) {
-          const msg = {
+    send() {
+      console.log('Send Message:' + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
 
-            userName: this.sender,
-            message: this.message
-          };
-          console.log(msg);
-          this.stompClient.send("/send/room/" + roomId, JSON.stringify(msg), {});
-        }
+          userName: this.sender,
+          message: this.message
+        };
+        console.log(msg);
+        this.stompClient.send("/send/room/" + roomId, JSON.stringify(msg), {});
+      }
     }
   },
   mounted() {
@@ -143,6 +143,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

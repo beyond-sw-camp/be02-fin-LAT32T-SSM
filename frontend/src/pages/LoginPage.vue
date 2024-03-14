@@ -100,7 +100,7 @@ export default {
       }
       localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
     },
-    
+
     confirm() {
       const confirm = useConfirm();
       confirm.require({

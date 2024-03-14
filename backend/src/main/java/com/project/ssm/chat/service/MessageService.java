@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.project.ssm.notification.NotificationController.sendAlarmToClients;
+
 @Service
 @RequiredArgsConstructor
 public class MessageService {
@@ -30,8 +32,9 @@ public class MessageService {
 
         if (member.isPresent() && chatRoom.isPresent()) {
             messageRepository.save(Message.createMessage(sendMessageDto.getMessage(), member.get(), chatRoom.get()));
+            sendAlarmToClients(sendMessageDto.getMessage());
             messagingTemplate.convertAndSend("/sub/room/" + roomId, sendMessageDto);
-            
+
             // 반환 값으로 BaseResponse 값 반환
         } else {
             // 예외처리

@@ -24,12 +24,13 @@
         </section>
         <section class="feeds">
           <div>
-            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
+            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
         <form action="." class="form" name="feedForm">
           <input placeholder="이름" v-model="memberName" type="text" class="input" contenteditable="true">
-          <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input" contenteditable="true">
+          <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input"
+            contenteditable="true">
           <div class="input-toolbar-icons">
             <div class="move-right">
               <i class="fas fa-bolt"></i>
@@ -61,7 +62,7 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
-import {mapState} from "pinia";
+import { mapState } from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
@@ -94,20 +95,20 @@ export default {
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
       this.stompClient.connect(
-          {},
-          frame => {
-            this.connected = true;
-            console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room/", res => {
-              console.log(res);
-              console.log("구독으로 받은 메시지입니다.", res.body);
-              this.recvList.push(JSON.parse(res.body))
-            });
-          },
-          error => {
-            console.log('소켓 연결 실패', error);
-            this.connected = false;
-          }
+        {},
+        frame => {
+          this.connected = true;
+          console.log('소켓 연결 성공', frame);
+          this.stompClient.subscribe("/sub/room/", res => {
+            console.log(res);
+            console.log("구독으로 받은 메시지입니다.", res.body);
+            this.recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          console.log('소켓 연결 실패', error);
+          this.connected = false;
+        }
       )
     },
     roomConnect(chatRoomId) {
@@ -117,21 +118,21 @@ export default {
       console.log(chatRoomId);
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
       this.stompClient.connect(
-          {},
-          frame => {
-            this.connected = true;
-            console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
-              console.log("연결 후 채팅방 아이디", chatRoomId);
-              console.log(res);
-              console.log("구독으로 받은 메시지입니다.", res.body);
-              this.recvList.push(JSON.parse(res.body))
-            });
-          },
-          error => {
-            console.log('소켓 연결 실패', error);
-            this.connected = false;
-          }
+        {},
+        frame => {
+          this.connected = true;
+          console.log('소켓 연결 성공', frame);
+          this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
+            console.log("연결 후 채팅방 아이디", chatRoomId);
+            console.log(res);
+            console.log("구독으로 받은 메시지입니다.", res.body);
+            this.recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          console.log('소켓 연결 실패', error);
+          this.connected = false;
+        }
       )
     },
     async createRoom(e) {
@@ -1793,5 +1794,4 @@ body::-webkit-scrollbar-thumb {
     flex-wrap: wrap;
   }
 }
-
 </style>

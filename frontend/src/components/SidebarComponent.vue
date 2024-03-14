@@ -18,20 +18,20 @@
           <div class="card flex justify-content-center">
             <SideButton label="Show" @click="visible = true" />
             <AddDialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
-                <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
-                <div class="flex align-items-center gap-3 mb-3">
-                    <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
-                    <AddInputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
-                </div>
-                <div class="flex align-items-center gap-3 mb-5">
-                  <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
-                  <AddInputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
-                  <SideButton type="button" label="추가" severity="secondary" @click="addMember(memberId)"></SideButton>
-                </div>
-                <div class="flex justify-content-end gap-2">
-                    <SideButton type="button" label="취소하기" severity="secondary" @click="visible = false"></SideButton>
-                    <SideButton type="button" label="생성하기" @click="createRoom"></SideButton>
-                </div>
+              <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
+              <div class="flex align-items-center gap-3 mb-3">
+                <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
+                <AddInputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
+              </div>
+              <div class="flex align-items-center gap-3 mb-5">
+                <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
+                <AddInputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
+                <SideButton type="button" label="추가" severity="secondary" @click="addMember(memberId)"></SideButton>
+              </div>
+              <div class="flex justify-content-end gap-2">
+                <SideButton type="button" label="취소하기" severity="secondary" @click="visible = false"></SideButton>
+                <SideButton type="button" label="생성하기" @click="createRoom"></SideButton>
+              </div>
             </AddDialog>
           </div>
         </span>
@@ -39,8 +39,7 @@
       <section class="unread">
         <h4 class="unread-header">
           <span class="unread-icons">
-            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-            ><i class="fas fa-minus fa-xs"></i>
+            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i><i class="fas fa-minus fa-xs"></i>
           </span>
           읽지 않은 메시지
         </h4>
@@ -59,7 +58,7 @@
             <router-link v-bind:to="`/${item.chatRoomId}`">
               <a href="#" @click="enterRoom(item.chatRoomId)">
                 <span class="make-white">
-                <i class="fas fa-hashtag"></i>
+                  <i class="fas fa-hashtag"></i>
                   {{ item.chatRoomName }}
                 </span>
               </a>
@@ -96,7 +95,7 @@ import axios from "axios";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
-import {mapActions} from "pinia";
+import { mapActions } from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
@@ -198,23 +197,40 @@ export default {
       this.member.department = token.department;
       this.member.memberId = token.memberId;
     },
-    notificaiton(){
+    notificaiton() {
+
+      requestNotificationPermission();
+
       // 알림 권한 요청
-      Notification.requestPermission().then(function (permission) {
-            console.log('Notification permission: ', permission);
-        });
-
-        const evtSource = new EventSource("http://localhost:8081/alarm");
-
-        evtSource.addEventListener("alarm", function (event) {
-            // 사용자에게 알림 표시
-            if (Notification.permission === "granted") {
-                new Notification("알람 이벤트", {
-                    body: event.data,
-                    // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
-                });
+      function requestNotificationPermission() {
+        // 알림 기능을 지원하는지 확인
+        if (!("Notification" in window)) {
+          alert("이 브라우저는 알림을 지원하지 않습니다.");
+        } else if (Notification.permission === "granted") {
+          // 이미 권한이 부여된 경우
+          console.log("알림 권한이 이미 부여되었습니다.");
+        } else if (Notification.permission !== "denied") {
+          // 권한 요청
+          Notification.requestPermission().then(function (permission) {
+            // 사용자가 알림을 허용하면
+            if (permission === "granted") {
+              console.log("알림 권한이 부여되었습니다.");
             }
-        }, false);
+          });
+        }
+      }
+
+      const evtSource = new EventSource("http://localhost:8080/notification");
+
+      evtSource.addEventListener("notification", function (event) {
+        // 사용자에게 알림 표시
+        if (Notification.permission === "granted") {
+          new Notification("알람 이벤트", {
+            body: event.data,
+            // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
+          });
+        }
+      }, false);
     }
   },
   mounted() {
@@ -227,7 +243,9 @@ export default {
 </script>
 
 <style>
-.fa,.fas,.far {
+.fa,
+.fas,
+.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -291,7 +309,7 @@ export default {
   padding-left: 0;
 }
 
-.fa-ul > li {
+.fa-ul>li {
   position: relative;
 }
 
@@ -486,12 +504,30 @@ export default {
   src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg");
 }
 
-.fa,.fas {
+.fa,
+.fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
 
-html,body,div,span,h1,h2,h3,h4,h5,h6,p,a,i,ul,li,article,header,section {
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+i,
+ul,
+li,
+article,
+header,
+section {
   margin: 0;
   padding: 0;
   border: 0;
@@ -644,7 +680,8 @@ body::-webkit-scrollbar-thumb {
   margin-top: 1rem;
 }
 
-.sidebar-1 .box-1,.sidebar-1 .box-2 {
+.sidebar-1 .box-1,
+.sidebar-1 .box-2 {
   height: 2rem;
   width: 2rem;
   margin-bottom: 0.5rem;
@@ -660,7 +697,8 @@ body::-webkit-scrollbar-thumb {
   background-color: orangered;
 }
 
-.sidebar-1 .box-2:hover,.sidebar-1 .box-1:hover {
+.sidebar-1 .box-2:hover,
+.sidebar-1 .box-1:hover {
   box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
 }
 
@@ -834,7 +872,7 @@ body::-webkit-scrollbar-thumb {
   font-weight: bold;
 }
 
-.channels .active > a {
+.channels .active>a {
   color: var(--slack-green);
   font-size: 1rem;
 }
@@ -890,7 +928,7 @@ body::-webkit-scrollbar-thumb {
   font-weight: bold;
 }
 
-.direct-messages .active > a {
+.direct-messages .active>a {
   color: var(--slack-green);
   font-size: 1rem;
 }
@@ -1054,5 +1092,4 @@ body::-webkit-scrollbar-thumb {
     font-size: 0.7rem;
   }
 }
- 
 </style>
