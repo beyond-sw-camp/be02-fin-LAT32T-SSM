@@ -25,6 +25,7 @@ public class ChatController {
 
     @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
+        log.info("sendMessageReq = {}", sendMessageReq);
         messageService.sendMessage(roomId, sendMessageReq);
     }
 

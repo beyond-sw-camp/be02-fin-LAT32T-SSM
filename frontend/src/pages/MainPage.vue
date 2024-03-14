@@ -28,7 +28,7 @@
           </div>
         </section>
         <form action="." class="form" name="feedForm">
-          <input placeholder="이름" v-model="sender" type="text" class="input" contenteditable="true">
+          <input placeholder="이름" v-model="memberName" type="text" class="input" contenteditable="true">
           <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input" contenteditable="true">
           <div class="input-toolbar-icons">
             <div class="move-right">
@@ -62,7 +62,7 @@ import Stomp from "webstomp-client";
 import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
 import {mapState} from "pinia";
-
+import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
   name: 'MainPage',
@@ -71,7 +71,8 @@ export default {
   },
   data() {
     return {
-      sender: "",
+      memberName: "",
+      memberId: "",
       message: "",
       recvList: [],
       roomName: "",
@@ -163,17 +164,25 @@ export default {
       console.log('Send Message:' + this.message);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
-          userName: this.sender,
+          memberId: this.memberId,
+          memberName: this.memberName,
           message: this.message
         };
         console.log(msg);
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
       }
     },
+    setMember(token) {
+      token = VueJwtDecode.decode(token.split(" ")[1]);
+      this.memberId = token.memberId;
+      this.memberName = token.memberName;
+    }
   },
   mounted() {
     this.getRoomList();
-    console.log(this.$route.params.roomId);
+    if (localStorage.getItem("accessToken") !== null) {
+      this.setMember(localStorage.getItem("accessToken"));
+    }
     if (this.$route.params.chatRoomId !== null) {
       this.chatRoomId = this.$route.params.chatRoomId;
       this.roomConnect(this.chatRoomId);

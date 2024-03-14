@@ -8,43 +8,32 @@
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
-          <h4>김동규</h4>
+          <h4>{{ member.name }}</h4>
           <i class="fas fa-chevron-down"></i>
         </div>
         <p class="sidebar-user-info-additional">
-          <i class="fas fa-circle"></i>IT 개발팀
+          <i class="fas fa-circle"></i>{{ member.department }}
         </p>
         <span class="user-edit-icon">
-          <SideButton type="button" icon="pi pi-image" label="+" @click="toggle"/>
-            <OverlayPanel ref="op">
-              <div class="flex flex-column gap-3 w-25rem">
-                <div>
-                  <span class="font-medium text-900 block mb-2">사용자 초대하기</span>
+          <div class="card flex justify-content-center">
+            <SideButton label="Show" @click="visible = true" />
+            <AddDialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
+                <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
+                <div class="flex align-items-center gap-3 mb-3">
+                    <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
+                    <AddInputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
                 </div>
-                <div>
-                  <InputGroup>
-                    <SideChips></SideChips>
-                    <SideButton label="초대하기" icon="pi pi-users"></SideButton>
-                  </InputGroup>
+                <div class="flex align-items-center gap-3 mb-5">
+                  <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
+                  <AddInputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
+                  <SideButton type="button" label="추가" severity="secondary" @click="addMember(memberId)"></SideButton>
                 </div>
-                <div>
-                  <span class="font-medium text-900 block mb-2">사용자 목록</span>
-                  <ul class="list-none p-0 m-0 flex flex-column gap-3">
-                    <li v-for="member in members" :key="member.name" class="flex align-items-center gap-2">
-<!--                        <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`" style="width: 32px" />-->
-                      <div>
-                        <span class="font-medium">{{ member.name }}</span>
-                        <div class="text-sm text-color-secondary">{{ member.email }}</div>
-                      </div>
-                      <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
-                        <span>{{ member.role }}</span>
-                        <i class="pi pi-angle-down"></i>
-                      </div>
-                    </li>
-                  </ul>
+                <div class="flex justify-content-end gap-2">
+                    <SideButton type="button" label="취소하기" severity="secondary" @click="visible = false"></SideButton>
+                    <SideButton type="button" label="생성하기" @click="createRoom"></SideButton>
                 </div>
-              </div>
-            </OverlayPanel>
+            </AddDialog>
+          </div>
         </span>
       </section>
       <section class="unread">
@@ -108,14 +97,22 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 import {mapActions} from "pinia";
+import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
   name: "SidebarComponent",
+  components: {},
   data() {
     return {
-      members: [
-        {name: "김동규", email: "test@test.com"}
-      ],
+      member: {
+        name: "",
+        department: "",
+        memberId: ""
+      },
+      memberId: "",
+      roomName: "",
+      memberList: [],
+      visible: false,
       roomList: [],
       recvList: []
     }
@@ -125,10 +122,30 @@ export default {
     toggle(event) {
       this.$refs.op.toggle(event);
     },
+    addMember(memberId) {
+      this.memberList.push(memberId);
+    },
+    async createRoom() {
+      this.memberList.push(this.member.memberId);
+      const roomInfo = {
+        roomName: this.roomName,
+        memberId: this.memberList
+      };
+
+      let response = await axios.post("http://localhost:8080/chat/room/create", roomInfo);
+      console.log(response.data);
+
+      this.visible = false;
+    },
     async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms");
+      let response = await axios.get("http://localhost:8080/chat/rooms", {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      });
       console.log(response.data)
       this.roomList = response.data;
+      console.log(this.roomList);
     },
     enterRoom(roomId) {
       console.log(roomId);
@@ -147,7 +164,6 @@ export default {
             console.log(res);
             console.log("구독으로 받은 메시지입니다.", res.body);
             this.addMessage(JSON.parse(res.body));
-            // this.recvList.push(JSON.parse(res.body))
           });
         },
         error => {
@@ -167,16 +183,25 @@ export default {
       console.log('Send Message:' + this.message);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
-          userName: this.sender,
+          userName: this.member.name,
           message: this.message
         };
         console.log(msg);
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
       }
+    },
+    setMember(token) {
+      token = VueJwtDecode.decode(token.split(" ")[1]);
+      this.member.name = token.memberName;
+      this.member.department = token.department;
+      this.member.memberId = token.memberId;
     }
   },
   mounted() {
     this.getRoomList();
+    if (localStorage.getItem("accessToken") !== null) {
+      this.setMember(localStorage.getItem("accessToken"));
+    }
   }
 };
 </script>
