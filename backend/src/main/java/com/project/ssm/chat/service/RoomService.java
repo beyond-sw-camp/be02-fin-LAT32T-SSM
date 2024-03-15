@@ -3,6 +3,7 @@ package com.project.ssm.chat.service;
 import com.project.ssm.chat.model.entity.ChatRoom;
 import com.project.ssm.chat.model.entity.Message;
 import com.project.ssm.chat.model.entity.RoomParticipants;
+import com.project.ssm.chat.model.request.PatchUpdateRoomReq;
 import com.project.ssm.chat.model.request.PostCreateRoomReq;
 import com.project.ssm.chat.model.response.*;
 import com.project.ssm.chat.repository.ChatRoomRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,15 +56,14 @@ public class RoomService {
         } else {
             for (RoomParticipants roomParticipant : roomParticipants) {
                 ChatRoom chatRoom = roomParticipant.getChatRoom();
-                roomListRes.add(GetRoomListRes.buildDto(chatRoom.getRoomId(), chatRoom.getChatRoomName()));
+                roomListRes.add(GetRoomListRes.buildDto(chatRoom.getChatRoomId(), chatRoom.getChatRoomName()));
             }
             return roomListRes;
         }
     }
 
-    // TODO: 새로운 채팅방 생성 --> @Transactional 적용하면 됨
     public PostCreateRoomRes createRoom(PostCreateRoomReq postCreateRoom) {
-        ChatRoom room = ChatRoom.createRoom(postCreateRoom.getRoomName());
+        ChatRoom room = ChatRoom.createRoom(postCreateRoom.getChatRoomIdx());
         chatRoomRepository.save(room);
         for (String memberId : postCreateRoom.getMemberId()) {
             Optional<Member> member = memberRepository.findByMemberId(memberId);
@@ -71,12 +73,11 @@ public class RoomService {
                 return null;
             }
         }
-        return PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getRoomId());
+        return PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getChatRoomId());
     }
 
-    // TODO: 채팅방 단일 조회
     public GetRoomInfoRes getRoomInfo(String roomId) {
-        Optional<ChatRoom> roomInfo = chatRoomRepository.findByRoomId(roomId);
+        Optional<ChatRoom> roomInfo = chatRoomRepository.findByChatRoomId(roomId);
         List<ReturnMessageRes> messageList = new ArrayList<>();
 
         if (roomInfo.isPresent()) {
@@ -106,8 +107,31 @@ public class RoomService {
     }
 
     // TODO: 채팅방 수정
-    
-    
-    
-    // TODO: 채팅방 삭제
+    public Object updateRoom(PatchUpdateRoomReq patchUpdateRoomReq) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomId(patchUpdateRoomReq.getChatRoomIdx());
+
+        if (chatRoom.isPresent()) {
+            for (String memberId : patchUpdateRoomReq.getMemberId()) {
+                Optional<Member> member = memberRepository.findByMemberId(memberId);
+                if (member.isPresent()) {
+                    roomPartRepository.save(RoomParticipants.buildRoomPart(member.get(), chatRoom.get()));
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public DeleteRoomRes deleteChatRoom(String chatRoomId) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId);
+        if (chatRoom.isPresent()) {
+            ChatRoom findChatRoom = chatRoom.get();
+            findChatRoom.setChatRoomStatus(false);
+            findChatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+            chatRoomRepository.save(findChatRoom);
+            return DeleteRoomRes.buildDeleteRoom(chatRoomId, findChatRoom.getUpdatedAt());
+        }
+
+        return null;
+    }
 }

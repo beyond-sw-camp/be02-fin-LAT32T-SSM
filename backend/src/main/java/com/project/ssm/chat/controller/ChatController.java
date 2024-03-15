@@ -21,13 +21,11 @@ public class ChatController {
 
     @MessageMapping("/room")
     public void enterRoom(String token) {
-        log.info("token = {}", token);
-        messageService.enterRoom();
+        messageService.enterRoom(token);
     }
 
     @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
-        log.info("sendMessageReq = {}", sendMessageReq);
         messageService.sendMessage(roomId, sendMessageReq);
     }
 

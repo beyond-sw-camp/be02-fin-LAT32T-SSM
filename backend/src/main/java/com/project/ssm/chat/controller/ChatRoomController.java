@@ -1,5 +1,6 @@
 package com.project.ssm.chat.controller;
 
+import com.project.ssm.chat.model.request.PatchUpdateRoomReq;
 import com.project.ssm.chat.model.request.PostCreateRoomReq;
 import com.project.ssm.chat.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +39,12 @@ public class ChatRoomController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/update")
-    public void updateRoom() {
-
+    public ResponseEntity<Object> updateRoom(@RequestBody PatchUpdateRoomReq patchUpdateRoomReq) {
+        return ResponseEntity.ok().body(roomService.updateRoom(patchUpdateRoomReq));
     }
 
-    @RequestMapping(method = RequestMethod.PATCH, value = "/room/delete")
-    public void deleteRoom() {
-
+    @RequestMapping(method = RequestMethod.PATCH, value = "/room/delete/{chatRoomIdx}")
+    public ResponseEntity<Object> deleteRoom(@PathVariable String chatRoomIdx) {
+        return ResponseEntity.ok().body(roomService.deleteChatRoom(chatRoomIdx));
     }
 }
