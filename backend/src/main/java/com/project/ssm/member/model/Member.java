@@ -51,8 +51,8 @@ public class Member implements UserDetails {
 
     private Boolean status;
 
-    @OneToMany(mappedBy = "member")
-    List<PersonalEvent> personalEvents = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    List<PersonalEvent> personalEvents = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

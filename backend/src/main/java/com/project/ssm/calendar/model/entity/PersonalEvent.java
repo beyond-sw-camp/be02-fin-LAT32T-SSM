@@ -18,15 +18,17 @@ public class PersonalEvent{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
     private String title;
-    private String priority;
-    private String isLooped;
 
-    private LocalDateTime startedAt;
-    private LocalDateTime closedAt;
+    private String startedAt;
+    private String closedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberIdx")
-    private Member member;
+
+//    private LocalDateTime startedAt;
+//    private LocalDateTime closedAt;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "memberIdx")
+//    private Member member;
 
 //    public PersonalEvent(Member member) {
 //        this.member = member;

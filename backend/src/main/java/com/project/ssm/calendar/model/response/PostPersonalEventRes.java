@@ -17,11 +17,11 @@ public class PostPersonalEventRes {
     private Long idx;
     private String title;
 
-    private Long memberIdx;
+//    private Long memberIdx;
 
-    public static PostPersonalEventRes postPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title) {
+    public static PostPersonalEventRes postPersonalEventResBuilder(Long eventIdx, String title) {
         return PostPersonalEventRes.builder()
-                .memberIdx(memberIdx)
+//                .memberIdx(memberIdx)
                 .title(title)
                 .idx(eventIdx)
                 .build();

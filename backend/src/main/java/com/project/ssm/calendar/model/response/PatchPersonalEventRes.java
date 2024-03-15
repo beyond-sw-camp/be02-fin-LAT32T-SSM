@@ -23,15 +23,15 @@ public class PatchPersonalEventRes {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime closedAt;
 
-    public static PatchPersonalEventRes patchPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title, String priority, String isLooped, LocalDateTime startedAt, LocalDateTime closedAt) {
+    public static PatchPersonalEventRes patchPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title) {
         return PatchPersonalEventRes.builder()
                 .memberIdx(memberIdx)
                 .eventIdx(eventIdx)
                 .title(title)
-                .priority(priority)
-                .isLooped(isLooped)
-                .startedAt(startedAt)
-                .closedAt(closedAt)
+//                .priority(priority)
+//                .isLooped(isLooped)
+//                .startedAt(startedAt)
+//                .closedAt(closedAt)
                 .build();
     }
 }
