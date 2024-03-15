@@ -1,6 +1,6 @@
 package com.project.ssm.meetingroom.model;
 
-import com.project.ssm.reservation.model.MeetingReservation;
+import com.project.ssm.event.model.Events;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,10 +16,9 @@ public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long meetingRoomIdx;
-    private String roomName;
-    private Integer roomNum;
-    private Integer roomCapacity;
+    private String meetingRoomName;
+    private Integer meetingRoomCapacity;
 
     @OneToMany(mappedBy = "meetingRoom")
-    private List<MeetingReservation> reservations;
+    private List<Events> events;
 }

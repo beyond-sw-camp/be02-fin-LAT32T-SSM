@@ -17,9 +17,8 @@ public class MeetingSelectRes {
     @Setter
     @Builder
     public static class MeetingRoomSelectResult {
-        private Long meetingRoomIdx;
+        private Long roomIdx;
         private String roomName;
-        private Integer roomNum;
         private Integer roomCapacity;
         private List<Reservation> reservations;
     }
@@ -28,9 +27,9 @@ public class MeetingSelectRes {
     @Setter
     @Builder
     public static class Reservation {
-        private Long reservationIdx;
-        private Long sharedEventIdx;
+        private Long eventIdx;
         private String createdAt;
-        private LocalDateTime updatedAt;
+        private LocalDateTime startedAt;
+        private LocalDateTime closedAt;
     }
 }

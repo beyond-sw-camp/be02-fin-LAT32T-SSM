@@ -1,10 +1,10 @@
-package com.project.ssm.sharedevents.controller;
+package com.project.ssm.event.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.sharedevents.model.request.MeetingRoomReservationReq;
-import com.project.ssm.sharedevents.model.response.MeetingRoomReservationCancleRes;
-import com.project.ssm.sharedevents.model.response.MeetingRoomReservationRes;
-import com.project.ssm.sharedevents.service.SharedEventsService;
+import com.project.ssm.event.model.request.MeetingRoomReservationReq;
+import com.project.ssm.event.model.response.MeetingRoomReservationCancelRes;
+import com.project.ssm.event.model.response.MeetingRoomReservationRes;
+import com.project.ssm.event.service.EventsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
-public class SharedEventsController {
-    private final SharedEventsService sharedEventsService;
+public class EventsController {
+    private final EventsService eventsService;
     @PostMapping("/meetingroom/reservation") // 회의실 예약
     public ResponseEntity<BaseResponse> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
-        MeetingRoomReservationRes response = sharedEventsService.meetingRoomReservation(request);
+        MeetingRoomReservationRes response = eventsService.meetingRoomReservation(request);
 
         BaseResponse baseResponse = BaseResponse.builder()
                 .isSuccess(true)
@@ -29,7 +29,7 @@ public class SharedEventsController {
     }
     @DeleteMapping("/meetingroom/reservation/delete/{reservationIdx}") // 예약 삭제
     public ResponseEntity<BaseResponse> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
-        MeetingRoomReservationCancleRes response = sharedEventsService.meetingRoomReservationCancel(reservationIdx);
+        MeetingRoomReservationCancelRes response = eventsService.meetingRoomReservationCancel(reservationIdx);
 
         BaseResponse baseResponse = BaseResponse.builder()
                 .isSuccess(true)

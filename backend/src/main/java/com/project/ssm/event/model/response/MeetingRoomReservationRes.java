@@ -1,4 +1,4 @@
-package com.project.ssm.sharedevents.model.response;
+package com.project.ssm.event.model.response;
 
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class MeetingRoomReservationRes {
     @AllArgsConstructor
     @Builder
     public static class Result {
-        private Long reservationIdx;
+        private Long eventIdx;
         private String roomName;
     }
 }

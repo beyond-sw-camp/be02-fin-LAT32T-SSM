@@ -8,8 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class MeetingRoomListRes {
-    private Long meetingRoomIdx;
+    private Long roomIdx;
     private String roomName;
-    private Integer roomNum;
     private Integer roomCapacity;
 }

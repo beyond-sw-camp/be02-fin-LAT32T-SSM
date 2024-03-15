@@ -1,4 +1,4 @@
-package com.project.ssm.sharedevents.model.response;
+package com.project.ssm.event.model.response;
 
 import lombok.*;
 
@@ -10,8 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MeetingRoomReservationCancleRes {
-    public Result result;
+public class MeetingRoomReservationCancelRes {
+    private Result result;
 
     @Getter
     @Setter
@@ -19,20 +19,21 @@ public class MeetingRoomReservationCancleRes {
     @AllArgsConstructor
     @Builder
     public static class Result {
-        private Long meetingRoomIdx;
+        private Long roomIdx;
         private String roomName;
-        private Integer roomNum;
         private Integer roomCapacity;
         private List<Reservation> reservations;
     }
+
     @Getter
     @Setter
     @Builder
     public static class Reservation {
-        private Long reservationIdx;
+        private Long eventIdx;
         private String createdAt;
+        private LocalDateTime updatedAt;
         private LocalDateTime startedAt;
         private LocalDateTime closedAt;
-
     }
 }
+

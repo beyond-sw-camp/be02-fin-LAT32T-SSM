@@ -7,6 +7,5 @@ import lombok.Data;
 @Builder
 public class MeetingRoomAddReq {
     private String roomName;
-    private Integer roomNum;
     private Integer roomCapacity;
 }

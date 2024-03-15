@@ -1,4 +1,4 @@
-package com.project.ssm.sharedevents.model.request;
+package com.project.ssm.event.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
