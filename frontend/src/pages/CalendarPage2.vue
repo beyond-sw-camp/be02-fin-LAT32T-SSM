@@ -112,7 +112,7 @@
                   </div>
                   <div class="modal-footer modalBtnContainer-addEvent">
                     <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" id="save-event" >저장</button>
+                    <button type="button" class="btn btn-primary" id="save-event" @click="sendEvent()">저장</button>
                   </div>
                   <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
@@ -187,6 +187,7 @@
 <script>
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import SidebarComponent from "@/components/SidebarComponent.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -197,7 +198,34 @@ export default {
     }
   },
   methods: {
+    async sendEvent() {
+      const backend = "http://localhost:8080"
+      // let data = {
+      //   title: this.eventData.title,
+      //   startedAt: this.eventData.start,
+      //   closedAt: this.eventData.end
+      // }
 
+      let data = {
+        title: document.getElementById('edit-title').value,
+        startedAt: document.getElementById('edit-start').value,
+        closedAt: document.getElementById('edit-end').value
+      }
+
+      let request = JSON.stringify(data);
+
+      console.log(request)
+      try {
+        await axios.post(backend + "/calendar/event/create", request, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        console.log("요청성공")
+      } catch (error) {
+        console.error("에러 발생:", error);
+      }
+    }
   },
   created() {
     const script = document.createElement('script');
