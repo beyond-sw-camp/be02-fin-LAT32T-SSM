@@ -6,8 +6,8 @@ var calendar = $('#calendar').fullCalendar({
  /** ******************
    *  OPTIONS
    * *******************/
-  locale                    : 'ko',    
-  timezone                  : "local", 
+  locale                    : 'ko',
+  timezone                  : "local",
   nextDayThreshold          : "09:00:00",
   allDaySlot                : true,
   displayEventTime          : true,
@@ -17,7 +17,7 @@ var calendar = $('#calendar').fullCalendar({
   selectable                : true,
   weekNumberCalculation     : "ISO",
   eventLimit                : true,
-  views                     : { 
+  views                     : {
                                 month : { eventLimit : 12 } // 한 날짜에 최대 이벤트 12개, 나머지는 + 처리됨
                               },
   eventLimitClick           : 'week', //popover
@@ -34,7 +34,7 @@ var calendar = $('#calendar').fullCalendar({
   dayPopoverFormat          : 'MM/DD dddd',
   longPressDelay            : 0,
   eventLongPressDelay       : 0,
-  selectLongPressDelay      : 0,  
+  selectLongPressDelay      : 0,
   header                    : {
                                 left   : 'today, prevYear, nextYear, viewWeekends',
                                 center : 'prev, title, next',
@@ -62,7 +62,7 @@ var calendar = $('#calendar').fullCalendar({
                                   text  : '주말',
                                   click : function () {
                                     activeInactiveWeekends ? activeInactiveWeekends = false : activeInactiveWeekends = true;
-                                    $('#calendar').fullCalendar('option', { 
+                                    $('#calendar').fullCalendar('option', {
                                       weekends: activeInactiveWeekends
                                     });
                                   }
@@ -102,12 +102,12 @@ var calendar = $('#calendar').fullCalendar({
   },
 
   /* ****************
-   *  일정 받아옴 
+   *  일정 받아옴
    * ************** */
   events: function (start, end, timezone, callback) {
     $.ajax({
       type: "get",
-      url: "data.json",
+      url: "data.json", //http://localhost:8080/calendar/event
       data: {
         // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
         //startDate : moment(start).format('YYYY-MM-DD'),

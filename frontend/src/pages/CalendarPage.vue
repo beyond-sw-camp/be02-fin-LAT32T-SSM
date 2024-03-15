@@ -48,32 +48,33 @@
                         aria-hidden="true">×</span></button>
                     <h4 class="modal-title">새로운 일정</h4>
                   </div>
-                  <div class="modal-body">
 
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <label class="col-xs-4" for="edit-allDay">하루종일</label>
-                        <input class="allDayNewEvent" id="edit-allDay" type="checkbox">
+                  <form class="orderform" @submit.prevent="sendData">
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <label class="col-xs-4" for="edit-allDay">하루종일</label>
+                          <input class="allDayNewEvent" id="edit-allDay" type="checkbox">
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <label class="col-xs-4" for="edit-title">일정명</label>
-                        <input class="inputModal" type="text" name="edit-title" id="edit-title"
-                               required="required">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <label class="col-xs-4" for="edit-title">일정명</label>
+                          <input class="inputModal" type="text" name="edit-title" id="edit-title"
+                               required="required" v-model="title">
+                        </div>
                       </div>
-                    </div>
-                    <div class="row">
+                      <div class="row">
                       <div class="col-xs-12">
                         <label class="col-xs-4" for="edit-start">시작</label>
-                        <input class="inputModal" type="text" name="edit-start" id="edit-start">
+                        <input class="inputModal" type="text" name="edit-start" id="edit-start" v-model="startedAt">
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-xs-12">
                         <label class="col-xs-4" for="edit-end">끝</label>
-                        <input class="inputModal" type="text" name="edit-end" id="edit-end">
+                        <input class="inputModal" type="text" name="edit-end" id="edit-end" v-model="closedAt">
                       </div>
                     </div>
                     <div class="row">
@@ -110,16 +111,17 @@
                                   id="edit-desc"></textarea>
                       </div>
                     </div>
-                  </div>
-                  <div class="modal-footer modalBtnContainer-addEvent">
+                    </div>
+                    <div class="modal-footer modalBtnContainer-addEvent">
                     <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
                     <button type="button" class="btn btn-primary" id="save-event">저장</button>
-                  </div>
-                  <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
+                    </div>
+                    <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
                     <button type="button" class="btn btn-danger" id="deleteEvent">삭제</button>
                     <button type="button" class="btn btn-primary" id="updateEvent">저장</button>
-                  </div>
+                    </div>
+                  </form>
                 </div><!-- /.component-content -->
               </div><!-- /.component-dialog -->
             </div><!-- /.component -->
@@ -196,12 +198,27 @@ export default {
   },
   data() {
     return {
-      newEvent: { // 새로운 일정 정보를 담을 객체
-        title: '',
-        startedAt: '',
-        closedAt: ''
-      }
+      title: '',
+      startedAt: '',
+      closedAt: ''
     }
+  },
+  methods: {
+    async sendData() {
+      let data = {
+        title: this.title,
+        startedAt: this.startedAt,
+        closedAt: this.closedAt
+      };
+      try {
+        await axios.post("http://localhost:8080/calendar/event/create", data, {
+          headers: {"Content-Type": "application/json"},
+        });
+      } catch (error) {
+        console.error(error);
+        alert("에러임");
+      }
+    },
   },
   created() {
     const script = document.createElement('script');
@@ -224,9 +241,7 @@ export default {
     script4.async = true;
     document.body.appendChild(script4);
   },
-
-
-}
+};
 
 </script>
 
