@@ -16,24 +16,26 @@ import java.time.LocalDateTime;
 public class PostPersonalEventReq {
 
     private String title;
-    private String priority;
-    private String isLooped;
+    private String startedAt;
+    private String closedAt;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startedAt;
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime closedAt;
+//    private String priority;
+//    private String isLooped;
 
-    public PersonalEvent postPersonalEventReqBuilder(Member member){
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//    private LocalDateTime startedAt;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//    private LocalDateTime closedAt;
+
+    public PersonalEvent postPersonalEventReqBuilder(String title, String startedAt, String closedAt){
         PersonalEvent personalEvent = PersonalEvent.builder()
                 .title(title)
-                .priority(priority)
-                .isLooped(isLooped)
+//                .priority(priority)
+//                .isLooped(isLooped)
                 .startedAt(startedAt)
                 .closedAt(closedAt)
                 .build();
 
-        personalEvent.setMember(member);
         return personalEvent;
     }
 
