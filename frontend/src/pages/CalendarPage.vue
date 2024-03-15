@@ -48,33 +48,31 @@
                         aria-hidden="true">×</span></button>
                     <h4 class="modal-title">새로운 일정</h4>
                   </div>
-
-                  <form class="orderform" @submit.prevent="sendData">
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-xs-12">
-                          <label class="col-xs-4" for="edit-allDay">하루종일</label>
-                          <input class="allDayNewEvent" id="edit-allDay" type="checkbox">
-                        </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-allDay">하루종일</label>
+                        <input class="allDayNewEvent" id="edit-allDay" type="checkbox">
                       </div>
+                    </div>
 
-                      <div class="row">
-                        <div class="col-xs-12">
-                          <label class="col-xs-4" for="edit-title">일정명</label>
-                          <input class="inputModal" type="text" name="edit-title" id="edit-title"
-                               required="required" v-model="title">
-                        </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-title">일정명</label>
+                        <input class="inputModal" type="text" name="edit-title" id="edit-title"
+                               required="required">
                       </div>
-                      <div class="row">
+                    </div>
+                    <div class="row">
                       <div class="col-xs-12">
                         <label class="col-xs-4" for="edit-start">시작</label>
-                        <input class="inputModal" type="text" name="edit-start" id="edit-start" v-model="startedAt">
+                        <input class="inputModal" type="text" name="edit-start" id="edit-start">
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-xs-12">
                         <label class="col-xs-4" for="edit-end">끝</label>
-                        <input class="inputModal" type="text" name="edit-end" id="edit-end" v-model="closedAt">
+                        <input class="inputModal" type="text" name="edit-end" id="edit-end">
                       </div>
                     </div>
                     <div class="row">
@@ -111,17 +109,16 @@
                                   id="edit-desc"></textarea>
                       </div>
                     </div>
-                    </div>
-                    <div class="modal-footer modalBtnContainer-addEvent">
+                  </div>
+                  <div class="modal-footer modalBtnContainer-addEvent">
                     <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" id="save-event">저장</button>
-                    </div>
-                    <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
+                    <button type="button" class="btn btn-primary" id="save-event" >저장</button>
+                  </div>
+                  <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
                     <button type="button" class="btn btn-danger" id="deleteEvent">삭제</button>
                     <button type="button" class="btn btn-primary" id="updateEvent">저장</button>
-                    </div>
-                  </form>
+                  </div>
                 </div><!-- /.component-content -->
               </div><!-- /.component-dialog -->
             </div><!-- /.component -->
@@ -190,7 +187,6 @@
 <script>
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import SidebarComponent from "@/components/SidebarComponent.vue";
-import axios from "axios";
 
 export default {
   components: {
@@ -198,27 +194,10 @@ export default {
   },
   data() {
     return {
-      title: '',
-      startedAt: '',
-      closedAt: ''
     }
   },
   methods: {
-    async sendData() {
-      let data = {
-        title: this.title,
-        startedAt: this.startedAt,
-        closedAt: this.closedAt
-      };
-      try {
-        await axios.post("http://localhost:8080/calendar/event/create", data, {
-          headers: {"Content-Type": "application/json"},
-        });
-      } catch (error) {
-        console.error(error);
-        alert("에러임");
-      }
-    },
+
   },
   created() {
     const script = document.createElement('script');

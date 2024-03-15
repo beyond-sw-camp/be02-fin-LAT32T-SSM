@@ -1,16 +1,16 @@
-var eventModal = $('#eventModal');      // 일정 추가 모달
+var eventModal = $('#eventModal');
 
-var modalTitle = $('.modal-title');     // 모달 제목
-var editAllDay = $('#edit-allDay');     // 하루종일
-var editTitle = $('#edit-title');       // 일정명
-var editStart = $('#edit-start');       // 시작
-var editEnd = $('#edit-end');           // 종료
-var editType = $('#edit-type');         // 구분(우리한테는 채팅방 번호)
-var editColor = $('#edit-color');       // 이벤트 등록할 때 색상
-var editDesc = $('#edit-desc');         // 일정 설명
+var modalTitle = $('.modal-title');
+var editAllDay = $('#edit-allDay');
+var editTitle = $('#edit-title');
+var editStart = $('#edit-start');
+var editEnd = $('#edit-end');
+var editType = $('#edit-type');
+var editColor = $('#edit-color');
+var editDesc = $('#edit-desc');
 
-var addBtnContainer = $('.modalBtnContainer-addEvent');             // 일정 추가 및 취소 버튼
-var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');       // 필요없는 부분
+var addBtnContainer = $('.modalBtnContainer-addEvent');
+var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
 
 
 /* ****************
@@ -26,7 +26,7 @@ var newEvent = function (start, end, eventType) {
     editStart.val(start);
     editEnd.val(end);
     editDesc.val('');
-    
+
     addBtnContainer.show();
     modifyBtnContainer.hide();
     eventModal.modal('show');
@@ -81,11 +81,15 @@ var newEvent = function (start, end, eventType) {
 
         //새로운 일정 저장
         $.ajax({
-            type: "get",
-            url: "",
-            data: {
-                //.....
-            },
+            type: "post",
+            url: "http://localhost:8080/calendar/event/create",
+            headers: {'Content-Type': 'application/json'},
+            datatype: "JSON",
+            data: JSON.stringify({
+                "title": eventData.title,
+                "startedAt":eventData.start,
+                "closedAt":eventData.end
+            }),
             success: function (response) {
                 //DB연동시 중복이벤트 방지를 위한
                 //$('#calendar').fullCalendar('removeEvents');
