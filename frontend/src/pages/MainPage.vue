@@ -27,25 +27,10 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
           </div>
         </section>
-        <form action="." class="form" name="feedForm">
-          <input placeholder="이름" v-model="memberName" type="text" class="input" contenteditable="true">
-          <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input" contenteditable="true">
-          <div class="input-toolbar-icons">
-            <div class="move-right">
-              <i class="fas fa-bolt"></i>
-              <i class="fas fa-bold" data-command="b"></i>
-              <i class="fas fa-italic" data-command="i"></i>
-              <i class="fas fa-strikethrough"></i>
-              <i class="fas fa-code" data-command="code"></i>
-              <i class="fas fa-link" data-command="a"></i>
-              <i class="fas fa-list-ol" data-command="ol"></i>
-              <i class="fas fa-list-ul" data-command="ul"></i>
-              <i class="fas fa-quote-left" data-command="blockquote"></i>
-              <i class="far fa-file-code" data-command="pre"></i>
-              <i class="fas fa-print" onclick="printDoc();"></i>
-            </div>
+        <form class="form" name="feedForm">
+          <div>
+            <MessageEditor model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>
           </div>
-          <div class="input-toolbar-selection"></div>
         </form>
       </section>
     </section>
@@ -61,6 +46,7 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
+import { useStompStore } from "@/stores/useStompStore";
 import {mapActions, mapState} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
 
@@ -68,6 +54,7 @@ import VueJwtDecode from 'vue-jwt-decode';
 export default {
   name: 'MainPage',
   components: {
+
     HeaderComponent, SidebarComponent, ChatBlockComponent
   },
   data() {
@@ -79,71 +66,28 @@ export default {
       roomName: "",
       roomList: [],
       username: "",
-      chatRoomId: ""
+      chatRoomId: "",
     }
   },
   created() {
-    this.basicConnect();
+    console.log("============기본 연결================");
+    const stompClient = this.initSock();
+    this.basicConnect(stompClient);
   },
   computed: {
-    ...mapState(useMessageStore, ['getAllMessage'])
+    ...mapState(useMessageStore, ['getAllMessage']),
   },
   methods: {
     ...mapActions(useMessageStore, ['addMessage']),
-    basicConnect() {
-      console.log("============기본 연결================");
+    ...mapActions(useStompStore, ['basicConnect']),
+    ...mapActions(useStompStore, ['roomConnect']),
+
+    initSock() {
       const server = "http://localhost:8080/chat"
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      this.stompClient.connect(
-          {},
-          frame => {
-            this.connected = true;
-            console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room", res => {
-              console.log("구독으로 받은 메시지입니다.", res.body);
-              this.recvList.push(JSON.parse(res.body))
-            });
-          },
-          error => {
-            console.log('소켓 연결 실패', error);
-            this.connected = false;
-          }
-      )
-    },
-    roomConnect(chatRoomId) {
-      console.log("============채팅방 연결================");
-      const server = "http://localhost:8080/chat"
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      console.log(chatRoomId);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      this.stompClient.connect(
-          {},
-          frame => {
-            this.connected = true;
-            console.log('소켓 연결 성공', frame);
-            this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
-              console.log("연결 후 채팅방 아이디", chatRoomId);
-              console.log("구독으로 받은 메시지입니다.", res.body);
-              this.recvList.push(JSON.parse(res.body))
-            });
-          },
-          error => {
-            console.log('소켓 연결 실패', error);
-            this.connected = false;
-          }
-      )
-    },
-    async createRoom(e) {
-      console.log(e);
-      const postCreateRoom = {
-        username: this.username,
-        roomName: this.roomName
-      }
-      let response = await axios.post("http://localhost:8080/chat/room/create", postCreateRoom);
-      console.log(response.data);
+      return this.stompClient;
     },
     async getRoomList() {
       let response = await axios.get("http://localhost:8080/chat/rooms", {
@@ -154,12 +98,13 @@ export default {
       this.roomList = response.data;
     },
     sendMessage(e) {
-      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-        this.send(this.chatRoomId);
+      if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
+        this.send();
         this.message = ''
       }
     },
     send() {
+      this.message = this.message.replace(/<[^>]*>?/g, '');
       console.log('Send Message:' + this.message);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
@@ -191,7 +136,7 @@ export default {
       this.chatRoomId = this.$route.params.chatRoomId;
       this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
     } else {
-      this.basicConnect();
+      // this.basicConnect();
     }
   }
 }
@@ -1627,8 +1572,6 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 800px) {
   .feeds {
     display: grid;
-    justify-content: center;
-    align-items: center;
   }
 }
 

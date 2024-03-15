@@ -1,7 +1,6 @@
 <template>
   <CalendarComponent />
   <div class="container">
-
     <!-- 일자 클릭시 메뉴오픈 -->
     <div id="contextMenu" class="dropdown clearfix contextOpened" style="display: none; left: 802px; top: 448px;">
       <ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu"
@@ -128,14 +127,14 @@
                            data-select2-id="1" style="width: 500px;"><span class="selection"><span
               class="select2-selection select2-selection--multiple" role="combobox"
               aria-haspopup="true" aria-expanded="false" tabindex="-1">
-                                    <ul class="select2-selection__rendered">
-                                        <li class="select2-search select2-search--inline"><input
-                                            class="select2-search__field" type="search" tabindex="0"
-                                            autocomplete="off" autocorrect="off" autocapitalize="none"
-                                            spellcheck="false" role="textbox" aria-autocomplete="list"
-                                            placeholder="선택.." style="width: 498px;"></li>
-                                    </ul>
-                                </span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline"><input
+                    class="select2-search__field" type="search" tabindex="0"
+                    autocomplete="off" autocorrect="off" autocapitalize="none"
+                    spellcheck="false" role="textbox" aria-autocomplete="list"
+                    placeholder="선택.." style="width: 498px;"></li>
+                </ul>
+            </span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
           </div>
         </div>
 

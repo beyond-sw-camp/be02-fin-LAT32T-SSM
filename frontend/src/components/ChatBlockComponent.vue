@@ -12,12 +12,12 @@
         <div class="divtest">
           <div role="presentation" class="c-message_kit__gutter__right" data-qa="message_content">
             <button data-message-sender="U06569E3D7H" data-qa="message_sender_name" class="c-link--button c-message__sender_button" type="button" tabindex="0">
-              {{ item.userName }}
+              {{ item.memberName }}
             </button>
             <span class="c-message__sender c-message_kit__sender" data-qa="message_sender" data-stringify-type="replace" data-stringify-text="test">
               <span class="p-member_profile_hover_card" role="presentation">
                 <a aria-label="오늘, 오후 12:43:59" data-stringify-type="replace" data-stringify-text="[오후 12:43]" data-stringify-requires-siblings="true" data-ts="1709869439.969209" delay="300" data-sk="tooltip_parent" class="c-link c-timestamp">
-                  <span class="c-timestamp__label" data-qa="timestamp_label">{{ item.createdAt }}</span>
+                  <span class="c-timestamp__label" data-qa="timestamp_label">오후 12:43</span>
                 </a>
               </span>
             </span>
@@ -35,8 +35,6 @@
             </div>
           </div>
         </div>
-      </section>
-      <section>
         <div class="p-rich_text_section">
           {{ item.message }}
         </div>
@@ -61,6 +59,10 @@ export default {
 
 div {
   display: block;
+}
+
+.message {
+  display: flex;
 }
 
 .p-member_profile_hover_card {
@@ -188,7 +190,7 @@ button {
   vertical-align: baseline;
   background: 0 0;
   border: 0;
-  margin: 0;
+  margin-left: 10px;
   padding: 0;
   text-decoration: none;
 }
@@ -220,6 +222,7 @@ a:-webkit-any-link {
 .c-message_kit__blocks--rich_text {
   max-width: none;
   margin-bottom: 4px;
+  display: flex;
 }
 
 .c-message_kit__blocks {
@@ -261,6 +264,9 @@ a:-webkit-any-link {
 
 .p-rich_text_block,.p-rich_text_section {
   counter-reset: list-0 list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  width: 100px;
+  display: flex;
+  margin-left: 10px;
 }
 
 .c-virtual_list__item {
