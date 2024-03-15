@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -12,6 +12,7 @@
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/vue3": "^6.1.11",
     "@popperjs/core": "^2.11.8",
+    "axios": "^1.6.7",
     "core-js": "^3.8.3",
     "fullcalendar": "^6.1.11",
     "icons": "^1.0.0",
