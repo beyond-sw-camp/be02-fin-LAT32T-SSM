@@ -16,23 +16,23 @@
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <SideButton label="Show" @click="visible = true" />
-            <AddDialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
+            <Button label="Show" @click="visible = true"/>
+            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
                 <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
                 <div class="flex align-items-center gap-3 mb-3">
                     <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
-                    <AddInputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
+                    <InputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
                 </div>
                 <div class="flex align-items-center gap-3 mb-5">
                   <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
-                  <AddInputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
-                  <SideButton type="button" label="추가" severity="secondary" @click="addMember(memberId)"></SideButton>
+                  <InputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
+                  <Button type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
                 </div>
                 <div class="flex justify-content-end gap-2">
-                    <SideButton type="button" label="취소하기" severity="secondary" @click="visible = false"></SideButton>
-                    <SideButton type="button" label="생성하기" @click="createRoom"></SideButton>
+                    <Button type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
+                    <Button type="button" label="생성하기" @click="createRoom"></Button>
                 </div>
-            </AddDialog>
+            </Dialog>
           </div>
         </span>
       </section>
@@ -57,7 +57,7 @@
         <ul>
           <li v-for="(item, idx) in roomList" :key="idx">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click="enterRoom(item.chatRoomId)">
+              <a href="#" @click="roomConnect(item.chatRoomId)">
                 <span class="make-white">
                 <i class="fas fa-hashtag"></i>
                   {{ item.chatRoomName }}
@@ -93,15 +93,19 @@
 </template>
 <script>
 import axios from "axios";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
+import { useStompStore } from "@/stores/useStompStore";
 import {mapActions} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
 
 export default {
   name: "SidebarComponent",
-  components: {},
+  components: { Dialog, Button, InputText },
   data() {
     return {
       member: {
@@ -119,6 +123,8 @@ export default {
   },
   methods: {
     ...mapActions(useMessageStore, ['addMessage']),
+    ...mapActions(useStompStore, ['basicConnect']),
+    ...mapActions(useStompStore, ['roomConnect']),
     toggle(event) {
       this.$refs.op.toggle(event);
     },
@@ -143,35 +149,35 @@ export default {
           Authorization: localStorage.getItem("accessToken")
         }
       });
-      console.log(response.data)
       this.roomList = response.data;
       console.log(this.roomList);
     },
-    enterRoom(roomId) {
-      console.log(roomId);
-      const server = "http://localhost:8080/chat"
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      window.localStorage.setItem("roomId", roomId);
-      this.stompClient.connect(
-        {},
-        frame => {
-          this.connected = true;
-          console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/sub/room/" + roomId, res => {
-            console.log("연결 후 채팅방 아이디", roomId);
-            console.log(res);
-            console.log("구독으로 받은 메시지입니다.", res.body);
-            this.addMessage(JSON.parse(res.body));
-          });
-        },
-        error => {
-          console.log('소켓 연결 실패', error);
-          this.connected = false;
-        }
-      )
-    },
+    // enterRoom(chatRoomId) {
+    //   console.log(chatRoomId);
+    //   const server = "http://localhost:8080/chat"
+    //   let socket = new SockJS(server);
+    //   this.stompClient = Stomp.over(socket);
+    //   console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+    //   window.localStorage.setItem("chatRoomId", chatRoomId);
+    //   this.getChatList(chatRoomId, localStorage.getItem("accessToken"), 1, 4);
+    //   this.stompClient.connect(
+    //     {},
+    //     frame => {
+    //       this.connected = true;
+    //       console.log('소켓 연결 성공', frame);
+    //       this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
+    //         console.log("연결 후 채팅방 아이디", chatRoomId);
+    //         console.log(res);
+    //         console.log("구독으로 받은 메시지입니다.", res.body);
+    //         this.addMessage(JSON.parse(res.body));
+    //       });
+    //     },
+    //     error => {
+    //       console.log('소켓 연결 실패', error);
+    //       this.connected = false;
+    //     }
+    //   )
+    // },
     sendMessage(e) {
       console.log(e);
       if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
@@ -195,12 +201,26 @@ export default {
       this.member.name = token.memberName;
       this.member.department = token.department;
       this.member.memberId = token.memberId;
-    }
+    },
+    async getChatList(chatRoomId, token, page, size) {
+      let response = await axios.get(`http://localhost:8080/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+        headers: {
+          Authorization: token
+        },
+      });
+      console.log(response.data);
+      response.data.forEach((message) => {
+        this.addMessage(message);
+      })
+    },
   },
   mounted() {
     this.getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
+    }
+    if (localStorage.getItem("chatRoomId") !== null) {
+      this.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
     }
   }
 };

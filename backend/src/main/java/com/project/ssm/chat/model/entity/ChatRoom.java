@@ -12,14 +12,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomIdx;
+    private Long chatRoomIdx;
 
     @Column(nullable = false)
-    private String roomId;
+    private String chatRoomId;
 
     @Column(nullable = false)
     private String chatRoomName;
@@ -41,7 +42,7 @@ public class ChatRoom {
 
     public static ChatRoom createRoom(String roomName) {
         return ChatRoom.builder()
-                .roomId(UUID.randomUUID().toString())
+                .chatRoomId(UUID.randomUUID().toString())
                 .chatRoomName(roomName)
                 .chatRoomStatus(true)
                 .startedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))

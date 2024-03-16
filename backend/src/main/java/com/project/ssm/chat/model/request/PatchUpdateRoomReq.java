@@ -7,9 +7,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class PostCreateRoomReq {
+public class PatchUpdateRoomReq {
     private String chatRoomIdx;
     private List<String> memberId;
 }
