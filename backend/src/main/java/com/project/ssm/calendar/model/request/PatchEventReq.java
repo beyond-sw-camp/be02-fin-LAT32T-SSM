@@ -13,12 +13,13 @@ import java.time.LocalDateTime;
 public class PatchEventReq {
 
     private Long eventIdx;
-    private Long memberIdx;
-    private String title;
-    private String priority;
-    private String isLooped;
 
-    private LocalDateTime startedAt;
-    private LocalDateTime closedAt;
+    private String title;
+    private String startedAt;
+    private String closedAt;
+    private String eventContent;
+    private String type;
+    private String backgroundColor;
+    private Boolean allDay;
 
 }

@@ -28,39 +28,8 @@ public class Event{
     private String textColor;
     private Boolean allDay;
 
-//    private LocalDateTime startedAt;
-//    private LocalDateTime closedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberIdx")
     private Member member;
-
-//    public Event(Member member) {
-//        this.member = member;
-//        member.getEvents().add(this);
-//    }
-
-//    public static Event EventBuilder (Long eventIdx, String title,
-//                                                      String startedAt,
-//                                                      String closedAt,
-//                                                      String eventContent,
-//                                                      String type,
-//                                                      String memberName,
-//                                                      String backgroundColor,
-//                                                      String textColor,
-//                                                      Boolean allDay) {
-//        return Event.builder()
-//                .eventIdx(eventIdx)
-//                .title(title)
-//                .startedAt(startedAt)
-//                .closedAt(closedAt)
-//                .eventContent(eventContent)
-//                .type(type)
-//                .memberName(memberName)
-//                .backgroundColor(backgroundColor)
-//                .textColor(textColor)
-//                .allDay(allDay)
-//                .build();
-//    }
 
 }

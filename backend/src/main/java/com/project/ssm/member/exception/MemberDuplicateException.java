@@ -10,11 +10,9 @@ public class MemberDuplicateException extends EntityDuplicateException {
         super(errorCode, message);
     }
 
-    // 이메일 중복
+    // 회원ID 중복
     public static MemberDuplicateException forMemberId(String memberId) {
         return new MemberDuplicateException(ErrorCode.DUPLICATE_SIGNUP_ID, String.format("SignUp Id [ %s ] is duplicated.", memberId));
     }
-
-
 
 }

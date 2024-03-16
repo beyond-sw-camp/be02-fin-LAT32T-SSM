@@ -1,7 +1,8 @@
 package com.project.ssm.calendar.service;
 
 import com.project.ssm.calendar.model.entity.Event;
-import com.project.ssm.calendar.model.request.GetEventReq;
+import com.project.ssm.calendar.model.request.DeleteEventReq;
+import com.project.ssm.calendar.model.request.PatchEventReq;
 import com.project.ssm.calendar.model.request.PostEventReq;
 import com.project.ssm.calendar.model.response.*;
 import com.project.ssm.calendar.repository.EventRepository;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public BaseResponse create(Member member, PostEventReq request) {
@@ -45,192 +43,166 @@ public class EventService {
 
         eventRepository.save(event);
 
+        PostEventRes postEventRes = PostEventRes.builder()
+                .eventIdx(event.getEventIdx())
+                .memberIdx(member.getMemberIdx())
+                .memberName(member.getMemberName())
+                .title(event.getTitle())
+                .eventContent(event.getEventContent())
+                .startedAt(event.getStartedAt())
+                .closedAt(event.getClosedAt())
+                .allDay(event.getAllDay())
+                .build();
+
         BaseResponse response = BaseResponse.builder()
                 .code("CALENDAR_001")
                 .isSuccess(true)
                 .message("새로운 일정이 생성되었습니다.")
-                .result(event)
+                .result(postEventRes)
                 .build();
 
         return response;
-
-
-        // Optional<Member> Optionalmember = memberRepository.findByMemberId(memberId);
-        // Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-
-//        Event Event = PostEventReq.postEventReqBuilder(
-//                request.getMember(),
-//                        request.getTitle(),
-//                        request.getStartedAt(),
-//                        request.getClosedAt(),
-//                        request.getEventContent(),
-//                        request.getType(),
-//                        request.getMemberName(),
-//                        request.getBackgroundColor(),
-//                        request.getTextColor(),
-//                        request.getAllDay());
-//
-//        eventRepository.save(Event);
-//
-//        return BaseResponse.BaseResponseBuilder(
-//                "CALENDAR_001",
-//                true,
-//                "새로운 일정이 생성되었습니다.",
-//                postEventResBuilder(
-//                        Event.getMember().getMemberIdx(),
-//                        Event.getEventIdx(),
-//                        Event.getTitle(),
-//                        Event.getStartedAt(),
-//                        Event.getClosedAt(),
-//                        Event.getEventContent(),
-//                        Event.getType(),
-//                        Event.getMemberName(),
-//                        Event.getBackgroundColor(),
-//                        Event.getTextColor(),
-//                        Event.getAllDay()
-//                        ));
     }
 
-    public List<GetEventsListRes> list(Member member, int year) {
+    public GetEventRes read(Member member, Long eventIdx) {
 
-        List<Event> memberEventsList = member.getEvents();
+        Optional<Event> result = eventRepository.findById(eventIdx);
 
-        List<GetEventsListRes> eventsList = new ArrayList<>();
+        Long memberIdxOfEvent = result.get().getMember().getMemberIdx();
 
-        for (Event event : memberEventsList) {
-            if (event.getMember().getMemberId().equals(member.getMemberId())) {
-                String startedAt = event.getStartedAt();
-                String closedAt = event.getClosedAt();
+        if (result.isPresent()&&memberIdxOfEvent.equals(member.getMemberIdx())) {
+            Event event = result.get();
 
-                LocalDateTime startTime = LocalDateTime.parse(startedAt);
-                LocalDateTime closeTime = LocalDateTime.parse(closedAt);
+            GetEventRes getEventRes = GetEventRes.builder()
+                    ._id(event.getEventIdx())
+                    .title(event.getTitle())
+                    .description(event.getEventContent())
+                    .start(event.getStartedAt())
+                    .end(event.getClosedAt())
+                    .type(event.getType())
+                    .username(event.getMemberName())
+                    .backgroundColor(event.getBackgroundColor())
+                    .textColor(event.getTextColor())
+                    .allDay(event.getAllDay())
+                    .build();
 
-                if (startTime.getYear() == year || closeTime.getYear() == year) {
-                    GetEventsListRes eventsListRes = GetEventsListRes.getEventsListResBuilder(
-                            event.getEventIdx(),
-                            event.getTitle(),
-                            event.getEventContent(),
-                            event.getStartedAt(),
-                            event.getClosedAt(),
-                            event.getType(),
-                            event.getMemberName(),
-                            event.getBackgroundColor(),
-                            event.getTextColor(),
-                            event.getAllDay()
-                    );
-                    eventsList.add(eventsListRes);
-                }
+            return getEventRes;
+        } else {
+            return GetEventRes.builder().build();
+        }
+    }
+
+        public List<GetEventRes> list(Member member, int year) {
+
+            List<Event> events = eventRepository.findEventsByYear(member.getMemberIdx(), year);
+            List<GetEventRes> eventsList = new ArrayList<>();
+
+            for (Event event: events) {
+
+                GetEventRes getEventRes = GetEventRes.builder()
+                        ._id(event.getEventIdx())
+                        .title(event.getTitle())
+                        .description(event.getEventContent())
+                        .start(event.getStartedAt())
+                        .end(event.getClosedAt())
+                        .type(event.getType())
+                        .username(event.getMemberName())
+                        .backgroundColor(event.getBackgroundColor())
+                        .textColor(event.getTextColor())
+                        .allDay(event.getAllDay())
+                        .build();
+
+                eventsList.add(getEventRes);
+            }
+
+            return eventsList;
+        }
+
+        public BaseResponse update(Member member, PatchEventReq request) {
+
+            Optional<Event> result = eventRepository.findById(request.getEventIdx());
+
+            Long memberIdxOfEvent = result.get().getMember().getMemberIdx();
+
+            if (result.isPresent() && memberIdxOfEvent.equals(member.getMemberIdx())) {
+                Event event = result.get();
+
+                event.setTitle(request.getTitle());
+                event.setEventContent(request.getEventContent());
+                event.setStartedAt(request.getStartedAt());
+                event.setClosedAt(request.getClosedAt());
+                event.setType(request.getType());
+                event.setBackgroundColor(request.getBackgroundColor());
+                event.setAllDay(request.getAllDay());
+
+                eventRepository.save(event);
+
+                PatchEventRes patchEventRes = PatchEventRes.builder()
+                        .eventIdx(event.getEventIdx())
+                        .title(event.getTitle())
+                        .eventContent(event.getEventContent())
+                        .startedAt(event.getStartedAt())
+                        .closedAt(event.getClosedAt())
+                        .type(event.getType())
+                        .backgroundColor(event.getBackgroundColor())
+                        .allDay(event.getAllDay())
+                        .build();
+
+                BaseResponse response = BaseResponse.builder()
+                        .code("CALENDAR_010")
+                        .isSuccess(true)
+                        .message("일정이 수정되었습니다.")
+                        .result(patchEventRes)
+                        .build();
+
+                return response;
+
+            } else {
+
+                BaseResponse response = BaseResponse.builder()
+                        .code("ERROR")
+                        .isSuccess(false)
+                        .message("일정이 수정에 실패하였습니다.")
+                        .build();
+
+                return response;
             }
         }
 
-        return eventsList;
+    public BaseResponse delete(Member member, Long eventIdx) {
+
+        Optional<Event> result = eventRepository.findById(eventIdx);
+
+        Long memberIdxOfEvent = result.get().getMember().getMemberIdx();
+
+        if (result.isPresent() && memberIdxOfEvent.equals(member.getMemberIdx())) {
+            Event event = result.get();
+
+            eventRepository.delete(event);
+
+            DeleteEventRes deleteEventRes = DeleteEventRes.builder()
+                    .eventIdx(event.getEventIdx())
+                    .build();
+
+            BaseResponse response = BaseResponse.builder()
+                    .code("CALENDAR_010")
+                    .isSuccess(true)
+                    .message("일정이 삭제되었습니다.")
+                    .result(deleteEventRes)
+                    .build();
+
+            return response;
+
+        } else {
+
+            BaseResponse response = BaseResponse.builder()
+                    .code("ERROR")
+                    .isSuccess(false)
+                    .message("일정 삭제에 실패하였습니다.")
+                    .build();
+
+            return response;
+        }
     }
 
-//        public BaseResponse read(Member member, GetEventReq request) {
-//
-//            Optional<Event> result = eventRepository.findById(request.getEventIdx());
-//
-//            if(result.isPresent()){
-//                Event event = result.get();
-//
-//                if(event.getMember().equals(member)){
-//
-//                }
-//            }
-//
-////        Member member = memberRepository.findByMemberId(request.getMemberId()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-////
-////        Event Event = EventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
-//
-//        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 조회되었습니다.", GetEventRes.getEventResBuilder(member.getMemberIdx(), Event.getIdx(), Event.getTitle()));
-//
-//    }
-
-            //        List<PersonalEvent> memberEvents = member.getPersonalEvents();
-//        List<GetPersonalEventsListRes> yearEvents = new ArrayList<>();
-//
-//        for (PersonalEvent event: memberEvents) {
-////            LocalDateTime startedAt = event.getStartedAt();
-////            LocalDateTime closedAt = event.getClosedAt();
-//
-////            if(startedAt.getYear()==year||closedAt.getYear()==year){
-////                GetPersonalEventsListRes eventsListRes = GetPersonalEventsListRes.getPersonalEventsListResBuilder(event.getIdx(), event.getTitle(), event.getStartedAt(), event.getClosedAt());
-////                yearEvents.add(eventsListRes);
-////            }
-//        }
-
-//        for (Event event: memberEvents) {
-//            LocalDateTime startedAt = event.getStartedAt();
-//            LocalDateTime closedAt = event.getClosedAt();
-//
-//            if(startedAt.getYear()==year||closedAt.getYear()==year){
-//                GetEventsListRes eventsListRes = GetEventsListRes.getEventsListResBuilder(event.getIdx(), event.getTitle(), event.getStartedAt(), event.getClosedAt());
-//                yearEvents.add(eventsListRes);
-//            }
-//        }
-//
-//        return response;
-
-//    @Transactional
-//    public GetEventsListRes eventslist() {
-//        List<GetEventRes> result =
-//
-
-//    public BaseResponse findByYear(int year, String memberId) {
-//
-//        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-//
-//        List<Event> memberEvents = member.getEvents();
-//
-//        for (Event event: memberEvents) {
-////            LocalDateTime startedAt = event.getStartedAt();
-////            LocalDateTime closedAt = event.getClosedAt();
-//
-////            if(startedAt.getYear()==year||closedAt.getYear()==year){
-////                GetEventsListRes eventsListRes = GetEventsListRes.getEventsListResBuilder(event.getIdx(), event.getTitle(), event.getStartedAt(), event.getClosedAt());
-////                yearEvents.add(eventsListRes);
-////            }
-//        }
-//
-//        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 조회되었습니다.", GetEventsRes.getEventResBuilder(member.getMemberIdx(), yearEvents));
-//
-//    }
-//
-//    public BaseResponse findByEventIdx(GetEventReq request) {
-//
-//        Member member = memberRepository.findByMemberId(request.getMemberId()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-//
-//        Event Event = EventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
-//
-//        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 조회되었습니다.", GetEventRes.getEventResBuilder(member.getMemberIdx(), Event.getIdx(), Event.getTitle()));
-//
-//    }
-//
-//    public BaseResponse updateEvent(PatchEventReq request) {
-//
-//        Member member = memberRepository.findById(request.getMemberIdx()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-//
-//        Event Event = EventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
-//
-////        Event.setPriority(request.getPriority());
-//        Event.setTitle(request.getTitle());
-////        Event.setIsLooped(request.getIsLooped());
-////        Event.setStartedAt(request.getStartedAt());
-////        Event.setClosedAt(request.getClosedAt());
-//
-//        EventRepository.save(Event);
-//
-//        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 수정되었습니다.", PatchEventRes.patchEventResBuilder(member.getMemberIdx(), Event.getIdx(), Event.getTitle()));
-//    }
-//
-//    public BaseResponse deleteEvent(DeleteEventReq request) {
-//
-//        Member member = memberRepository.findById(request.getMemberIdx()).orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
-//
-//        Event Event = EventRepository.findById(request.getEventIdx()).orElseThrow(() -> new IllegalArgumentException("없는 일정입니다."));
-//
-//        EventRepository.deleteById(request.getEventIdx());
-//
-//        return BaseResponse.BaseResponseBuilder("CALENDAR_010", true, "일정이 삭제되었습니다.", DeleteEventRes.deleteEventResBuilder(member.getMemberIdx(), Event.getIdx(), Event.getTitle()));
-//    }
 }

@@ -9,11 +9,11 @@ public class MemberNotFoundException extends EntityNotFoundException {
         super(errorCode, message);
     }
 
-    public static MemberNotFoundException forEmail(String memberId) {
-        return new MemberNotFoundException(ErrorCode.USER_NOT_EXISTS, String.format("Member Id [ %s ] is not exists.", memberId));
+    public static MemberNotFoundException forMemberId(String memberId) {
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("Member Id [ %s ] is not exists.", memberId));
     }
 
-    public static MemberNotFoundException forIdx(Long memberIdx) {
-        return new MemberNotFoundException(ErrorCode.USER_NOT_EXISTS, String.format("MemberIdx [ %s ] is not exists.", memberIdx));
+    public static MemberNotFoundException forMemberIdx(Long memberIdx) {
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("MemberIdx [ %s ] is not exists.", memberIdx));
     }
 }

@@ -9,18 +9,6 @@ import lombok.Setter;
 @Builder
 public class GetEventRes {
 
-//    private Long eventIdx;
-//    private String title;
-//
-//    private Long memberIdx;
-//    private String priority;
-//    private String isLooped;
-//
-//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-//    private LocalDateTime startedAt;
-//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-//    private LocalDateTime closedAt;
-
     private Long _id;
     private String title;
     private String description;

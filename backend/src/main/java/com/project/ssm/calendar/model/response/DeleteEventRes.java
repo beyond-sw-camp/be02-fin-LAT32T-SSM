@@ -8,15 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class DeleteEventRes {
-    private Long memberIdx;
-    private Long eventIdx;
-    private String title;
 
-    public static DeleteEventRes deleteEventResBuilder (Long memberIdx, Long eventIdx, String title) {
-        return DeleteEventRes.builder()
-                .memberIdx(memberIdx)
-                .eventIdx(eventIdx)
-                .title(title)
-                .build();
-    }
+    private Long eventIdx;
+
 }

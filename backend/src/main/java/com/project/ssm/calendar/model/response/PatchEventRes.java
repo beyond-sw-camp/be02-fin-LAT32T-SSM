@@ -12,26 +12,19 @@ import java.time.LocalDateTime;
 @Builder
 public class PatchEventRes {
 
-    private Long memberIdx;
     private Long eventIdx;
+
     private String title;
-    private String priority;
-    private String isLooped;
+    private String startedAt;
+    private String closedAt;
+    private String eventContent;
+    private String type;
+    private String backgroundColor;
+    private Boolean allDay;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startedAt;
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime closedAt;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//    private LocalDateTime startedAt;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//    private LocalDateTime closedAt;
 
-    public static PatchEventRes patchEventResBuilder(Long memberIdx, Long eventIdx, String title) {
-        return PatchEventRes.builder()
-                .memberIdx(memberIdx)
-                .eventIdx(eventIdx)
-                .title(title)
-//                .priority(priority)
-//                .isLooped(isLooped)
-//                .startedAt(startedAt)
-//                .closedAt(closedAt)
-                .build();
-    }
 }

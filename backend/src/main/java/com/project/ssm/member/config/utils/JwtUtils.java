@@ -13,6 +13,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Date;
 
+
 public class JwtUtils {
 
     // 일반 로그인 사용자 토큰 생성
@@ -24,7 +25,7 @@ public class JwtUtils {
         claims.put("memberName", member.getMemberName());
         claims.put("department", member.getDepartment());
         claims.put("position", member.getPosition());
-        claims.put("ROLE", member.getAuthorities());
+        claims.put("ROLE", member.getAuthority());
 
         byte[] secretBytes = secretKey.getBytes();
 
@@ -44,8 +45,8 @@ public class JwtUtils {
     }
 
     // 사용자 이름 가져오는 메서드
-    public static String getUserEmail(String token, String key) {
-        return extractAllClaims(token, key).get("email", String.class);
+    public static String getUserMemberId(String token, String key) {
+        return extractAllClaims(token, key).get("memberId", String.class);
     }
 
     public static String getAuthority(String token, String key) {

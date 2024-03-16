@@ -63,10 +63,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String authority = JwtUtils.getAuthority(token, secretKey);
+           String authority = JwtUtils.getAuthority(token, secretKey);
 
-            if (authority.equals("ROLE_USER")) {
-                String memberId = JwtUtils.getUserEmail(token, secretKey);
+            if(authority.equals("ROLE_USER")){
+                String memberId = JwtUtils.getUserMemberId(token, secretKey);
                 if (memberId != null) {
                     Optional<Member> result = memberRepository.findByMemberId(memberId);
 
@@ -83,6 +83,8 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                 }
             }
+
+
         } catch (MemberAccountException e) {
             // JwtUtils에서 던진 UserAccountException 처리
             handleJwtException(response, e);
@@ -90,5 +92,6 @@ public class JwtFilter extends OncePerRequestFilter {
             // Spring Security 예외 처리
             handleJwtException(response, new MemberAccountException(ErrorCode.UNAUTHORIZED, e.getMessage()));
         }
+
     }
 }

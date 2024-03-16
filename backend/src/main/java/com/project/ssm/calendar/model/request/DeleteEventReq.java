@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class DeleteEventReq {
+
     private Long eventIdx;
-    private Long memberIdx;
+
 }

@@ -37,9 +37,7 @@ public class SecurityConfig {
             http.csrf().disable()
                     .authorizeHttpRequests()
                     .antMatchers("/**").permitAll()
-
-
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
                     .and()
                     .exceptionHandling()
                     .accessDeniedHandler(customAccessDeniedHandler) // 인가에 대한 예외 처리
