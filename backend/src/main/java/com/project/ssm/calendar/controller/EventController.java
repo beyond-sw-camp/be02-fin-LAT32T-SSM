@@ -9,6 +9,7 @@ import com.project.ssm.calendar.service.EventService;
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/calendar/event")
@@ -27,11 +29,14 @@ public class EventController {
     @RequestMapping(method = RequestMethod.POST, value = "/create")
     public ResponseEntity createEvent(@RequestBody PostEventReq request){
 
+        log.info("request {}", request);
+        log.info("test {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         BaseResponse response = eventService.create(member, request);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
     // 일정 상세 조회

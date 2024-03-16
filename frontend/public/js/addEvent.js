@@ -79,11 +79,16 @@ var newEvent = function (start, end, eventType) {
         editAllDay.prop('checked', false);
         eventModal.modal('hide');
 
+        console.log(localStorage.getItem('token'))
+
         //새로운 일정 저장
         $.ajax({
             type: "post",
             url: "http://localhost:8080/calendar/event/create",
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
             datatype: "JSON",
             data: JSON.stringify({
                 "title": eventData.title,
