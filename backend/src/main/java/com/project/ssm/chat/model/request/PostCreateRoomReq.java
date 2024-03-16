@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostCreateRoomReq {
-    private String chatRoomIdx;
+    private String chatRoomName;
     private List<String> memberId;
 }

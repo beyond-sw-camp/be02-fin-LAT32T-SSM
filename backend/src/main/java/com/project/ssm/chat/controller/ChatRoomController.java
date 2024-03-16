@@ -43,8 +43,18 @@ public class ChatRoomController {
         return ResponseEntity.ok().body(roomService.updateRoom(patchUpdateRoomReq));
     }
 
+    @RequestMapping(method = RequestMethod.PATCH, value = "/room/out/{chatRoomIdx}")
+    public ResponseEntity<Object> outRoom(@RequestHeader(value = "Authorization") String token, @PathVariable String chatRoomIdx) {
+        return ResponseEntity.ok().body(roomService.outRoom(token, chatRoomIdx));
+    }
+
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/delete/{chatRoomIdx}")
     public ResponseEntity<Object> deleteRoom(@PathVariable String chatRoomIdx) {
         return ResponseEntity.ok().body(roomService.deleteChatRoom(chatRoomIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/message/delete/{messageIdx}")
+    public ResponseEntity<Object> deleteMessage(@RequestHeader(value = "Authorization") String token, @PathVariable Long messageIdx) {
+        return ResponseEntity.ok().body(roomService.deleteMessage(token, messageIdx));
     }
 }
