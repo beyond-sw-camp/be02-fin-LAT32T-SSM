@@ -63,7 +63,7 @@ public class RoomService {
     }
 
     public PostCreateRoomRes createRoom(PostCreateRoomReq postCreateRoom) {
-        ChatRoom room = ChatRoom.createRoom(postCreateRoom.getChatRoomIdx());
+        ChatRoom room = ChatRoom.createRoom(postCreateRoom.getChatRoomName());
         chatRoomRepository.save(room);
         for (String memberId : postCreateRoom.getMemberId()) {
             Optional<Member> member = memberRepository.findByMemberId(memberId);
@@ -130,6 +130,45 @@ public class RoomService {
             findChatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
             chatRoomRepository.save(findChatRoom);
             return DeleteRoomRes.buildDeleteRoom(chatRoomId, findChatRoom.getUpdatedAt());
+        }
+        return null;
+    }
+
+    public String outRoom(String token, String chatRoomIdx) {
+        if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];
+        }
+        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+
+        Optional<Member> member = memberRepository.findByMemberId(memberId);
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomId(chatRoomIdx);
+
+        if (member.isPresent() && chatRoom.isPresent()) {
+            for (RoomParticipants roomParticipants : member.get().getRoomParticipantsList()) {
+                if (roomParticipants.getChatRoom().getChatRoomId().equals(chatRoomIdx)) {
+                    roomPartRepository.deleteById(roomParticipants.getRoomParticipantsIdx());
+                }
+            }
+            return "ok";
+        }
+
+        return null;
+    }
+
+    public String deleteMessage(String token, Long messageIdx) {
+        if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];
+        }
+        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+
+        Optional<Member> member = memberRepository.findByMemberId(memberId);
+        Optional<Message> message = messageRepository.findById(messageIdx);
+
+        if (member.isPresent() && message.isPresent()) {
+            if (message.get().getMember().getMemberId().equals(member.get().getMemberId())) {
+                messageRepository.deleteById(messageIdx);
+            }
+            return "ok";
         }
 
         return null;
