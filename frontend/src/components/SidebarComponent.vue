@@ -593,6 +593,7 @@ body::-webkit-scrollbar-thumb {
   background-color: var(--slack-other-bckground);
   display: grid;
   grid-template-columns: 4rem minmax(6.25rem, 16.25rem);
+  z-index: 100;
 }
 
 /* body  */
