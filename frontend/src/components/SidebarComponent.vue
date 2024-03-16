@@ -1,110 +1,232 @@
 <template>
-    <section class="sidebar">
-      <article class="sidebar-1">
-        <div class="box-1"></div>
-        <div class="box-2"></div>
-        <div class="box-3">+</div>
-      </article>
-
-      <article class="sidebar-2">
-        <section class="sidebar-user">
-          <div class="sidebar-user-info">
-            <h4>John Idogun</h4>
-            <i class="fas fa-chevron-down"></i>
+  <section class="sidebar">
+    <article class="sidebar-1">
+      <div class="box-1"></div>
+      <div class="box-2"></div>
+      <div class="box-3">+</div>
+    </article>
+    <article class="sidebar-2">
+      <section class="sidebar-user">
+        <div class="sidebar-user-info">
+          <h4>{{ member.name }}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <p class="sidebar-user-info-additional">
+          <i class="fas fa-circle"></i>{{ member.department }}
+        </p>
+        <span class="user-edit-icon">
+          <div class="card flex justify-content-center">
+            <Button label="Show" @click="visible = true"/>
+            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
+                <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
+                <div class="flex align-items-center gap-3 mb-3">
+                    <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
+                    <InputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
+                </div>
+                <div class="flex align-items-center gap-3 mb-5">
+                  <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
+                  <InputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
+                  <Button type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
+                </div>
+                <div class="flex justify-content-end gap-2">
+                    <Button type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
+                    <Button type="button" label="생성하기" @click="createRoom"></Button>
+                </div>
+            </Dialog>
           </div>
-          <p class="sidebar-user-info-additional">
-            <i class="fas fa-circle"></i>Sharon Robinson
-          </p>
-          <span class="user-edit-icon"><i class="fas fa-edit"></i></span>
-        </section>
-        <section class="unread">
-          <h4 class="unread-header">
-            <span class="unread-icons">
-              <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-              ><i class="fas fa-minus fa-xs"></i>
-            </span>
-            All unread
-          </h4>
-          <ul>
-            <li>
-              <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-at"></i>Mentions & reactions</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-arrow-down"></i>Show more</a>
-            </li>
-          </ul>
-        </section>
-        <section class="channels">
-          <h4 class="channels-header">
-            <i class="fas fa-sort-down"></i> Channels
-          </h4>
-          <ul>
-            <li>
-              <a href="#"><i class="fas fa-hashtag"></i>design-crit</a>
-            </li>
-            <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-hashtag"></i>design-team</span
-                ><span class="counter">1</span></a
-              >
-            </li>
-            <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-circle online"></i>Hubspot</span
-                ></a
-              >
-            </li>
-            <li class="active">
-              <a href="#"><i class="fas fa-hashtag"></i>social-media</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-lock"></i>team-chat</a>
-            </li>
-          </ul>
-        </section>
-        <section class="direct-messages">
-          <h4 class="direct-messages-header">
-            <i class="fas fa-sort-down"></i> Direct Messages
-          </h4>
-          <ul>
-            <li>
-              <a href="#"><i class="fas fa-heart online"></i>slackbot</a>
-            </li>
-            <li>
-              <a href="#">
-                <i class="fas fa-circle online"></i>John Idogun(You)</a
-              >
-            </li>
-            <li>
-              <a href="#"
-                ><span class="make-white"
-                  ><i class="fas fa-circle offline"></i
-                ></span>
-                Isabel</a
-              >
-            </li>
-          </ul>
-        </section>
-      </article>
-    </section>
+        </span>
+      </section>
+      <section class="unread">
+        <h4 class="unread-header">
+          <span class="unread-icons">
+            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
+            ><i class="fas fa-minus fa-xs"></i>
+          </span>
+          읽지 않은 메시지
+        </h4>
+        <ul>
+          <li>
+            <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
+          </li>
+        </ul>
+      </section>
+      <section class="channels">
+        <h4 class="channels-header">
+          <i class="fas fa-sort-down"></i> 채널
+        </h4>
+        <ul>
+          <li v-for="(item, idx) in roomList" :key="idx">
+            <router-link v-bind:to="`/${item.chatRoomId}`">
+              <a href="#" @click="roomConnect(item.chatRoomId)">
+                <span class="make-white">
+                <i class="fas fa-hashtag"></i>
+                  {{ item.chatRoomName }}
+                </span>
+              </a>
+            </router-link>
+          </li>
+        </ul>
+      </section>
+      <section class="direct-messages">
+        <h4 class="direct-messages-header">
+          <i class="fas fa-sort-down"></i> 다이렉트 메시지
+        </h4>
+        <ul>
+          <li>
+            <a href="#">
+              <i class="fas fa-circle online"></i>
+              정주연
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="make-white">
+                <i class="fas fa-circle offline"></i>
+              </span>
+              최대현
+            </a>
+          </li>
+        </ul>
+      </section>
+    </article>
+  </section>
 </template>
 <script>
+import axios from "axios";
+// import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
+import { useMessageStore } from "@/stores/useMessageStore";
+import { useStompStore } from "@/stores/useStompStore";
+import {mapActions} from "pinia";
+import VueJwtDecode from 'vue-jwt-decode';
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+
 export default {
   name: "SidebarComponent",
+  components: { Dialog, Button, InputText },
+  data() {
+    return {
+      member: {
+        name: "",
+        department: "",
+        memberId: ""
+      },
+      memberId: "",
+      roomName: "",
+      memberList: [],
+      visible: false,
+      roomList: [],
+      recvList: []
+    }
+  },
+  methods: {
+    ...mapActions(useMessageStore, ['addMessage']),
+    ...mapActions(useStompStore, ['basicConnect']),
+    ...mapActions(useStompStore, ['roomConnect']),
+    toggle(event) {
+      this.$refs.op.toggle(event);
+    },
+    addMember(memberId) {
+      this.memberList.push(memberId);
+    },
+    async createRoom() {
+      this.memberList.push(this.member.memberId);
+      const roomInfo = {
+        roomName: this.roomName,
+        memberId: this.memberList
+      };
+
+      let response = await axios.post("http://localhost:8080/chat/room/create", roomInfo);
+      console.log(response.data);
+
+      this.visible = false;
+    },
+    async getRoomList() {
+      let response = await axios.get("http://localhost:8080/chat/rooms", {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      });
+      this.roomList = response.data;
+      console.log(this.roomList);
+    },
+    // enterRoom(chatRoomId) {
+    //   console.log(chatRoomId);
+    //   const server = "http://localhost:8080/chat"
+    //   let socket = new SockJS(server);
+    //   this.stompClient = Stomp.over(socket);
+    //   console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+    //   window.localStorage.setItem("chatRoomId", chatRoomId);
+    //   this.getChatList(chatRoomId, localStorage.getItem("accessToken"), 1, 4);
+    //   this.stompClient.connect(
+    //     {},
+    //     frame => {
+    //       this.connected = true;
+    //       console.log('소켓 연결 성공', frame);
+    //       this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
+    //         console.log("연결 후 채팅방 아이디", chatRoomId);
+    //         console.log(res);
+    //         console.log("구독으로 받은 메시지입니다.", res.body);
+    //         this.addMessage(JSON.parse(res.body));
+    //       });
+    //     },
+    //     error => {
+    //       console.log('소켓 연결 실패', error);
+    //       this.connected = false;
+    //     }
+    //   )
+    // },
+    sendMessage(e) {
+      console.log(e);
+      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
+        this.send(this.chatRoomId);
+        this.message = ''
+      }
+    },
+    send() {
+      console.log('Send Message:' + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          userName: this.member.name,
+          message: this.message
+        };
+        console.log(msg);
+        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      }
+    },
+    setMember(token) {
+      token = VueJwtDecode.decode(token.split(" ")[1]);
+      this.member.name = token.memberName;
+      this.member.department = token.department;
+      this.member.memberId = token.memberId;
+    },
+    async getChatList(chatRoomId, token, page, size) {
+      let response = await axios.get(`http://localhost:8080/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+        headers: {
+          Authorization: token
+        },
+      });
+      console.log(response.data);
+      response.data.forEach((message) => {
+        this.addMessage(message);
+      })
+    },
+  },
+  mounted() {
+    this.getRoomList();
+    if (localStorage.getItem("accessToken") !== null) {
+      this.setMember(localStorage.getItem("accessToken"));
+    }
+    if (localStorage.getItem("chatRoomId") !== null) {
+      this.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
+    }
+  }
 };
 </script>
 
 <style>
-/*!
- * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- */
-
 .fa,.fas,.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -607,7 +729,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--slack-main-white);
+  background-color: var(--slack-other-bckground);
 }
 
 .user-edit-icon i {

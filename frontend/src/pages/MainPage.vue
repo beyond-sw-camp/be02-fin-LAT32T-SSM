@@ -7,17 +7,14 @@
         <section class="content-header">
           <article class="channel-content-header-details">
             <h4 class="channel-content-header-name">
-              #social-media <i class="fas fa-star"></i>
+              프로젝트 채팅방 <i class="fas fa-star"></i>
             </h4>
             <section class="content-header-icons">
               <div>
-                <i class="far fa-user"></i><span class="content-header-counter">23</span>
-              </div>
-              <div>
-                <i class="fas fa-thumbtack fa-rotate-315 last"></i><span class="content-header-counter">23</span>
+                <i class="far fa-user"></i><span class="content-header-counter">5</span>
               </div>
               <p class="content-header-text">
-                Track and cordinate social media.
+                프로젝트 채팅방 입니다.
               </p>
             </section>
           </article>
@@ -26,206 +23,15 @@
           </button>
         </section>
         <section class="feeds">
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user2.jpg" alt="User 1" width="40" />
-              <span>Z</span>
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Zeo Maxwell <span class="time-stamp">9:56am</span></h4>
-              </section>
-              <div>
-                <p class="feed-text">
-                  No! It was my pleasure! Great to see the enthusiasm out
-                  there.
-                </p>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user3.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>
-                  Acme Team <span class="tag">app</span>
-                  <span class="time-stamp">12:45pm</span>
-                </h4>
-              </section>
-
-              <p class="feed-text">Events starting in 15 minutes:</p>
-              <div class="quoted">
-                <h5>Team status meeting</h5>
-                <p class="quoted-text">Today from 1:00PM to 1:30PM</p>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user4.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Hary Boone <span class="time-stamp">12:58pm</span></h4>
-              </section>
-              <div>
-                <p class="feed-text">
-                  Quick note: today <span class="mention">@lisa</span> will
-                  join our team sync to provide updates on the launch, if
-                  you have questions, bring 'em. See you all later...er, in
-                  2 minutes.
-                </p>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="feeds-user-avatar">
-              <img src="images/user5.jpg" alt="User 1" width="40" />
-            </section>
-            <section class="feed-content">
-              <section class="feed-user-info">
-                <h4>Lee Hao <span class="time-stamp">1:48pm</span></h4>
-              </section>
-              <p class="feed-text">
-                Meeting notes from our sync with<span class="mention">@lisa</span>.
-              </p>
-              <div class="quoted-file">
-                <div class="preparatory-text">
-                  <p>Post</p>
-                  <i class="fas fa-sort-down"></i>
-                </div>
-                <div class="file-figure">
-                  <i class="far fa-file-alt fa-2x"></i>
-                  <div class="file-detail">
-                    <h5>1/9 Meeting Notes</h5>
-                    <small>Last edited just now</small>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </article>
-          <article class="feed">
-            <section class="message-info">
-              <article class="zenith-org">Z</article>
-              <small><strong>Zenith Marketing</strong> is in this
-                channel.</small>
-            </section>
-          </article>
+          <div>
+            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
+          </div>
         </section>
-        <form action="." class="form" name="feedForm">
-          <div class="input" id="textBox" contenteditable="true">
-            <p>Message #social-media</p>
+        <form class="form" name="feedForm">
+          <div>
+            <MessageEditor model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>
           </div>
-          <div class="input-toolbar-icons">
-            <div class="move-right">
-              <i class="fas fa-bolt"></i>
-              <i class="fas fa-bold" data-command="b"></i>
-              <i class="fas fa-italic" data-command="i"></i>
-              <i class="fas fa-strikethrough"></i>
-              <i class="fas fa-code" data-command="code"></i>
-              <i class="fas fa-link" data-command="a"></i>
-              <i class="fas fa-list-ol" data-command="ol"></i>
-              <i class="fas fa-list-ul" data-command="ul"></i>
-              <i class="fas fa-quote-left" data-command="blockquote"></i>
-              <i class="far fa-file-code" data-command="pre"></i>
-              <i class="fas fa-print" onclick="printDoc();"></i>
-            </div>
-            <div class="move-left">
-              <i class="fas fa-at"></i>
-              <i class="far fa-smile"></i>
-              <button type="submit" class="btn-borderless button">
-                <i class="fas fa-angle-double-right"></i>
-              </button>
-            </div>
-          </div>
-          <div class="input-toolbar-selection"></div>
         </form>
-      </section>
-      <section class="right-sidebar">
-        <section class="right-sidebar-header">
-          <article class="right-sidebar-header-details">
-            <h4 class="right-sidebar-header-name">Details</h4>
-            <p>#social-media</p>
-          </article>
-          <i class="fas fa-times"></i>
-        </section>
-        <section class="right-sidebar-contact">
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-user-plus"></i></span>
-            <p>Add</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-search-plus"></i></span>
-            <p>Find</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-phone"></i></span>
-            <p>Call</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span> <i class="fas fa-ellipsis-h"></i></span>
-            <p>More</p>
-          </article>
-        </section>
-
-        <section class="right-sidebar-about">
-          <article class="about-header">
-            <h4>About</h4>
-            <i class="fas fa-chevron-down"></i>
-          </article>
-          <article class="about-details">
-            <div class="about-detail">
-              <h5>Topic</h5>
-              <p>Track and cordinate social media</p>
-            </div>
-            <div class="about-detail">
-              <h5>Description</h5>
-              <p>Home of the social media team</p>
-            </div>
-            <div class="about-img">
-              <div class="about-img-wrapper">
-                <img src="images/user1.jpg" alt="User 1" />
-              </div>
-              <small>Created on October 8th, 2020</small>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Members</h4>
-            <div>
-              <span>21 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Organizations</h4>
-            <div>
-              <span class="zenith-org">Z</span>
-              <span class="acme-org">A</span>
-              <span> 2 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Pinned</h4>
-            <div>
-              <span>1 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Shortcuts</h4>
-            <div>
-              <span>1 <i class="fas fa-chevron-right"></i></span>
-            </div>
-          </article>
-        </section>
       </section>
     </section>
   </main>
@@ -234,26 +40,109 @@
 <script>
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
+import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
+
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import axios from "axios";
+import { useMessageStore } from "@/stores/useMessageStore";
+import { useStompStore } from "@/stores/useStompStore";
+import {mapActions, mapState} from "pinia";
+import VueJwtDecode from 'vue-jwt-decode';
+
 
 export default {
   name: 'MainPage',
   components: {
-    HeaderComponent, SidebarComponent
+
+    HeaderComponent, SidebarComponent, ChatBlockComponent
   },
   data() {
     return {
-
+      memberName: "",
+      memberId: "",
+      message: "",
+      recvList: [],
+      roomName: "",
+      roomList: [],
+      username: "",
+      chatRoomId: "",
     }
   },
+  created() {
+    console.log("============기본 연결================");
+    const stompClient = this.initSock();
+    this.basicConnect(stompClient);
+  },
+  computed: {
+    ...mapState(useMessageStore, ['getAllMessage']),
+  },
+  methods: {
+    ...mapActions(useMessageStore, ['addMessage']),
+    ...mapActions(useStompStore, ['basicConnect']),
+    ...mapActions(useStompStore, ['roomConnect']),
+
+    initSock() {
+      const server = "http://localhost:8080/chat"
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      return this.stompClient;
+    },
+    async getRoomList() {
+      let response = await axios.get("http://localhost:8080/chat/rooms", {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        },
+      });
+      this.roomList = response.data;
+    },
+    sendMessage(e) {
+      if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
+        this.send();
+        this.message = ''
+      }
+    },
+    send() {
+      this.message = this.message.replace(/<[^>]*>?/g, '');
+      console.log('Send Message:' + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          memberId: this.memberId,
+          memberName: this.memberName,
+          message: this.message
+        };
+        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      }
+    },
+    enterRoom() {
+      if (this.stompClient && this.stompClient.connected) {
+        const token = localStorage.getItem("accessToken");
+        this.stompClient.send("/send/room", {token});
+      }
+    },
+    setMember(token) {
+      token = VueJwtDecode.decode(token.split(" ")[1]);
+      this.memberId = token.memberId;
+      this.memberName = token.memberName;
+    }
+  },
+  mounted() {
+    this.getRoomList();
+    if (localStorage.getItem("accessToken") !== null) {
+      this.setMember(localStorage.getItem("accessToken"));
+    }
+    if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
+      this.chatRoomId = this.$route.params.chatRoomId;
+      this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+    } else {
+      // this.basicConnect();
+    }
+  }
 }
 </script>
 
 <style scoped>
-/*!
- * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- */
-
 .fa,
 .fas,
 .far {
@@ -1683,8 +1572,6 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 800px) {
   .feeds {
     display: grid;
-    justify-content: center;
-    align-items: center;
   }
 }
 
@@ -1855,4 +1742,5 @@ body::-webkit-scrollbar-thumb {
     flex-wrap: wrap;
   }
 }
+
 </style>

@@ -12,23 +12,17 @@
                   </div>
                   <form class="user">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user"
-                             id="exampleInputEmail" aria-describedby="emailHelp"
-                             placeholder="Enter Email Address...">
+                      <input v-model="member.memberId" type="text" class="form-control form-control-user" placeholder="아이디를 입력해주세요">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user"
-                             id="exampleInputPassword" placeholder="Password">
+                      <input v-model="member.password" type="password" class="form-control form-control-user" placeholder="비밀번호를 입력해주세요">
                     </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">계정 기억</label>
-                      </div>
-                    </div>
-                    <a href="index.html" class="btn btn-primary btn-user btn-block">
-                      로그인
-                    </a>
+<!--                    <div class="form-group">-->
+<!--                      <div class="custom-control custom-checkbox small">-->
+<!--                        <input type="checkbox" class="custom-control-input" id="customCheck">-->
+<!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
+<!--                      </div>-->
+<!--                    </div>-->
                     <hr>
                     <a href="index.html" class="btn btn-google btn-user btn-block">
                       <i class="fab fa-google fa-fw"></i> 구글로 로그인
@@ -40,26 +34,25 @@
                   </div>
                   <div class="text-center">
                     <router-link to="/signup">
-                    <a class="small" href="register.html">계정을 만드세요!</a>
+                    <a class="small">계정을 만드세요!</a>
                     </router-link>
                   </div>
+                  <button @click="login(member)" class="btn btn-primary btn-user btn-block">
+                    로그인
+                  </button>
                   <!-- 채팅방 나가기 모달창 -->
-<!--                  <ConfirmDialog></ConfirmDialog>-->
-<!--                  <div class="card flex flex-wrap gap-2 justify-content-center">-->
-<!--                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>-->
-<!--                  </div>-->
+                  <ConfirmDialog></ConfirmDialog>
+                  <div class="card flex flex-wrap gap-2 justify-content-center">
+                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>
+                  </div>
 <!--                  <Toast />-->
                   <!-- 사이드 탭 테스트-->
-<!--                  <div class="card flex justify-content-center">-->
-<!--                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>-->
-<!--                  </div>-->
-<!--                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">-->
-<!--                    <SideTabComponent/>-->
-<!--                  </Sidebar>-->
-                  <!-- 채팅 블록 테스트-->
-<!--                  <div>-->
-<!--                    <ChatBlockComponent></ChatBlockComponent>-->
-<!--                  </div>-->
+                  <div class="card flex justify-content-center">
+                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>
+                  </div>
+                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">
+                    <SideTabComponent/>
+                  </Sidebar>
                 </div>
               </div>
             </div>
@@ -70,40 +63,56 @@
   </div>
 </template>
 <script>
-// import SideTabComponent from "@/components/SideTabComponent.vue";
+import SideTabComponent from "@/components/SideTabComponent.vue";
 // import Sidebar from "primevue/sidebar";
-// import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
-// import ConfirmDialog from "primevue/confirmdialog";
+import ConfirmDialog from "primevue/confirmdialog";
+import axios from "axios";
+import {toRaw} from "vue";
+import {useConfirm} from "primevue/useconfirm";
 
 export default {
   name: 'LoginPage',
   // components: {
-  //   SideTabComponent, Sidebar, ChatBlockComponent, ConfirmDialog
+  //   SideTabComponent, Sidebar, ConfirmDialog
   // },
+  components: {
+    ConfirmDialog, SideTabComponent
+  },
   data() {
     return {
-      visibleRight: false
+      visibleRight: false,
+      member: {
+        memberId: "",
+        password: ""
+      }
     }
   },
-  // methods: {
-  //   confirm() {
-  //     this.$confirm.require({
-  //       message: '정말로 채팅방에서 나가시겠습니까?',
-  //       header: '채팅방 나가기',
-  //       icon: 'pi pi-info-circle',
-  //       rejectLabel: '취소하기',
-  //       acceptLabel: '나가기',
-  //       rejectClass: 'p-button-secondary p-button-outlined',
-  //       acceptClass: 'p-button-danger',
-  //       accept: () => {
-  //         // 취소 이벤트
-  //       },
-  //       reject: () => {
-  //         // 채팅방 나가기 이벤트
-  //       }
-  //     });
-  //   }
-  // }
+  methods: {
+    async login(member) {
+      member = toRaw(member);
+      let response = await axios.post("http://localhost:8080/member/login", member);
+      console.log(response.data);
+      localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
+    },
+    confirm() {
+      const confirm = useConfirm();
+      confirm.require({
+        message: '정말로 채팅방에서 나가시겠습니까?',
+        header: '채팅방 나가기',
+        icon: 'pi pi-info-circle',
+        rejectLabel: '취소하기',
+        acceptLabel: '나가기',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+          // 취소 이벤트
+        },
+        reject: () => {
+          // 채팅방 나가기 이벤트
+        }
+      });
+    }
+  }
 }
 </script>
 
