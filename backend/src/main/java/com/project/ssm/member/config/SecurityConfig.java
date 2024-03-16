@@ -38,7 +38,8 @@ public class SecurityConfig {
                     .authorizeHttpRequests()
                     .antMatchers("/**").permitAll()
 
-                    .anyRequest().authenticated()
+
+                    .anyRequest().permitAll()
                     .and()
                     .exceptionHandling()
                     .accessDeniedHandler(customAccessDeniedHandler) // 인가에 대한 예외 처리

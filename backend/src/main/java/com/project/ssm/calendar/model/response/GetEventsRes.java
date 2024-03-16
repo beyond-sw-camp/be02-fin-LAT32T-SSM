@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class GetPersonalEventsRes {
+public class GetEventsRes {
 
 //    private Long idx;
 //    private String title;
@@ -25,10 +25,10 @@ public class GetPersonalEventsRes {
 
 //    private Member member;
 
-    private List<GetPersonalEventsListRes> events;
+    private List<GetEventsListRes> events;
 
-    public static GetPersonalEventsRes getPersonalEventResBuilder(Long memberIdx, List<GetPersonalEventsListRes> events) {
-        return GetPersonalEventsRes.builder()
+    public static GetEventsRes getEventResBuilder(Long memberIdx, List<GetEventsListRes> events) {
+        return GetEventsRes.builder()
                 .memberIdx(memberIdx)
                 .events(events)
                 .build();

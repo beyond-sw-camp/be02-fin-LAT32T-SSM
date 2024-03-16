@@ -6,17 +6,15 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @Builder
-public class GetPersonalEventRes {
-
-    private Long eventIdx;
-    private String title;
+public class PatchEventRes {
 
     private Long memberIdx;
+    private Long eventIdx;
+    private String title;
     private String priority;
     private String isLooped;
 
@@ -25,8 +23,8 @@ public class GetPersonalEventRes {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime closedAt;
 
-    public static GetPersonalEventRes getPersonalEventResBuilder(Long memberIdx, Long eventIdx, String title) {
-        return GetPersonalEventRes.builder()
+    public static PatchEventRes patchEventResBuilder(Long memberIdx, Long eventIdx, String title) {
+        return PatchEventRes.builder()
                 .memberIdx(memberIdx)
                 .eventIdx(eventIdx)
                 .title(title)

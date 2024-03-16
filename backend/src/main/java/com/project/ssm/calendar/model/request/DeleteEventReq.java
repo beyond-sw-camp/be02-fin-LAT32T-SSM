@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class DeletePersonalEventReq {
+public class DeleteEventReq {
     private Long eventIdx;
     private Long memberIdx;
 }

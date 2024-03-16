@@ -1,31 +1,34 @@
 package com.project.ssm.calendar.controller;
 
 
-import com.project.ssm.calendar.model.entity.PersonalEvent;
-import com.project.ssm.calendar.model.request.DeletePersonalEventReq;
-import com.project.ssm.calendar.model.request.GetPersonalEventReq;
-import com.project.ssm.calendar.model.request.PatchPersonalEventReq;
-import com.project.ssm.calendar.model.request.PostPersonalEventReq;
-import com.project.ssm.calendar.service.PersonalEventService;
+import com.project.ssm.calendar.model.request.GetEventReq;
+import com.project.ssm.calendar.model.request.PostEventReq;
+import com.project.ssm.calendar.model.response.GetEventsListRes;
+import com.project.ssm.calendar.service.EventService;
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/calendar/event")
 @CrossOrigin("*")
-public class PersonalEventController {
-    private final PersonalEventService personalEventService;
+public class EventController {
+    private final EventService eventService;
 
     // 일정 등록
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity createEvent(@RequestBody PostPersonalEventReq request){
+    public ResponseEntity createEvent(@RequestBody @Valid PostEventReq request){
 
-        BaseResponse response = personalEventService.create(request);
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        BaseResponse response = eventService.create(member, request);
 
         return ResponseEntity.ok(response);
     }
@@ -145,38 +148,58 @@ public class PersonalEventController {
                 "  }]";
         return response;
     }
+    
+    @RequestMapping(method = RequestMethod.GET, value = "/{year}")
+    public ResponseEntity eventsList(@PathVariable int year){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        List<GetEventsListRes> response = eventService.list(member, year);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+        // 일정 상세 조회
+//    @RequestMapping(method = RequestMethod.GET, value = "/detail")
+//    public ResponseEntity getEvent(@RequestBody GetEventReq request) {
+//        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//
+//        BaseResponse response = EventService.read(member, request);
+//
+//        return ResponseEntity.ok(response);
+//    }
+    
+    
     // 연간 일정 조회
 //    @RequestMapping(method = RequestMethod.GET, value = "/{year}")
 //    public ResponseEntity getEventsByYear(@PathVariable int year, @RequestParam String memberId) {
 //
-//        BaseResponse response = personalEventService.findByYear(year,memberId);
-//        // List<PersonalEvent> events = personalEventService.findByYear(year,memberId);
+//        BaseResponse response = EventService.findByYear(year,memberId);
+//        // List<Event> events = EventService.findByYear(year,memberId);
 //        return ResponseEntity.ok(response);
 //    }
 //
 //    // 일정 상세 조회
 //    @RequestMapping(method = RequestMethod.GET, value = "/detail")
-//    public ResponseEntity getEvent(@RequestBody GetPersonalEventReq request) {
+//    public ResponseEntity getEvent(@RequestBody GetEventReq request) {
 //
-//        BaseResponse response = personalEventService.findByEventIdx(request);
-//        // List<PersonalEvent> events = personalEventService.findByYear(year,memberId);
+//        BaseResponse response = EventService.findByEventIdx(request);
+//        // List<Event> events = EventService.findByYear(year,memberId);
 //        return ResponseEntity.ok(response);
 //    }
 //
 //    // 일정 수정
 //    @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-//    public ResponseEntity getEvent(@RequestBody PatchPersonalEventReq request) {
+//    public ResponseEntity getEvent(@RequestBody PatchEventReq request) {
 //
-//        BaseResponse response = personalEventService.updateEvent(request);
+//        BaseResponse response = EventService.updateEvent(request);
 //
 //        return ResponseEntity.ok(response);
 //    }
 //
 //    // 일정 삭제
 //    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
-//    public ResponseEntity getEvent(@RequestBody DeletePersonalEventReq request) {
+//    public ResponseEntity getEvent(@RequestBody DeleteEventReq request) {
 //
-//        BaseResponse response = personalEventService.deleteEvent(request);
+//        BaseResponse response = EventService.deleteEvent(request);
 //
 //        return ResponseEntity.ok(response);
 //    }

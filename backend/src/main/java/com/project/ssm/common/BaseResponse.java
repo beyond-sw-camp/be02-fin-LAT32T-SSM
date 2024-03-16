@@ -13,12 +13,12 @@ public class BaseResponse {
     private String message;
     private Object result;
 
-    public static BaseResponse BaseResponseBuilder (String code, Boolean isSuccess, String message, Object result) {
-        return BaseResponse.builder()
-                .code(code)
-                .isSuccess(isSuccess)
-                .message(message)
-                .result(result)
-                .build();
-    }
+//    public static BaseResponse BaseResponseBuilder (String code, Boolean isSuccess, String message, Object result) {
+//        return BaseResponse.builder()
+//                .code(code)
+//                .isSuccess(isSuccess)
+//                .message(message)
+//                .result(result)
+//                .build();
+//    }
 }

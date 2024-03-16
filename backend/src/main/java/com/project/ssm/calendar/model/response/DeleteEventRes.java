@@ -4,18 +4,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder
-public class DeletePersonalEventRes {
+public class DeleteEventRes {
     private Long memberIdx;
     private Long eventIdx;
     private String title;
 
-    public static DeletePersonalEventRes deletePersonalEventResBuilder (Long memberIdx, Long eventIdx, String title) {
-        return DeletePersonalEventRes.builder()
+    public static DeleteEventRes deleteEventResBuilder (Long memberIdx, Long eventIdx, String title) {
+        return DeleteEventRes.builder()
                 .memberIdx(memberIdx)
                 .eventIdx(eventIdx)
                 .title(title)

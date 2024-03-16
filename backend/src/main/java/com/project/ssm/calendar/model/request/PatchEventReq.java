@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Getter
-public class PatchPersonalEventReq {
+public class PatchEventReq {
 
     private Long eventIdx;
     private Long memberIdx;

@@ -1,7 +1,6 @@
 package com.project.ssm.member.model;
 
-import com.project.ssm.calendar.model.entity.PersonalEvent;
-import com.project.ssm.calendar.repository.PersonalEventRepository;
+import com.project.ssm.calendar.model.entity.Event;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,8 +50,8 @@ public class Member implements UserDetails {
 
     private Boolean status;
 
-//    @OneToMany(mappedBy = "member")
-//    List<PersonalEvent> personalEvents = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    List<Event> events = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
