@@ -33,9 +33,11 @@ public enum ErrorCode {
     REJECT_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "CHATTING_016", "지원하지 않는 미디어 유형입니다."),
     MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHATTING_017", "찾을 수 없는 메시지 입니다."),
     DUPLICATE_DELETE_MESSAGE(HttpStatus.CONFLICT, "CHATTING_018", "중복된 삭제 요청입니다."),
-    REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다.");
+    REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다."),
 
-
+    // 일정
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_000", "일정을 찾을 수 없습니다."),
+    MEMBER_NOT_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "사용자가 등록한 일정이 아닙니다.");
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
     private final String code;    // 페이로드로 반환할 에러 코드
