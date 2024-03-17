@@ -49,7 +49,6 @@ public class EventService {
         }
     }
 
-    // TODO: 누나 리펙터링 좀 해라 진짜
     public List<GetEventRes> list(Member member, int year) {
         List<Event> events = eventRepository.findEventsByYear(member.getMemberIdx(), year);
         List<GetEventRes> eventsList = new ArrayList<>();
