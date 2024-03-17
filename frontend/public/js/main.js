@@ -104,19 +104,29 @@ var calendar = $('#calendar').fullCalendar({
   /* ****************
    *  일정 받아옴
    * ************** */
+
+
   events: function (start, end, timezone, callback) {
+
+      var year = 2024;
+      var test = "test";
+
     $.ajax({
       type: "get",
-      url: "http://localhost:8080/calendar/event/test", //http://localhost:8080/calendar/event
-      data: {
+      url: "http://localhost:8080/calendar/event/" + year, //http://localhost:8080/calendar/event
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('accessToken')
+        },
+        datatype: "JSON",
+      data: ({
         // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
-        //startDate : moment(start).format('YYYY-MM-DD'),
-        //endDate   : moment(end).format('YYYY-MM-DD')
-      },
+        // startDate : moment(start).format('YYYY-MM-DD'),
+        // endDate   : moment(end).format('YYYY-MM-DD')
+      }),
       success: function (response) {
           console.log(response);
-          response = JSON.parse(response);
-        var fixedDate = response.map(function (array) {
+          var fixedDate = response.map(function (array) {
           if (array.allDay && array.start !== array.end) {
             array.end = moment(array.end).add(1, 'days'); // 이틀 이상 AllDay 일정인 경우 달력에 표기시 하루를 더해야 정상출력
           }
