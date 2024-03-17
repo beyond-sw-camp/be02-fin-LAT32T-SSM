@@ -4,7 +4,6 @@ import com.project.ssm.member.model.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Builder

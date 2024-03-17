@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class PatchUpdateRoomReq {
     @NotBlank
-    private String chatRoomIdx;
-    @NotBlank
+    private String chatRoomId;
+//    @NotBlank
     private List<String> memberId;
 }

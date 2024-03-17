@@ -1,5 +1,6 @@
 package com.project.ssm.chat.service;
 
+import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
 import com.project.ssm.chat.exception.MessageNotFoundException;
@@ -29,7 +30,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -42,25 +42,6 @@ public class RoomService {
 
     @Value("${jwt.secret-key}")
     private String secretKey;
-
-    public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
-
-        token = JwtUtils.checkJwtToken(token);
-        String memberId = JwtUtils.getUserMemberId(token, secretKey);
-        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
-        List<GetRoomListRes> roomListRes = new ArrayList<>();
-
-        if (roomParticipants.isEmpty()) {
-            roomListRes.add(GetRoomListRes.buildDto("", ""));
-            return BaseResponse.successRes("CHATTING_002", true, "채팅방이 조회되었습니다.", roomListRes);
-        } else {
-            for (RoomParticipants roomParticipant : roomParticipants) {
-                ChatRoom chatRoom = roomParticipant.getChatRoom();
-                roomListRes.add(GetRoomListRes.buildDto(chatRoom.getChatRoomId(), chatRoom.getChatRoomName()));
-            }
-            return BaseResponse.successRes("CHATTING_002", true, "채팅방이 조회되었습니다.", roomListRes);
-        }
-    }
 
     @Transactional
     public BaseResponse<PostCreateRoomRes> createRoom(PostCreateRoomReq postCreateRoom) {
@@ -75,6 +56,69 @@ public class RoomService {
         return BaseResponse.successRes("CHATTING_001", true, "채팅방이 생성되었습니다.", postCreateRoomRes);
     }
 
+    public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
+
+        token = JwtUtils.checkJwtToken(token);
+        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
+        List<GetRoomListRes> roomListRes = new ArrayList<>();
+
+        if (roomParticipants.isEmpty()) {
+            return BaseResponse.successRes("CHATTING_002", true, "채팅방이 조회되었습니다.", null);
+        } else {
+            for (RoomParticipants roomParticipant : roomParticipants) {
+                ChatRoom chatRoom = roomParticipant.getChatRoom();
+                roomListRes.add(GetRoomListRes.buildDto(chatRoom.getChatRoomId(), chatRoom.getChatRoomName()));
+            }
+            return BaseResponse.successRes("CHATTING_002", true, "채팅방이 조회되었습니다.", roomListRes);
+        }
+    }
+
+    public Object updateRoom(PatchUpdateRoomReq patchUpdateRoomReq) {
+        List<String> memberIdList = new ArrayList<>();
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(patchUpdateRoomReq.getChatRoomId()).orElseThrow(() ->
+                ChatRoomNotFoundException.forNotFoundChatRoom());
+
+        for (String memberId : patchUpdateRoomReq.getMemberId()) {
+            Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
+                    MemberNotFoundException.forMemberId(memberId));
+            roomPartRepository.save(RoomParticipants.buildRoomPart(member, chatRoom));
+            memberIdList.add(memberId);
+        }
+
+        return BaseResponse.successRes("CHATTING_003", true, "",
+                PatchUpdateRoomRes.buildRoom(patchUpdateRoomReq.getChatRoomId(), chatRoom.getChatRoomName(), memberIdList));
+    }
+
+    public BaseResponse<DeleteRoomRes> deleteChatRoom(String chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
+                ChatRoomNotFoundException.forNotFoundChatRoom());
+        chatRoom.setChatRoomStatus(false);
+        chatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+        chatRoomRepository.save(chatRoom);
+        return BaseResponse.successRes("CHATTING_004", true, "",
+                DeleteRoomRes.buildDeleteRoom(chatRoomId, chatRoom.getUpdatedAt()));
+    }
+
+    public BaseResponse<PatchOutRoomRes> outRoom(String token, String chatRoomIdx) {
+        token = JwtUtils.checkJwtToken(token);
+        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
+                MemberNotFoundException.forMemberId(memberId));
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomIdx).orElseThrow(() ->
+                ChatRoomNotFoundException.forNotFoundChatRoom());
+
+        for (RoomParticipants roomParticipants : member.getRoomParticipantsList()) {
+            if (roomParticipants.getChatRoom().getChatRoomId().equals(chatRoom.getChatRoomId())) {
+                roomPartRepository.deleteById(roomParticipants.getRoomParticipantsIdx());
+                return BaseResponse.successRes("CHATTING_005", true, "",
+                        PatchOutRoomRes.buildOutRoom(chatRoom.getChatRoomId(), member.getMemberId()));
+            }
+        }
+        throw ChatRoomAccessException.forNotAccessChatRoom(member.getMemberName());
+    }
+
     public BaseResponse<GetRoomInfoRes> getRoomInfo(String roomId) {
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(roomId).orElseThrow(() ->
                 ChatRoomNotFoundException.forNotFoundChatRoom());
@@ -85,70 +129,11 @@ public class RoomService {
         for (Message message : messages) {
             messageList.add(ReturnMessageRes.buildMessage(message.getMessage(), message.getMember().getMemberName(), message.getCreatedAt()));
         }
-        return BaseResponse.successRes("CHATTING_003", true, "채팅방 조회를 성공하였습니다.",
+        return BaseResponse.successRes("CHATTING_006", true, "채팅방 조회를 성공하였습니다.",
                 GetRoomInfoRes.buildDto(chatRoom.getChatRoomName(), messageList));
     }
 
-    public BaseResponse<List<GetChatListRes>> getChatList(String token, String chatRoomId, Integer page, Integer size) {
-        List<GetChatListRes> chatList = new ArrayList<>();
-
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Message> list = messageRepository.findList(pageable, chatRoomId);
-
-        for (Message message : list) {
-            chatList.add(GetChatListRes.buildChatList(message.getMessage(), message.getCreatedAt(), message.getMember().getMemberName()));
-        }
-        return BaseResponse.successRes("CHATTING_000", true, "메시지 조회를 성공하였습니다.", chatList);
-    }
-
-    public Object updateRoom(PatchUpdateRoomReq patchUpdateRoomReq) {
-        List<String> memberIdList = new ArrayList<>();
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(patchUpdateRoomReq.getChatRoomIdx()).orElseThrow(() ->
-                ChatRoomNotFoundException.forNotFoundChatRoom());
-
-        for (String memberId : patchUpdateRoomReq.getMemberId()) {
-            Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
-                    MemberNotFoundException.forMemberId(memberId));
-            roomPartRepository.save(RoomParticipants.buildRoomPart(member, chatRoom));
-            memberIdList.add(memberId);
-        }
-
-        return BaseResponse.successRes("CHATTING_000", true, "",
-                PatchUpdateRoomRes.buildRoom(patchUpdateRoomReq.getChatRoomIdx(), chatRoom.getChatRoomName(), memberIdList));
-
-    }
-
-    public BaseResponse<DeleteRoomRes> deleteChatRoom(String chatRoomId) {
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
-                ChatRoomNotFoundException.forNotFoundChatRoom());
-        chatRoom.setChatRoomStatus(false);
-        chatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
-        chatRoomRepository.save(chatRoom);
-        return BaseResponse.successRes("CHATTING_000", true, "",
-                DeleteRoomRes.buildDeleteRoom(chatRoomId, chatRoom.getUpdatedAt()));
-
-    }
-
-    public String outRoom(String token, String chatRoomIdx) {
-        token = JwtUtils.checkJwtToken(token);
-        String memberId = JwtUtils.getUserMemberId(token, secretKey);
-
-        Optional<Member> member = memberRepository.findByMemberId(memberId);
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomId(chatRoomIdx);
-
-        if (member.isPresent() && chatRoom.isPresent()) {
-            for (RoomParticipants roomParticipants : member.get().getRoomParticipantsList()) {
-                if (roomParticipants.getChatRoom().getChatRoomId().equals(chatRoomIdx)) {
-                    roomPartRepository.deleteById(roomParticipants.getRoomParticipantsIdx());
-                }
-            }
-            return "ok";
-        }
-
-        return null;
-    }
-
-    public String deleteMessage(String token, Long messageIdx) {
+    public BaseResponse<DeleteMessageRes> deleteMessage(String token, Long messageIdx) {
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
 
@@ -160,9 +145,31 @@ public class RoomService {
 
         if(message.getMember().getMemberId().equals(member.getMemberId())) {
             messageRepository.deleteById(messageIdx);
-            return "";
+            return BaseResponse.successRes("CHATTING_007", true, "메시지 삭제를 성공하였습니다.",
+                    DeleteMessageRes.buildMessageRes(messageIdx));
         } else {
             throw MessageAccessException.forDeleteMessage();
         }
+    }
+
+    public BaseResponse<List<GetChatListRes>> getChatList(String token, String chatRoomId, Integer page, Integer size) {
+        token = JwtUtils.checkJwtToken(token);
+        String memberId = JwtUtils.getUserMemberId(token, secretKey);
+
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
+                MemberNotFoundException.forMemberId(memberId));
+
+        for (RoomParticipants roomParticipants : member.getRoomParticipantsList()) {
+            if (roomParticipants.getChatRoom().getChatRoomId().equals(chatRoomId)) {
+                List<GetChatListRes> chatList = new ArrayList<>();
+                Pageable pageable = PageRequest.of(page - 1, size);
+                Page<Message> list = messageRepository.findList(pageable, chatRoomId);
+                for (Message message : list) {
+                    chatList.add(GetChatListRes.buildChatList(message.getMessage(), message.getCreatedAt(), message.getMember().getMemberName()));
+                }
+                return BaseResponse.successRes("CHATTING_008", true, "메시지 조회를 성공하였습니다.", chatList);
+            }
+        }
+        throw ChatRoomAccessException.forNotAccessChatRoom(member.getMemberName());
     }
 }

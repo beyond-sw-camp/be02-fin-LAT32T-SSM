@@ -15,6 +15,7 @@ public class PostCreateRoomReq {
     @NotBlank
     @Size(max = 50)
     private String chatRoomName;
-    @NotBlank
+
+//    @NotBlank
     private List<String> memberId;
 }
