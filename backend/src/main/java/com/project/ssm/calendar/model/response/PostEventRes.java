@@ -1,6 +1,8 @@
 package com.project.ssm.calendar.model.response;
 
 
+import com.project.ssm.calendar.model.entity.Event;
+import com.project.ssm.member.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +20,21 @@ public class PostEventRes {
     private String memberName;
     private Boolean allDay;
     private Long memberIdx;
+
+    private String type;
+
+
+    public static PostEventRes buidEventRes(Event event, Member member) {
+        return PostEventRes.builder()
+                .eventIdx(event.getEventIdx())
+                .memberIdx(member.getMemberIdx())
+                .memberName(member.getMemberName())
+                .title(event.getTitle())
+                .eventContent(event.getEventContent())
+                .startedAt(event.getStartedAt())
+                .closedAt(event.getClosedAt())
+                .allDay(event.getAllDay())
+                .type(event.getType())
+                .build();
+    }
 }

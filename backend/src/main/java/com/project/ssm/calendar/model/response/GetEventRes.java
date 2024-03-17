@@ -1,5 +1,6 @@
 package com.project.ssm.calendar.model.response;
 
+import com.project.ssm.calendar.model.entity.Event;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,20 @@ public class GetEventRes {
     private String textColor;
     private Boolean allDay;
 
+    public static GetEventRes buildEventRes(Event event) {
+        return GetEventRes.builder()
+                ._id(event.getEventIdx())
+                .title(event.getTitle())
+                .description(event.getEventContent())
+                .start(event.getStartedAt())
+                .end(event.getClosedAt())
+                .type(event.getType())
+                .username(event.getMemberName())
+                .backgroundColor(event.getBackgroundColor())
+                .textColor(event.getTextColor())
+                .allDay(event.getAllDay())
+                .build();
+    }
 
 
 //    [{\n" +

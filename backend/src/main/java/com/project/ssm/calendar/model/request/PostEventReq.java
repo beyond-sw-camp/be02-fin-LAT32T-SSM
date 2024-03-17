@@ -1,6 +1,5 @@
 package com.project.ssm.calendar.model.request;
 
-import com.project.ssm.member.model.Member;
 import lombok.*;
 
 @Setter
@@ -17,7 +16,5 @@ public class PostEventReq {
     private String backgroundColor;
     private String textColor;
     private Boolean allDay;
-
-    private Member member;
 
 }
