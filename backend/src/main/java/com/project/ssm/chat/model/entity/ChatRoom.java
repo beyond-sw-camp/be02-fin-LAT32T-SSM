@@ -19,10 +19,10 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomIdx;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String chatRoomId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String chatRoomName;
 
     @Column(nullable = false)
