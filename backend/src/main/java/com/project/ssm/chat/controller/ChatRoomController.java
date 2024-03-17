@@ -5,9 +5,13 @@ import com.project.ssm.chat.model.request.PostCreateRoomReq;
 import com.project.ssm.chat.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,12 +38,12 @@ public class ChatRoomController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/room/create")
-    public ResponseEntity<Object> createRoom(@RequestBody PostCreateRoomReq postCreateRoomReq) {
+    public ResponseEntity<Object> createRoom(@RequestBody @Valid PostCreateRoomReq postCreateRoomReq) {
         return ResponseEntity.ok().body(roomService.createRoom(postCreateRoomReq));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/update")
-    public ResponseEntity<Object> updateRoom(@RequestBody PatchUpdateRoomReq patchUpdateRoomReq) {
+    public ResponseEntity<Object> updateRoom(@RequestBody @Valid PatchUpdateRoomReq patchUpdateRoomReq) {
         return ResponseEntity.ok().body(roomService.updateRoom(patchUpdateRoomReq));
     }
 

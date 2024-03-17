@@ -29,7 +29,6 @@ public class ChatController {
         messageService.sendMessage(roomId, sendMessageReq);
     }
 
-    // TODO: 메시지 수정
     @MessageMapping("/room/{roomId}/update")
     public void updateMessage(@DestinationVariable(value = "roomId") String roomId, UpdateMessageReq updateMessageReq) {
         messageService.updateMessage(roomId, updateMessageReq);
