@@ -49,6 +49,10 @@ public class JwtUtils {
         return extractAllClaims(token, key).get("memberId", String.class);
     }
 
+    public static String getMemberInfo(String token, String key) {
+        return extractAllClaims(token, key).get("memberId", String.class);
+    }
+
     public static String getAuthority(String token, String key) {
         return extractAllClaims(token, key).get("ROLE", String.class);
     }

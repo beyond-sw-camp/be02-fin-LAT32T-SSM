@@ -1,6 +1,8 @@
 package com.project.ssm.member.model;
 
 import com.project.ssm.calendar.model.entity.Event;
+import com.project.ssm.chat.model.entity.Message;
+import com.project.ssm.chat.model.entity.RoomParticipants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,6 +56,13 @@ public class Member implements UserDetails {
 
     @OneToMany(mappedBy = "member")
     List<Event> events = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Message> messages;
+
+    @OneToMany(mappedBy = "member")
+    private List<RoomParticipants> roomParticipantsList;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

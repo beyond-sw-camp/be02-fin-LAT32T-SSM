@@ -11,33 +11,29 @@
               </div>
               <form class="user">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                         placeholder="Your Name">
+                  <input v-model="member.memberId" type="text" class="form-control form-control-user" placeholder="아이디를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                         placeholder="Email Address">
+                  <input v-model="member.name" type="text" class="form-control form-control-user" placeholder="이름을 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-user"
-                         id="exampleInputPassword" placeholder="Password">
+                  <input v-model="member.password" type="password" class="form-control form-control-user" placeholder="비밀번호를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-user" id="exampleLastName"
-                         placeholder="Employe Number">
+                  <input v-model="member.department" type="text" class="form-control form-control-user" placeholder="부서명을 입력해주세요">
                 </div>
-                <a href="login.html" class="btn btn-primary btn-user btn-block">
+                <div class="form-group">
+                  <input v-model="member.position" type="text" class="form-control form-control-user" placeholder="직책을 입력해주세요">
+                </div>
+                <button @click="signUp" class="btn btn-primary btn-user btn-block">
                   회원 가입
-                </a>
+                </button>
                 <hr>
                 <a href="index.html" class="btn btn-google btn-user btn-block">
                   <i class="fab fa-google fa-fw"></i> 구글로 회원 가입하기
                 </a>
               </form>
               <hr>
-              <div class="text-center">
-                <a class="small" href="forgot-password.html">비밀번호를 잊어버리셨나요?</a>
-              </div>
               <div class="text-center">
                 <a class="small" href="login.html">이미 계정이 있으신가요? 로그인!</a>
               </div>
@@ -50,8 +46,28 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: 'SignUpPage',
+  data() {
+    return {
+      member: {
+        memberId: "",
+        password: "",
+        name: "",
+        department: "",
+        position: ""
+      }
+    }
+  },
+  methods: {
+    async signUp() {
+      let response = await axios.post("http://localhost:8080/member/signup", this.member)
+
+      console.log(response);
+    }
+  }
 }
 </script>
 
