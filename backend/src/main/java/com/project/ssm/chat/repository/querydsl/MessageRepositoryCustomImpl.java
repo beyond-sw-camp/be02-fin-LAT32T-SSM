@@ -1,7 +1,6 @@
 package com.project.ssm.chat.repository.querydsl;
 
 import com.project.ssm.chat.model.entity.Message;
-import com.project.ssm.chat.model.entity.QChatRoom;
 import com.project.ssm.chat.model.entity.QMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
