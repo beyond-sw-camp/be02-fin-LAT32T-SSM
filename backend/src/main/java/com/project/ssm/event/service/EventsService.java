@@ -1,16 +1,16 @@
 package com.project.ssm.event.service;
 
+import com.project.ssm.event.model.Events;
+import com.project.ssm.event.model.request.MeetingRoomReservationReq;
+import com.project.ssm.event.model.response.MeetingRoomReservationCancelRes;
+import com.project.ssm.event.model.response.MeetingRoomReservationRes;
+import com.project.ssm.event.repository.EventsRepository;
 import com.project.ssm.eventparticipants.model.EventParticipants;
 import com.project.ssm.eventparticipants.repository.EventParticipantsRepository;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
-import com.project.ssm.event.model.Events;
-import com.project.ssm.event.model.request.MeetingRoomReservationReq;
-import com.project.ssm.event.model.response.MeetingRoomReservationCancelRes;
-import com.project.ssm.event.model.response.MeetingRoomReservationRes;
-import com.project.ssm.event.repository.EventsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +59,6 @@ public class EventsService {
                 eventParticipantsRepository.save(eventParticipant);
             }
         }
-
         // 응답
         return MeetingRoomReservationRes.builder()
                 .result(MeetingRoomReservationRes.Result.builder()

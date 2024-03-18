@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class EventsController {
     private final EventsService eventsService;
-    @PostMapping("/meetingroom/reservation") // 회의실 예약
+    @RequestMapping(method = RequestMethod.POST, value = "/meetingroom/reservation") // 회의실 예약
     public ResponseEntity<BaseResponse> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
         MeetingRoomReservationRes response = eventsService.meetingRoomReservation(request);
 
@@ -27,7 +27,7 @@ public class EventsController {
 
         return ResponseEntity.ok().body(baseResponse);
     }
-    @DeleteMapping("/meetingroom/reservation/delete/{reservationIdx}") // 예약 삭제
+    @RequestMapping(method = RequestMethod.DELETE, value = "/meetingroom/reservation/delete/{reservationIdx}") // 예약 삭제
     public ResponseEntity<BaseResponse> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
         MeetingRoomReservationCancelRes response = eventsService.meetingRoomReservationCancel(reservationIdx);
 
