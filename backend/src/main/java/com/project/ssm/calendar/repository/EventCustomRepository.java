@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface EventCustomRepository {
     List<Event> findEventsByYear(Long memberIdx, int year);
+
+    List<Event> findByYear(int year);
 }
 

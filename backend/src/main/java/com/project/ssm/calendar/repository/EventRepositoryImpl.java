@@ -29,4 +29,18 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 )
                 .fetch();
     }
+
+    @Override
+    public List<Event> findByYear(int year) {
+
+        QEvent event = QEvent.event;
+
+        return queryFactory
+                .selectFrom(event)
+                .where(
+                        event.startedAt.substring(0,4).eq(String.valueOf(year)).or(event.closedAt.substring(0,4).eq(String.valueOf(year)))
+                )
+                .fetch()
+                ;
+    }
 }

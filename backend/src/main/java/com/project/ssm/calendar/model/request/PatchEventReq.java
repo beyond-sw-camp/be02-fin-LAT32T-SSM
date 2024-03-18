@@ -1,5 +1,6 @@
 package com.project.ssm.calendar.model.request;
 
+import com.project.ssm.calendar.model.entity.Event;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
