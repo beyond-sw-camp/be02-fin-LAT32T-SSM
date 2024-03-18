@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -22,8 +23,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
-    public ResponseEntity signup(@RequestBody @Valid PostMemberSignupReq req) {
-        return ResponseEntity.ok().body(memberService.signup(req));
+    public ResponseEntity signup(
+            @RequestPart(value = "member") @Valid PostMemberSignupReq req,
+            @RequestPart(value = "profileImage") MultipartFile profileImage) {
+        return ResponseEntity.ok().body(memberService.signup(req, profileImage));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
@@ -46,5 +49,11 @@ public class MemberController {
     public ResponseEntity delete() {
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(memberService.delete(member));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/profile/add")
+    public ResponseEntity profileAdd() {
+
+        return ResponseEntity.ok().body("ok");
     }
 }

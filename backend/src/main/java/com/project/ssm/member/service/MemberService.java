@@ -5,6 +5,7 @@ import com.project.ssm.member.config.filter.JwtFilter;
 import com.project.ssm.member.config.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberAccountException;
 import com.project.ssm.member.exception.MemberDuplicateException;
+import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.model.request.GetMemberCheckIdReq;
 import com.project.ssm.member.model.request.PatchMemberUpdatePasswordReq;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,26 +37,22 @@ public class MemberService {
     private Long expiredTimeMs;
 
     private final MemberRepository memberRepository;
+    private final ProfileImageService profileImageService;
     private final PasswordEncoder passwordEncoder;
 
-    public BaseResponse signup(PostMemberSignupReq req) {
+    @Transactional
+    public BaseResponse signup(PostMemberSignupReq req, MultipartFile profileImage) {
         Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
 
         if (byMemberId.isPresent()) {
             throw MemberDuplicateException.forMemberId(req.getMemberId());
         }
 
-        Member member = memberRepository.save(Member.builder()
-                .memberId(req.getMemberId())
-                .memberPw(passwordEncoder.encode(req.getPassword()))
-                .memberName(req.getName())
-                .department(req.getDepartment())
-                .position(req.getPosition())
-                .status(true)
-                .startedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-                .authority("ROLE_USER")
-                .build());
+        Member member = memberRepository.save(
+                Member.createMember(req.getMemberId(), passwordEncoder.encode(req.getPassword()),
+                req.getMemberName(), req.getDepartment(), req.getPosition()));
+
+        profileImageService.registerProfileImage(member, profileImage);
 
         return BaseResponse.builder()
                 .isSuccess(true)
@@ -72,7 +70,7 @@ public class MemberService {
         Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
 
         if (byMemberId.isEmpty()) {
-            throw new RuntimeException("일단 아이디 못찾아");
+            throw MemberNotFoundException.forMemberId(req.getMemberId());
         }
         Member member = byMemberId.get();
         if (passwordEncoder.matches(req.getPassword(), member.getPassword()) && member.getStatus().equals(true)) {
@@ -107,7 +105,6 @@ public class MemberService {
                     .build();
         }
     }
-
 
     @Transactional
     public BaseResponse updatePassword(Member m, PatchMemberUpdatePasswordReq req) {

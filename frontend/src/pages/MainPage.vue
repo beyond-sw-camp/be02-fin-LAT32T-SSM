@@ -29,7 +29,7 @@
         </section>
         <form class="form" name="feedForm">
           <div>
-            <MessageEditor model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>
+            <MessageEditor :model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>
           </div>
         </form>
       </section>

@@ -14,7 +14,7 @@ public class PostMemberSignupReq {
 
     private String memberId;
     private String password;
-    private String name;
+    private String memberName;
     private String department;
     private String position;
 }
