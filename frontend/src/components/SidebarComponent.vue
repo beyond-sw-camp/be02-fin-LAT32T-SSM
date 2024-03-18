@@ -93,8 +93,6 @@
 </template>
 <script>
 import axios from "axios";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import {mapActions} from "pinia";
@@ -149,7 +147,7 @@ export default {
           Authorization: localStorage.getItem("accessToken")
         }
       });
-      this.roomList = response.data;
+      this.roomList = response.data.result;
       console.log(this.roomList);
     },
     // enterRoom(chatRoomId) {
@@ -452,6 +450,10 @@ export default {
 
 .fa-user-minus:before {
   content: "\f503";
+}
+
+*, :before, :after {
+  box-sizing: inherit;
 }
 
 @font-face {

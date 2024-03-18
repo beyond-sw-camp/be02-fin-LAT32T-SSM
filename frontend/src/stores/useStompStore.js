@@ -4,7 +4,6 @@ import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 
 export const useStompStore = defineStore("stomp", {
-    state: () => ({ test: [] }),
     actions: {
         basicConnect(stompClient) {
             console.log("================store============")

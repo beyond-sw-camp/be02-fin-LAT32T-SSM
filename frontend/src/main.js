@@ -16,8 +16,10 @@ import 'v-calendar/style.css';
 import VCalendar from 'v-calendar';
 
 
+
 const pinia = createPinia();
 const app = createApp(App)
+
 
 app.component('MessageEditor', Editor);
 
@@ -27,3 +29,4 @@ app.use(VCalendar, {});
 app.use(pinia);
 app.use(DialogService);
 app.mount('#app')
+

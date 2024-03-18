@@ -25,7 +25,7 @@ public class MessageRepositoryCustomImpl extends QuerydslRepositorySupport imple
         QMessage message = new QMessage("message");
 
         List<Message> result = from(message)
-                .where(message.chatRoom.roomId.eq(chatRoomId))
+                .where(message.chatRoom.chatRoomId.eq(chatRoomId))
                 .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
