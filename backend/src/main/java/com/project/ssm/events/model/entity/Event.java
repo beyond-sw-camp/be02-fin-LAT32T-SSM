@@ -74,6 +74,7 @@ public class Event{
         return event;
     }
 
+    // 회의실 예약하는 Entity
     public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq req) {
 //        return Event.builder()
 //                .meetingRoom(meetingRoom)
