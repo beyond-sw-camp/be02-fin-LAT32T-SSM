@@ -27,9 +27,8 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
           </div>
         </section>
-        <button @click="send()">test</button>
-          <div>
-            <textarea id="summernote"></textarea>
+          <div @keyup="sendMessage">
+            <textarea id="summernote"/>
           </div>
       </section>
     </section>
@@ -43,12 +42,12 @@ import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import axios from "axios";
+// import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import {mapActions, mapState} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
-
+import {useChatRoomStore} from "@/stores/useChatRoomStore";
 
 export default {
   name: 'MainPage',
@@ -62,24 +61,24 @@ export default {
       memberId: "",
       message: "",
       recvList: [],
-      roomName: "",
+      chatRoomName: "",
       roomList: [],
       username: "",
       chatRoomId: "",
     }
+  },
+  computed: {
+    ...mapState(useMessageStore, ['getAllMessage']),
   },
   created() {
     console.log("============기본 연결================");
     const stompClient = this.initSock();
     this.basicConnect(stompClient);
   },
-  computed: {
-    ...mapState(useMessageStore, ['getAllMessage']),
-  },
   methods: {
-    ...mapActions(useMessageStore, ['addMessage']),
     ...mapActions(useStompStore, ['basicConnect']),
-    ...mapActions(useStompStore, ['roomConnect']),
+    ...mapActions(useStompStore,['roomConnect']),
+    ...mapActions(useChatRoomStore, ['getRoomList']),
 
     initSock() {
       const server = "http://localhost:8080/chat"
@@ -88,37 +87,22 @@ export default {
       this.stompClient = Stomp.over(socket);
       return this.stompClient;
     },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        },
-      });
-      this.roomList = response.data;
-    },
     sendMessage(e) {
+      this.message = $('#summernote').summernote('code')
       if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
-        this.send();
-        this.message = ''
+        this.message = this.message.replace(/<[^>]*>?/g, '');
+        this.send(this.message);
+        $('#summernote').summernote('reset');
       }
     },
-    send() {
-      this.message = this.message.replace(/<[^>]*>?/g, '');
-      console.log($('#summernote').summernote('code'));
-      $('#summernote').summernote('reset');
+    send(message) {
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           memberId: this.memberId,
           memberName: this.memberName,
-          message: this.message
+          message: message
         };
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
-    enterRoom() {
-      if (this.stompClient && this.stompClient.connected) {
-        const token = localStorage.getItem("accessToken");
-        this.stompClient.send("/send/room", {token});
       }
     },
     setMember(token) {
@@ -134,7 +118,7 @@ export default {
           $('#summernote').summernote({
             placeholder: 'Hello stand alone ui',
             tabsize: 2,
-            height: 120,
+            height: 80,
             toolbar: [
               ['style', ['style']],
               ['font', ['bold', 'underline', 'clear']],
@@ -145,19 +129,19 @@ export default {
               ['view', ['fullscreen', 'codeview', 'help']]
             ]
           });
-
-
         })
         .catch(() => {
           // Failed to fetch script
         });
-    this.getRoomList();
+    // this.getRoomList();
+    useChatRoomStore().getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
     if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
       this.chatRoomId = this.$route.params.chatRoomId;
-      this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+      // this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+      useStompStore().roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
     } else {
       // this.basicConnect();
     }

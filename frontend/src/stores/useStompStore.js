@@ -3,6 +3,8 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 
+const backend = 'http://localhost:8080'
+
 export const useStompStore = defineStore("stomp", {
     actions: {
         basicConnect(stompClient) {
@@ -30,7 +32,7 @@ export const useStompStore = defineStore("stomp", {
         roomConnect(chatRoomId, token) {
             console.log(chatRoomId);
             console.log(token);
-            const server = "http://localhost:8080/chat"
+            const server = `${backend}/chat`
             let socket = new SockJS(server);
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)

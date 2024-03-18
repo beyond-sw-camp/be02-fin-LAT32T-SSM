@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+// import VueJwtDecode from "vue-jwt-decode";
 
 const backend = 'http://localhost:8080'
 // const storedToken = localStorage.getItem("accessToken");
@@ -82,7 +83,12 @@ export const useMemberStore = defineStore("member", {
                 alert("비밀번호를 확인해주세요")
             }
             
-        }
+        },
+        // setMember(token) {
+        //     token = VueJwtDecode.decode(token.split(" ")[1]);
+        //     this.memberId = token.memberId;
+        //     this.memberName = token.memberName;
+        // }
     },
     getters: {
 
