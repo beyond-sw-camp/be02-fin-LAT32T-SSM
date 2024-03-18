@@ -27,11 +27,11 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
           </div>
         </section>
-        <form class="form" name="feedForm">
+        <button @click="send()">test</button>
           <div>
             <textarea id="summernote"></textarea>
+<!--            <MessageEditor :model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>-->
           </div>
-        </form>
       </section>
     </section>
   </main>
@@ -49,6 +49,7 @@ import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import {mapActions, mapState} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
+
 
 export default {
   name: 'MainPage',
@@ -104,7 +105,8 @@ export default {
     },
     send() {
       this.message = this.message.replace(/<[^>]*>?/g, '');
-      console.log('Send Message:' + this.message);
+      console.log($('#summernote').summernote('code'));
+      $('#summernote').summernote('reset');
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           memberId: this.memberId,
@@ -127,25 +129,29 @@ export default {
     }
   },
   mounted() {
-    const js = "$('#summernote').summernote({\
-      placeholder: 'Hello stand alone ui',\
-      tabsize: 1,\
-      height: 80,\
-      toolbar: [\
-        ['style', ['style']],\
-        ['font', ['bold', 'underline', 'clear']],\
-        ['color', ['color']],\
-        ['para', ['ul', 'ol', 'paragraph']],\
-        ['table', ['table']],\
-        ['insert', ['link', 'picture', 'video']],\
-        ['view', ['fullscreen', 'codeview', 'help']]\
-      ]\
-    });"
+    this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
+        .then(() => {
+          // Script is loaded, do something
+          $('#summernote').summernote({
+            placeholder: 'Hello stand alone ui',
+            tabsize: 2,
+            height: 120,
+            toolbar: [
+              ['style', ['style']],
+              ['font', ['bold', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+          });
 
-    const script = document.createElement('script');
-    script.innerHTML = js;
-    document.body.appendChild(script);
 
+        })
+        .catch(() => {
+          // Failed to fetch script
+        });
     this.getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));

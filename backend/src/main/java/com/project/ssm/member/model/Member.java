@@ -1,6 +1,6 @@
 package com.project.ssm.member.model;
 
-import com.project.ssm.calendar.model.entity.Event;
+import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.chat.model.entity.Message;
 import com.project.ssm.chat.model.entity.RoomParticipants;
 import lombok.AllArgsConstructor;
