@@ -177,6 +177,10 @@
             <!-- 필터 Component -->
             /.filter panel
           </div>
+        </section>
+      </section>
+    </section>
+  </main>
 </template>
 
 <script>
