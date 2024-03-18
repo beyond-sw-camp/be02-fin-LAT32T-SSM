@@ -30,7 +30,6 @@
         <button @click="send()">test</button>
           <div>
             <textarea id="summernote"></textarea>
-<!--            <MessageEditor :model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>-->
           </div>
       </section>
     </section>
