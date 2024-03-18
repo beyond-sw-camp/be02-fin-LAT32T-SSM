@@ -1,7 +1,7 @@
 package com.project.ssm.meetingroom.service;
 
-import com.project.ssm.calendar.model.entity.Event;
-import com.project.ssm.calendar.repository.EventRepository;
+import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
 import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;

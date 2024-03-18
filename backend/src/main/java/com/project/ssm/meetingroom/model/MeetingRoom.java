@@ -1,6 +1,6 @@
 package com.project.ssm.meetingroom.model;
 
-import com.project.ssm.calendar.model.entity.Event;
+import com.project.ssm.events.model.entity.Event;
 import lombok.*;
 
 import javax.persistence.*;
