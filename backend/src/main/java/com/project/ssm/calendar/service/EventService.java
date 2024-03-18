@@ -8,7 +8,9 @@ import com.project.ssm.calendar.model.request.PostEventReq;
 import com.project.ssm.calendar.model.response.*;
 import com.project.ssm.calendar.repository.EventRepository;
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
+import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +27,12 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public BaseResponse create(Member member, PostEventReq request) {
+        memberRepository.findById(member.getMemberIdx()).orElseThrow(()->
+                MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
         Event event = eventRepository.save(Event.buildEvent(member, request));
         PostEventRes postEventRes = PostEventRes.buidEventRes(event, member);
         return BaseResponse.builder()

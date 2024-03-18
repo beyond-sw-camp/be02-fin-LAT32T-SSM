@@ -37,7 +37,12 @@ public enum ErrorCode {
 
     // 일정
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_000", "일정을 찾을 수 없습니다."),
-    MEMBER_NOT_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "사용자가 등록한 일정이 아닙니다.");
+    UNAUTHORIZED_ACCESS_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "권한이 없는 사용자입니다."),
+    DUPLICATED_EVENT(HttpStatus.CONFLICT, "CALENDAR_000", "이미 존재하는 일정입니다."),
+    INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_000", "등록할 수 없는 시간입니다."),
+    EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_000", "필수 입력값을 입력하지 않았습니다."),
+    NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_000", "검색 결과가 없습니다."),
+    ;
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
     private final String code;    // 페이로드로 반환할 에러 코드

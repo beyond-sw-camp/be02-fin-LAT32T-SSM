@@ -10,6 +10,11 @@ public class CalendarDuplicateException extends EntityDuplicateException {
         super(errorCode, message);
     }
 
+    public static CalendarDuplicateException forEventIdx(String title) {
+        return new CalendarDuplicateException(ErrorCode.DUPLICATED_EVENT, String.format("[%s]는 이미 등록한 일정입니다.", title));
+    }
+
+
 
 
 }

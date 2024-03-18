@@ -13,4 +13,8 @@ public class CalendarNotFoundException extends EntityNotFoundException {
     public static CalendarNotFoundException forEventId(Long eventIdx) {
         return new CalendarNotFoundException(ErrorCode.EVENT_NOT_FOUND, "일정을 찾을 수 없습니다.");
     }
+
+    public static CalendarNotFoundException forNoSearch(int year) {
+        return new CalendarNotFoundException(ErrorCode.NO_SEARCH_RESULT, String.format("[%d]년의 일정을 검색할 수 없습니다.", year));
+    }
 }
