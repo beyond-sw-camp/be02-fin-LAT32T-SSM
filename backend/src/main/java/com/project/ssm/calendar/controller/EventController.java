@@ -1,21 +1,19 @@
 package com.project.ssm.calendar.controller;
 
 
-import com.project.ssm.calendar.model.request.DeleteEventReq;
 import com.project.ssm.calendar.model.request.PatchEventReq;
 import com.project.ssm.calendar.model.request.PostEventReq;
-import com.project.ssm.calendar.model.response.GetEventRes;
 import com.project.ssm.calendar.service.EventService;
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.calendar.model.request.MeetingRoomReservationReq;
+import com.project.ssm.calendar.model.response.DeleteReservationCancelRes;
+import com.project.ssm.calendar.model.response.MeetingRoomReservationRes;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,6 +55,34 @@ public class EventController {
     public ResponseEntity deleteEvent(@RequestParam Long eventIdx) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.delete(member, eventIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
+    public ResponseEntity<BaseResponse> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
+        MeetingRoomReservationRes response = eventService.meetingRoomReservation(request);
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .isSuccess(true)
+                .code("ROOM_039")
+                .message("회의실 예약이 되었습니다.")
+                .result(response.getResult())
+                .build();
+
+        return ResponseEntity.ok().body(baseResponse);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
+    public ResponseEntity<BaseResponse> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
+        DeleteReservationCancelRes response = eventService.meetingRoomReservationCancel(reservationIdx);
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .isSuccess(true)
+                .code("ROOM_049")
+                .message("회의실 예약이 취소 되었습니다.")
+                .result(response)
+                .build();
+
+        return ResponseEntity.ok().body(baseResponse);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")

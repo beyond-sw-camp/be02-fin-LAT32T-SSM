@@ -22,10 +22,7 @@ public enum ErrorCode {
 
     // 일정
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_000", "일정을 찾을 수 없습니다."),
-    MEMBER_NOT_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "사용자가 등록한 일정이 아닙니다.");
-    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복됩니다."),
-    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없습니다."),
-    DIFFERENT_USER_PASSWORD(HttpStatus.BAD_REQUEST, "USER-004", "비밀번호가 일치하지 않습니다."),
+    MEMBER_NOT_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "사용자가 등록한 일정이 아닙니다."),
 
     // 채팅방
     DUPLICATE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_009", "이미 존재하는 채팅방입니다."),
@@ -41,6 +38,9 @@ public enum ErrorCode {
     MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHATTING_017", "찾을 수 없는 메시지 입니다."),
     DUPLICATE_DELETE_MESSAGE(HttpStatus.CONFLICT, "CHATTING_018", "중복된 삭제 요청입니다."),
     REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다.");
+
+
+
 
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드

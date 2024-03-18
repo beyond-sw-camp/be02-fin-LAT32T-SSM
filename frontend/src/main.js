@@ -5,6 +5,7 @@ import PrimeVue from "primevue/config";
 import { createPinia } from "pinia";
 import Editor from "primevue/editor";
 import DialogService from "primevue/dialogservice";
+import LoadScript from 'vue-plugin-load-script';
 
 //in main.js
 import 'primevue/resources/themes/aura-light-green/theme.css'
@@ -26,4 +27,5 @@ app.use(PrimeVue);
 app.use(VCalendar, {});
 app.use(pinia);
 app.use(DialogService);
+app.use(LoadScript);
 app.mount('#app')

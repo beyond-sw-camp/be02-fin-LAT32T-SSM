@@ -1,11 +1,15 @@
 package com.project.ssm.calendar.model.entity;
 
+import com.project.ssm.calendar.model.request.MeetingRoomReservationReq;
 import com.project.ssm.calendar.model.request.PatchEventReq;
 import com.project.ssm.calendar.model.request.PostEventReq;
+import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @NoArgsConstructor
@@ -30,9 +34,16 @@ public class Event{
     private String textColor;
     private Boolean allDay;
 
+    private String createdAt;
+    private String updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberIdx")
     private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "meetingRoomIdx")
+    private MeetingRoom meetingRoom;
 
     public static Event buildEvent(Member member, PostEventReq request) {
         return Event.builder()
@@ -46,6 +57,8 @@ public class Event{
             .backgroundColor(request.getBackgroundColor())
             .textColor(request.getTextColor())
             .allDay(request.getAllDay())
+            .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+            .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
             .build();
     }
 
@@ -59,6 +72,22 @@ public class Event{
         event.setAllDay(request.getAllDay());
 
         return event;
+    }
+
+    public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq req) {
+//        return Event.builder()
+//                .meetingRoom(meetingRoom)
+////                .title()
+//                .startedAt(req.getStartedAt())
+//                .closedAt(req.getClosedAt())
+//                .eventContent()
+//                .type()
+//                .memberName()
+//                .backgroundColor()
+//                .textColor()
+//                .allDay()
+//                .build();
+        return null;
     }
 
 }

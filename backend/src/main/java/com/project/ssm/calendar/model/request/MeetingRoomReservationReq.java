@@ -1,11 +1,10 @@
-package com.project.ssm.event.model.request;
+package com.project.ssm.calendar.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,8 +14,8 @@ import java.util.List;
 public class MeetingRoomReservationReq {
     private Long meetingRoomIdx;
     private List<MemberRequest> members;
-    private LocalDateTime startedAt;
-    private LocalDateTime closedAt;
+    private String startedAt;
+    private String closedAt;
 
     @Data
     @NoArgsConstructor

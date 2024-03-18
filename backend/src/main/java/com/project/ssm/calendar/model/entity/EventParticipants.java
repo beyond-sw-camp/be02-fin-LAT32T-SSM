@@ -1,7 +1,6 @@
-package com.project.ssm.eventparticipants.model;
+package com.project.ssm.calendar.model.entity;
 
 
-import com.project.ssm.event.model.Events;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -26,5 +25,12 @@ public class EventParticipants {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventIdx")
-    private Events event;
+    private Event event;
+
+    public static EventParticipants buildEventPart(Event savedEvent, Member member) {
+        return EventParticipants.builder()
+                .event(savedEvent)
+                .member(member)
+                .build();
+    }
 }

@@ -2,14 +2,10 @@ package com.project.ssm.calendar.repository;
 
 import com.project.ssm.calendar.model.entity.Event;
 import com.project.ssm.calendar.model.entity.QEvent;
-import com.project.ssm.member.model.QMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class EventRepositoryImpl implements EventCustomRepository {

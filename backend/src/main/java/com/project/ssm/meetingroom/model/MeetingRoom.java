@@ -1,6 +1,6 @@
 package com.project.ssm.meetingroom.model;
 
-import com.project.ssm.event.model.Events;
+import com.project.ssm.calendar.model.entity.Event;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,5 +20,5 @@ public class MeetingRoom {
     private Integer meetingRoomCapacity;
 
     @OneToMany(mappedBy = "meetingRoom")
-    private List<Events> events;
+    private List<Event> events;
 }

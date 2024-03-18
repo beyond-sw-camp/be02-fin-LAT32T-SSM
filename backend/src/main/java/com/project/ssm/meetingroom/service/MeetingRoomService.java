@@ -1,7 +1,7 @@
 package com.project.ssm.meetingroom.service;
 
-import com.project.ssm.event.model.Events;
-import com.project.ssm.event.repository.EventsRepository;
+import com.project.ssm.calendar.model.entity.Event;
+import com.project.ssm.calendar.repository.EventRepository;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
 import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
-    private final EventsRepository eventsRepository;
+    private final EventRepository eventRepository;
 
     // 회의실 생성
     public MeetingRoomAddRes.MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
@@ -45,13 +45,13 @@ public class MeetingRoomService {
         }
         MeetingRoom meetingRoom = optionalMeetingRoom.get();
         // 회의실 ID에 대한 모든 예약을 List 반환
-        List<Events> eventsList = eventsRepository.findByMeetingRoom(meetingRoom);
+        List<Event> eventsList = eventRepository.findByMeetingRoom(meetingRoom);
         // 정보 저장할 리스트 생성
         List<MeetingSelectRes.Reservation> reservationList = new ArrayList<>();
 
         // 예약 정보 탐색
         // sharedEventIdx 를 어떻게 처리할 것인가. 일정등록이 추가된다면 같이 조회
-        for (Events event : eventsList) {
+        for (Event event : eventsList) {
             MeetingSelectRes.Reservation reservationDetail = MeetingSelectRes.Reservation.builder()
                     .eventIdx(event.getEventIdx())
                     .createdAt(event.getCreatedAt().toString()) // 필요에 따라 포맷 변경
