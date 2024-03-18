@@ -1,5 +1,6 @@
 package com.project.ssm.member.model;
 
+import com.project.ssm.calendar.model.entity.Event;
 import com.project.ssm.chat.model.entity.Message;
 import com.project.ssm.chat.model.entity.RoomParticipants;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -54,10 +58,17 @@ public class Member implements UserDetails {
     private Boolean status;
 
     @OneToMany(mappedBy = "member")
+    List<Event> events = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
     private List<Message> messages;
 
     @OneToMany(mappedBy = "member")
     private List<RoomParticipants> roomParticipantsList;
+
+    @OneToMany(mappedBy = "member")
+    private List<ProfileImage> profileImage;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -92,5 +103,19 @@ public class Member implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static Member createMember(String memberId,String memberPw, String memberName, String department, String position) {
+        return Member.builder()
+                .memberId(memberId)
+                .memberPw(memberPw)
+                .memberName(memberName)
+                .department(department)
+                .position(position)
+                .status(true)
+                .startedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .authority("ROLE_USER")
+                .build();
     }
 }

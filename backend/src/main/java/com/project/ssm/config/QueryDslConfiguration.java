@@ -1,4 +1,4 @@
-package com.project.ssm.chat.config;
+package com.project.ssm.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Configuration
-public class QueryDslConfig {
+public class QueryDslConfiguration {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -16,4 +16,6 @@ public class QueryDslConfig {
     public JPAQueryFactory jpaQueryFactory() {
         return new JPAQueryFactory(entityManager);
     }
+
+
 }
