@@ -29,7 +29,7 @@
         </section>
         <form class="form" name="feedForm">
           <div>
-            <MessageEditor :model-value="message" ref="quillEditor" placeholder="메시지 보내기" v-model="message" @keyup="sendMessage" editorStyle="height: 80px"/>
+            <textarea id="summernote"></textarea>
           </div>
         </form>
       </section>
@@ -49,7 +49,6 @@ import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import {mapActions, mapState} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
-
 
 export default {
   name: 'MainPage',
@@ -128,6 +127,25 @@ export default {
     }
   },
   mounted() {
+    const js = "$('#summernote').summernote({\
+      placeholder: 'Hello stand alone ui',\
+      tabsize: 1,\
+      height: 80,\
+      toolbar: [\
+        ['style', ['style']],\
+        ['font', ['bold', 'underline', 'clear']],\
+        ['color', ['color']],\
+        ['para', ['ul', 'ol', 'paragraph']],\
+        ['table', ['table']],\
+        ['insert', ['link', 'picture', 'video']],\
+        ['view', ['fullscreen', 'codeview', 'help']]\
+      ]\
+    });"
+
+    const script = document.createElement('script');
+    script.innerHTML = js;
+    document.body.appendChild(script);
+
     this.getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
