@@ -100,5 +100,4 @@ public class MeetingRoomService {
         }
         // 회의실이 없으면 빈결과 반환 추후 예외처리 구현 필요
     }
-
 }
