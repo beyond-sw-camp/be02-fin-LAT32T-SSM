@@ -1,7 +1,7 @@
 package com.project.ssm.events.service;
 
-import com.project.ssm.events.exception.EventAccessException;
-import com.project.ssm.events.exception.EventNotFoundException;
+import com.project.ssm.common.error.ErrorCode;
+import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PostEventReq;
@@ -14,6 +14,7 @@ import com.project.ssm.events.model.response.DeleteReservationCancelRes;
 import com.project.ssm.events.model.response.DeleteReservationInfoRes;
 import com.project.ssm.events.model.response.MeetingRoomReservationRes;
 import com.project.ssm.events.repository.EventParticipantsRepository;
+import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.model.Member;
@@ -106,13 +107,17 @@ public class EventService {
         Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(request.getMeetingRoomIdx());
 
         if (!meetingRoomOptional.isPresent()) {
-//            return MeetingRoomReservationRes.builder().build(); // 회의실이 없을시 빈 결과 반환 추후 예외처리 구현 필요
+            throw new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
         }
         MeetingRoom meetingRoom = meetingRoomOptional.get();
 
         boolean isOverlapping = eventRepository.isReservationDuplication(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt());
         if (isOverlapping) {
-            throw new IllegalStateException("이미 예약된 시간입니다.");
+            throw new ReservationDuplicateException(ErrorCode.RESERVATION_DUPLICATE, "이미 예약된 시간입니다.");
+        }
+
+        if (request.getMembers().size() > meetingRoom.getMeetingRoomCapacity()) {
+            throw new ReservationOverException(ErrorCode.RESERVATION_OVER, "인원이 초과 되었습니다.");
         }
 
         Event savedEvent = eventRepository.save(Event.buildRoomEvent(meetingRoom, request));
@@ -136,7 +141,7 @@ public class EventService {
     public BaseResponse<DeleteReservationCancelRes> meetingRoomReservationCancel(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (!eventOptional.isPresent()) {
-//            return DeleteReservationCancelRes.builder().build(); // 예약 정보 없으면 빈값 반환. 추후 예외처리 구현 필요
+            throw new ReservationNotFoundException(ErrorCode.RESERVATION_NOT_FOUND, "예약을 찾을 수 없습니다.");
         }
 
         Event event = eventOptional.get();

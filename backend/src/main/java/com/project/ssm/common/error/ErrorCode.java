@@ -23,7 +23,14 @@ public enum ErrorCode {
     // 일정
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_000", "일정을 찾을 수 없습니다."),
     MEMBER_NOT_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "사용자가 등록한 일정이 아닙니다."),
+    // 회의실
+    MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "MEETINGROOM_000" , "회의실을 찾을 수 없습니다."),
+    MEETINGROOM_DUPLOCATE(HttpStatus.BAD_REQUEST, "MEETINGROOM_001","이미 있는 회의실 입니다."),
 
+    // 예약
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_000" , "예약을 찾을 수 없습니다."),
+    RESERVATION_OVER(HttpStatus.BAD_REQUEST, "RESERVATION_001" , "인원이 초과 되었습니다."),
+    RESERVATION_DUPLICATE(HttpStatus.BAD_REQUEST,"RESERVATION_002","이미 예약된 시간입니다.."),
 
     // 채팅방
     DUPLICATE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_009", "이미 존재하는 채팅방입니다."),

@@ -1,7 +1,10 @@
 package com.project.ssm.meetingroom.service;
 
+import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
+import com.project.ssm.meetingroom.exception.MeetingDuplicateException;
+import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
 import com.project.ssm.meetingroom.model.response.*;
@@ -21,6 +24,13 @@ public class MeetingRoomService {
 
     // 회의실 생성
     public MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
+
+        Optional<MeetingRoom> existingMeetingRoom = meetingRoomRepository.findByMeetingRoomName(request.getRoomName());
+
+        if (existingMeetingRoom.isPresent()) {
+            throw new MeetingDuplicateException(ErrorCode.MEETINGROOM_DUPLOCATE, "이미 있는 회의실입니다.");
+        }
+
         MeetingRoom meetingRoom = MeetingRoom.builder()
                 .meetingRoomName(request.getRoomName())
                 .meetingRoomCapacity(request.getRoomCapacity())
@@ -39,7 +49,7 @@ public class MeetingRoomService {
     public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
         Optional<MeetingRoom> optionalMeetingRoom = meetingRoomRepository.findById(meetingRoomIdx);
         if (!optionalMeetingRoom.isPresent()) {
-            return MeetingSelectRes.builder().build(); // 회의실이 없는 경우 빈 결과 반환 예외처리 구현 필요
+            throw new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
         }
         MeetingRoom meetingRoom = optionalMeetingRoom.get();
         // 회의실 ID에 대한 모든 예약을 List 반환
@@ -48,11 +58,10 @@ public class MeetingRoomService {
         List<MeetingSelectResReservation> reservationList = new ArrayList<>();
 
         // 예약 정보 탐색
-        // sharedEventIdx 를 어떻게 처리할 것인가. 일정등록이 추가된다면 같이 조회
         for (Event event : eventsList) {
             MeetingSelectResReservation reservationDetail = MeetingSelectResReservation.builder()
                     .eventIdx(event.getEventIdx())
-                    .createdAt(event.getCreatedAt()) // 필요에 따라 포맷 변경
+                    .createdAt(event.getCreatedAt())
                     .startedAt(event.getStartedAt())
                     .closedAt(event.getClosedAt())
                     .build();
@@ -95,7 +104,7 @@ public class MeetingRoomService {
         Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(meetingRoomIdx);
         if (meetingRoomOptional.isPresent()) {
             meetingRoomRepository.delete(meetingRoomOptional.get());
-        }
-        // 회의실이 없으면 빈결과 반환 추후 예외처리 구현 필요
+        } else
+            throw new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND,"회의실을 찾을 수 없습니다.");
     }
 }
