@@ -56,9 +56,7 @@ export const useMemberStore = defineStore("member", {
                 );
 
                 formData.append("profileImage", this.member.profileImage);
-                // Array.from(this.member.profileImage).map((image) => {
-                //     formData.append("profileImage", image);
-                //   });
+                
                 console.log(this.member.profileImage)
                 try{
                     let response = await axios.post(backend + "/member/signup", formData, {
