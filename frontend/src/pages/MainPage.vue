@@ -29,39 +29,9 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
-        <form class="form" name="feedForm">
-          <div>
-            <textarea id="summernote"></textarea>
+          <div @keyup="sendMessage">
+            <textarea id="summernote" v-model="message"></textarea>
           </div>
-        </form>
-      </section>      
-      <section class="right-sidebar">
-        <section class="right-sidebar-header">
-          <article class="right-sidebar-header-details">
-            <h4 class="right-sidebar-header-name">Details</h4>
-            <p>#social-media</p>
-          </article>
-          <i class="fas fa-times"></i>
-        </section>
-        <section class="right-sidebar-contact">
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-user-plus"></i></span>
-            <p>Add</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-search-plus"></i></span>
-            <p>Find</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span><i class="fas fa-phone"></i></span>
-            <p>Call</p>
-          </article>
-          <article class="right-sidebar-contact-details">
-            <span> <i class="fas fa-ellipsis-h"></i></span>
-            <p>More</p>
-          </article>
-        </section>
-
         <section class="right-sidebar-about">
           <article class="about-header">
             <h4>About</h4>
@@ -93,8 +63,7 @@
         <section class="other-section">
           <article class="other-section-header">
             <h4>FullCalendar</h4>                        
-          </article>
-          
+          </article>    
         </section>
       </section>
     </section>
@@ -118,6 +87,7 @@ import { useMainStore } from "@/stores/useMainStore";
 
 import { mapActions, mapState } from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
+
 
 export default {
   name: 'MainPage',
@@ -167,14 +137,19 @@ export default {
       this.roomList = response.data;
     },
     sendMessage(e) {
+      console.log(e);
+      console.log(this.message);
       if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
+        console.log(this.message);
         this.send();
+        console.log(this.message);
         this.message = ''
       }
     },
     send() {
       this.message = this.message.replace(/<[^>]*>?/g, '');
-      console.log('Send Message:' + this.message);
+      console.log($('#summernote').summernote('code'));
+      $('#summernote').summernote('reset');
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           memberId: this.memberId,
@@ -197,27 +172,27 @@ export default {
     }
   },
   mounted() {
-   
-
-    const js = "$('#summernote').summernote({\
-      placeholder: 'Hello stand alone ui',\
-      tabsize: 1,\
-      height: 80,\
-      toolbar: [\
-        ['style', ['style']],\
-        ['font', ['bold', 'underline', 'clear']],\
-        ['color', ['color']],\
-        ['para', ['ul', 'ol', 'paragraph']],\
-        ['table', ['table']],\
-        ['insert', ['link', 'picture', 'video']],\
-        ['view', ['fullscreen', 'codeview', 'help']]\
-      ]\
-    });"
-
-    const script = document.createElement('script');
-    script.innerHTML = js;
-    document.body.appendChild(script);
-
+    this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
+        .then(() => {
+          // Script is loaded, do something
+          $('#summernote').summernote({
+            placeholder: '메시지를 입력해주세요',
+            tabsize: 2,
+            height: 120,
+            toolbar: [
+              ['style', ['style']],
+              ['font', ['bold', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+          });
+        })
+        .catch(() => {
+          // Failed to fetch script
+        });
     this.getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));

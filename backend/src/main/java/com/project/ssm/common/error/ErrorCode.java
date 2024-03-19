@@ -41,6 +41,9 @@ public enum ErrorCode {
     REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다.");
 
 
+
+
+
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
     private final String code;    // 페이로드로 반환할 에러 코드
     private final String description;  // 에러 코드 문서화를 위한 설명

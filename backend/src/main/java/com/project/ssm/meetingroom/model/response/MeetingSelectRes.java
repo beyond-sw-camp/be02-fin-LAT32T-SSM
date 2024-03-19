@@ -2,7 +2,7 @@ package com.project.ssm.meetingroom.model.response;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Getter
@@ -29,7 +29,7 @@ public class MeetingSelectRes {
     public static class Reservation {
         private Long eventIdx;
         private String createdAt;
-        private LocalDateTime startedAt;
-        private LocalDateTime closedAt;
+        private String startedAt;
+        private String closedAt;
     }
 }
