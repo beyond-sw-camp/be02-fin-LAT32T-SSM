@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-
-export const useMessageStore = defineStore("recvList", {
-    state: () => ({ recvList: [] }),
+import axios from "axios";
+const backend = 'http://localhost:8080'
+export const useMessageStore = defineStore("message", {
+    state: () => ({
+        recvList: [],
+    }),
     actions: {
          addMessage(message) {
              const date = new Date(message.createdAt);
@@ -11,7 +14,19 @@ export const useMessageStore = defineStore("recvList", {
              message.createdAt = amOrPm + formatHour + ':' + minutes;
              console.log(message);
              this.recvList.push(message);
-         }
+         },
+        async getChatList(chatRoomId, token, page, size) {
+            let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+                headers: {
+                    Authorization: token
+                },
+            });
+            console.log(response.data);
+            response.data.forEach((message) => {
+                this.addMessage(message);
+            })
+        },
+
     },
     getters: {
         getAllMessage(state) {

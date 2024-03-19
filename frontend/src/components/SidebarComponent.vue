@@ -20,8 +20,8 @@
             <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
                 <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
                 <div class="flex align-items-center gap-3 mb-3">
-                    <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
+                    <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
+                    <InputText v-model="chatRoomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
                 </div>
                 <div class="flex align-items-center gap-3 mb-5">
                   <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
@@ -57,7 +57,7 @@
         <ul>
           <li v-for="(item, idx) in roomList" :key="idx">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click="roomConnect(item.chatRoomId)">
+              <a href="#" @click="stompStore.roomConnect(item.chatRoomId)">
                 <span class="make-white">
                 <i class="fas fa-hashtag"></i>
                   {{ item.chatRoomName }}
@@ -92,14 +92,14 @@
   </section>
 </template>
 <script>
-import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-import {mapActions} from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import {useChatRoomStore} from "@/stores/useChatRoomStore";
+import {mapStores} from "pinia";
 
 export default {
   name: "SidebarComponent",
@@ -112,113 +112,68 @@ export default {
         memberId: ""
       },
       memberId: "",
-      roomName: "",
+      chatRoomName: "",
       memberList: [],
       visible: false,
       roomList: [],
       recvList: []
     }
   },
+  computed: {
+    ...mapStores(useChatRoomStore),
+    ...mapStores(useStompStore),
+    ...mapStores(useMessageStore)
+  },
   methods: {
-    ...mapActions(useMessageStore, ['addMessage']),
-    ...mapActions(useStompStore, ['basicConnect']),
-    ...mapActions(useStompStore, ['roomConnect']),
+    // ...mapActions(useMessageStore, ['getChatList']),
+    // ...mapActions(useStompStore, ['roomConnect']),
+    // ...mapActions(useChatRoomStore, ['getRoomList']),
+    // ...mapActions(useChatRoomStore, ['creatRoom']),
     toggle(event) {
       this.$refs.op.toggle(event);
     },
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    async createRoom() {
-      this.memberList.push(this.member.memberId);
-      const roomInfo = {
-        roomName: this.roomName,
-        memberId: this.memberList
-      };
-
-      let response = await axios.post("http://localhost:8080/chat/room/create", roomInfo);
-      console.log(response.data);
-
-      this.visible = false;
+    createRoom() {
+      // this.createChatRoom(this.roomName, this.memberList);
+      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList);
     },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        }
-      });
-      this.roomList = response.data.result;
-      console.log(this.roomList);
-    },
-    // enterRoom(chatRoomId) {
-    //   console.log(chatRoomId);
-    //   const server = "http://localhost:8080/chat"
-    //   let socket = new SockJS(server);
-    //   this.stompClient = Stomp.over(socket);
-    //   console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-    //   window.localStorage.setItem("chatRoomId", chatRoomId);
-    //   this.getChatList(chatRoomId, localStorage.getItem("accessToken"), 1, 4);
-    //   this.stompClient.connect(
-    //     {},
-    //     frame => {
-    //       this.connected = true;
-    //       console.log('소켓 연결 성공', frame);
-    //       this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
-    //         console.log("연결 후 채팅방 아이디", chatRoomId);
-    //         console.log(res);
-    //         console.log("구독으로 받은 메시지입니다.", res.body);
-    //         this.addMessage(JSON.parse(res.body));
-    //       });
-    //     },
-    //     error => {
-    //       console.log('소켓 연결 실패', error);
-    //       this.connected = false;
-    //     }
-    //   )
+    // sendMessage(e) {
+    //   console.log(e);
+    //   if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
+    //     this.send(this.chatRoomId);
+    //     this.message = ''
+    //   }
     // },
-    sendMessage(e) {
-      console.log(e);
-      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-        this.send(this.chatRoomId);
-        this.message = ''
-      }
-    },
-    send() {
-      console.log('Send Message:' + this.message);
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = {
-          userName: this.member.name,
-          message: this.message
-        };
-        console.log(msg);
-        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
+    // send() {
+    //   console.log('Send Message:' + this.message);
+    //   if (this.stompClient && this.stompClient.connected) {
+    //     const msg = {
+    //       userName: this.member.name,
+    //       message: this.message
+    //     };
+    //     console.log(msg);
+    //     this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+    //   }
+    // },
     setMember(token) {
       token = VueJwtDecode.decode(token.split(" ")[1]);
       this.member.name = token.memberName;
       this.member.department = token.department;
       this.member.memberId = token.memberId;
     },
-    async getChatList(chatRoomId, token, page, size) {
-      let response = await axios.get(`http://localhost:8080/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-        headers: {
-          Authorization: token
-        },
-      });
-      console.log(response.data);
-      response.data.forEach((message) => {
-        this.addMessage(message);
-      })
-    },
   },
   mounted() {
-    this.getRoomList();
+    // this.getRoomList();
+    console.log("=======채팅방 불러오기======");
+    this.roomList = this.chatRoomStore.getRoomList();
+    console.log(this.roomList);
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
     if (localStorage.getItem("chatRoomId") !== null) {
-      this.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
+      this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
     }
   }
 };

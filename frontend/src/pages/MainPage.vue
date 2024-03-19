@@ -79,15 +79,14 @@ import CalendarComponent from '@/components/CalendarComponent.vue';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import axios from "axios";
-import { mapStores } from "pinia";
+// import axios from "axios";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
 
 import { mapActions, mapState } from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
-
+import {useChatRoomStore} from "@/stores/useChatRoomStore";
 
 export default {
   name: 'MainPage',
@@ -101,7 +100,7 @@ export default {
       memberId: "",
       message: "",
       recvList: [],
-      roomName: "",
+      chatRoomName: "",
       roomList: [],
       username: "",
       chatRoomId: "",
@@ -117,9 +116,9 @@ export default {
     ...mapStores(useMainStore)
   },
   methods: {
-    ...mapActions(useMessageStore, ['addMessage']),
     ...mapActions(useStompStore, ['basicConnect']),
-    ...mapActions(useStompStore, ['roomConnect']),
+    ...mapActions(useStompStore,['roomConnect']),
+    ...mapActions(useChatRoomStore, ['getRoomList']),
 
     initSock() {
       const server = "http://localhost:8080/chat"
@@ -128,41 +127,22 @@ export default {
       this.stompClient = Stomp.over(socket);
       return this.stompClient;
     },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        },
-      });
-      this.roomList = response.data;
-    },
     sendMessage(e) {
-      console.log(e);
-      console.log(this.message);
+      this.message = $('#summernote').summernote('code')
       if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
-        console.log(this.message);
-        this.send();
-        console.log(this.message);
-        this.message = ''
+        this.message = this.message.replace(/<[^>]*>?/g, '');
+        this.send(this.message);
+        $('#summernote').summernote('reset');
       }
     },
-    send() {
-      this.message = this.message.replace(/<[^>]*>?/g, '');
-      console.log($('#summernote').summernote('code'));
-      $('#summernote').summernote('reset');
+    send(message) {
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           memberId: this.memberId,
           memberName: this.memberName,
-          message: this.message
+          message: message
         };
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
-    enterRoom() {
-      if (this.stompClient && this.stompClient.connected) {
-        const token = localStorage.getItem("accessToken");
-        this.stompClient.send("/send/room", { token });
       }
     },
     setMember(token) {
@@ -178,7 +158,7 @@ export default {
           $('#summernote').summernote({
             placeholder: '메시지를 입력해주세요',
             tabsize: 2,
-            height: 120,
+            height: 80,
             toolbar: [
               ['style', ['style']],
               ['font', ['bold', 'underline', 'clear']],
@@ -193,13 +173,15 @@ export default {
         .catch(() => {
           // Failed to fetch script
         });
-    this.getRoomList();
+    // this.getRoomList();
+    useChatRoomStore().getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
     if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
       this.chatRoomId = this.$route.params.chatRoomId;
-      this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+      // this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+      useStompStore().roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
     } else {
       // this.basicConnect();
     }
