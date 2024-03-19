@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 public class MeetingSelectResReservation {
     private Long eventIdx;
     private String createdAt;
-    private LocalDateTime startedAt;
-    private LocalDateTime closedAt;
+    private String startedAt;
+    private String closedAt;
 }
