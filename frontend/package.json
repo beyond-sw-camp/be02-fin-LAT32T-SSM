@@ -16,6 +16,7 @@
     "core-js": "^3.8.3",
     "fullcalendar": "^6.1.11",
     "icons": "^1.0.0",
+    "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
     "prime": "^0.5.0",
     "primevue": "^3.49.1",
@@ -26,7 +27,7 @@
     "vue-jwt-decode": "^0.1.0",
     "vue-plugin-load-script": "^2.1.1",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.5.9",
+    "vuetify": "^3.4.0-beta.1",
     "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
@@ -52,7 +53,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {"no-undef": "off"}
+    "rules": {
+      "no-undef": "off"
+    }
   },
   "browserslist": [
     "> 1%",

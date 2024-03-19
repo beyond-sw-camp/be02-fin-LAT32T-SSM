@@ -8,29 +8,29 @@
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
-          <h4>{{ member.name }}</h4>
+          <h4>{{ mainStore.member.name }}</h4>
           <i class="fas fa-chevron-down"></i>
         </div>
         <p class="sidebar-user-info-additional">
-          <i class="fas fa-circle"></i>{{ member.department }}
+          <i class="fas fa-circle"></i>{{ mainStore.member.department }}
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <Button label="Show" @click="visible = true"/>
-            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
-                <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
+            <Button class="button-show" label="Show" @click="visible = true"/>
+            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '30rem' }">
+                <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
                 <div class="flex align-items-center gap-3 mb-3">
                     <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="chatRoomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
+                    <InputText v-model="chatRoomStore.roomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
                 </div>
                 <div class="flex align-items-center gap-3 mb-5">
-                  <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
-                  <InputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
-                  <Button type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
+                  <label for="email" class="font-semibold w-6rem">사용자아이디</label>
+                  <InputText v-model="memberId" id="사용자아이디" class="input-text flex-auto" autocomplete="off" />
+                  <Button class="button-secondary" type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
                 </div>
                 <div class="flex justify-content-end gap-2">
-                    <Button type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button type="button" label="생성하기" @click="createRoom"></Button>
+                    <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
+                    <Button class="button-create" type="button" label="생성하기" @click="createRoom"></Button>
                 </div>
             </Dialog>
           </div>
@@ -67,7 +67,7 @@
           </li>
         </ul>
       </section>
-      <section class="direct-messages">
+      <!-- <section class="direct-messages">
         <h4 class="direct-messages-header">
           <i class="fas fa-sort-down"></i> 다이렉트 메시지
         </h4>
@@ -87,19 +87,19 @@
             </a>
           </li>
         </ul>
-      </section>
+      </section> -->
     </article>
   </section>
 </template>
 <script>
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-import VueJwtDecode from 'vue-jwt-decode';
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import {useChatRoomStore} from "@/stores/useChatRoomStore";
-import {mapStores} from "pinia";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
 
 export default {
   name: "SidebarComponent",
@@ -120,9 +120,7 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useChatRoomStore),
-    ...mapStores(useStompStore),
-    ...mapStores(useMessageStore)
+    ...mapStores(useChatRoomStore, useMainStore, useStompStore, useMessageStore)
   },
   methods: {
     // ...mapActions(useMessageStore, ['getChatList']),
@@ -136,8 +134,9 @@ export default {
       this.memberList.push(memberId);
     },
     createRoom() {
+      console.log(this.chatRoomStore.roomName)
       // this.createChatRoom(this.roomName, this.memberList);
-      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList);
+      this.chatRoomStore.createChatRoom(this.memberList);
     },
     // sendMessage(e) {
     //   console.log(e);
@@ -157,29 +156,111 @@ export default {
     //     this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
     //   }
     // },
-    setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.member.name = token.memberName;
-      this.member.department = token.department;
-      this.member.memberId = token.memberId;
-    },
+    
   },
   mounted() {
     // this.getRoomList();
     console.log("=======채팅방 불러오기======");
     this.roomList = this.chatRoomStore.getRoomList();
     console.log(this.roomList);
-    if (localStorage.getItem("accessToken") !== null) {
-      this.setMember(localStorage.getItem("accessToken"));
-    }
+    
     if (localStorage.getItem("chatRoomId") !== null) {
       this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
     }
+
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
   }
 };
 </script>
 
-<style>
+<style scoped>
+/* 기본 스타일링 */
+body {
+    font-family: 'Arial', sans-serif; /* 기본 글꼴 */
+    padding: 20px; /* 페이지 내부 여백 */
+    background-color: #f4f4f4; /* 배경색 */
+}
+
+/* 제목 스타일 */
+.p-text-secondary {
+    color: #333; /* 제목 글자색 */
+    margin-bottom: 1.25rem; /* 아래쪽 여백 */
+    font-size: 1.5rem; /* 글자 크기 */
+    font-weight: bold; /* 글자 두께 */
+}
+
+/* 플렉스 컨테이너 */
+.flex {
+    display: flex; /* 플렉스 박스 사용 */
+    align-items: center; /* 항목들을 가운데 정렬 */
+    gap: 1rem; /* 항목들 사이의 간격 */
+}
+
+/* 입력 필드와 레이블 스타일 */
+label {
+    font-weight: bold; /* 레이블 글자 두께 */
+    width: 6rem; /* 레이블 너비 */
+}
+
+.input-text {
+    flex-grow: 1; /* 입력 필드가 남은 공간을 모두 차지하도록 */
+    padding: 0.5rem; /* 입력 필드 내부 여백 */
+    border: 1px solid #ccc; /* 테두리 스타일 */
+    border-radius: 0.25rem; /* 테두리 모서리 둥글게 */
+}
+
+/* 버튼 스타일 */
+.button {
+    padding: 0.5rem 1rem; /* 버튼 내부 여백 */
+    border: none; /* 테두리 없애기 */
+    border-radius: 0.25rem; /* 모서리 둥글게 */
+    color: white; /* 글자색 */
+    cursor: pointer; /* 마우스 커서를 포인터로 */
+    transition: background-color 0.3s; /* 배경색 변경시 애니메이션 효과 */
+}
+
+/* "추가" 버튼 스타일 */
+.button-secondary {
+    background-color: #6c757d; /* 배경색 */
+}
+
+.button-secondary:hover {
+    background-color: #5a6268; /* 호버 시 배경색 */
+}
+
+/* "취소하기" 버튼 스타일 */
+.button-cancel {
+    background-color: #dc3545; /* 배경색 */
+}
+
+.button-cancel:hover {
+    background-color: #c82333; /* 호버 시 배경색 */
+}
+
+/* "생성하기" 버튼 스타일 */
+.button-create {
+    background-color: #28a745; /* 배경색 */
+}
+
+.button-create:hover {
+    background-color: #218838; /* 호버 시 배경색 */
+}
+
+/* 맨 아래 버튼 그룹 정렬 */
+.flex.justify-content-end {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+/* 하단 마진 조정 */
+.mb-3, .mb-5 {
+    margin-bottom: 1rem; /* 여백 조정 */
+}
+
+.gap-2, .gap-3 {
+    gap: 0.5rem; /* 간격 조정 */
+}
+
 .fa,.fas,.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
