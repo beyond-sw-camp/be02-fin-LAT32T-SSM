@@ -67,10 +67,14 @@ public class EventService {
             }
             return BaseResponse.successRes("EVENT_000", true, "---", eventsList);
         } else {
-            
             // 찾는 데이터가 없을 경우 예외 처리
-            
-            return null;
+            Long eventIdx = null;
+//            for (Event event: events) {
+//                eventIdx = event.getEventIdx();
+//                eventRepository.findById(eventIdx).orElseThrow(() ->
+//                        EventNotFoundException.forEventId(eventIdx));
+//            }
+            throw EventNotFoundException.forEventId(eventIdx);
         }
     }
 
@@ -117,18 +121,20 @@ public class EventService {
 
         Event savedEvent = eventRepository.save(Event.buildRoomEvent(meetingRoom, request));
 
-        for (MeetingRoomReservationReq.MemberRequest memberRequest : request.getMembers()) {
-            Optional<Member> memberOptional = memberRepository.findByMemberName(memberRequest.getMemberName());
-            if (memberOptional.isPresent()) {
-                Member member = memberOptional.get();
-                eventParticipantsRepository.save(EventParticipants.buildEventPart(savedEvent, member));
-            }
-        }
+//        for (MeetingRoomReservationReq.MemberRequest memberRequest : request.getMembers()) {
+//            Optional<Member> memberOptional = memberRepository.findByMemberName(memberRequest.getMemberName());
+//            if (memberOptional.isPresent()) {
+//                Member member = memberOptional.get();
+//                eventParticipantsRepository.save(EventParticipants.buildEventPart(savedEvent, member));
+//            }
+//        }
+//
+//        // 응답
+//        MeetingRoomReservationRes meetingRoomReservationRes = MeetingRoomReservationRes.
+//                buildReservationRes(savedEvent.getEventIdx(), meetingRoom.getMeetingRoomName());
+//        return BaseResponse.successRes("EVENT_000", true, "---", meetingRoomReservationRes);
 
-        // 응답
-        MeetingRoomReservationRes meetingRoomReservationRes = MeetingRoomReservationRes.
-                buildReservationRes(savedEvent.getEventIdx(), meetingRoom.getMeetingRoomName());
-        return BaseResponse.successRes("EVENT_000", true, "---", meetingRoomReservationRes);
+        return null;
     }
 
     // 외래키가 먼저 삭제되야 하므로 트랜젝션 처리

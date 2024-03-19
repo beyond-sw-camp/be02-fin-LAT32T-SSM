@@ -1,5 +1,6 @@
 package com.project.ssm.events.model.entity;
 
+import com.project.ssm.chat.model.entity.RoomParticipants;
 import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PostEventReq;
@@ -10,6 +11,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +38,9 @@ public class Event{
 
     private String createdAt;
     private String updatedAt;
+
+    @OneToMany(mappedBy = "chatRoom")
+    private List<EventParticipants> eventParticipantsList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberIdx")
@@ -75,7 +80,10 @@ public class Event{
     }
 
     // 회의실 예약하는 Entity
-    public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq req) {
+    public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq request) {
+//        return Event.builder()
+//                .meetingRoom(meetingRoom)
+//                .title()
 //        return Event.builder()
 //                .meetingRoom(meetingRoom)
 ////                .title()
@@ -88,6 +96,7 @@ public class Event{
 //                .textColor()
 //                .allDay()
 //                .build();
+
         return null;
     }
 
