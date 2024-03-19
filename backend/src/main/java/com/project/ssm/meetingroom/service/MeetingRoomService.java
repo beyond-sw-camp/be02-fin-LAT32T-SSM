@@ -4,9 +4,7 @@ import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.model.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
-import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
+import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,7 @@ public class MeetingRoomService {
     private final EventRepository eventRepository;
 
     // 회의실 생성
-    public MeetingRoomAddRes.MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
+    public MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
         MeetingRoom meetingRoom = MeetingRoom.builder()
                 .meetingRoomName(request.getRoomName())
                 .meetingRoomCapacity(request.getRoomCapacity())
@@ -31,7 +29,7 @@ public class MeetingRoomService {
         meetingRoom = meetingRoomRepository.save(meetingRoom);
 
 
-        return MeetingRoomAddRes.MeetingRoomAddResult.builder()
+        return MeetingRoomAddResult.builder()
                 .idx(meetingRoom.getMeetingRoomIdx())
                 .roomName(meetingRoom.getMeetingRoomName())
                 .build();
@@ -47,21 +45,21 @@ public class MeetingRoomService {
         // 회의실 ID에 대한 모든 예약을 List 반환
         List<Event> eventsList = eventRepository.findByMeetingRoom(meetingRoom);
         // 정보 저장할 리스트 생성
-        List<MeetingSelectRes.Reservation> reservationList = new ArrayList<>();
+        List<MeetingSelectResReservation> reservationList = new ArrayList<>();
 
         // 예약 정보 탐색
         // sharedEventIdx 를 어떻게 처리할 것인가. 일정등록이 추가된다면 같이 조회
         for (Event event : eventsList) {
-            MeetingSelectRes.Reservation reservationDetail = MeetingSelectRes.Reservation.builder()
+            MeetingSelectResReservation reservationDetail = MeetingSelectResReservation.builder()
                     .eventIdx(event.getEventIdx())
-                    .createdAt(event.getCreatedAt().toString()) // 필요에 따라 포맷 변경
+                    .createdAt(event.getCreatedAt()) // 필요에 따라 포맷 변경
                     .startedAt(event.getStartedAt())
                     .closedAt(event.getClosedAt())
                     .build();
             reservationList.add(reservationDetail);
         }
 
-        MeetingSelectRes.MeetingRoomSelectResult result = MeetingSelectRes.MeetingRoomSelectResult.builder() // 회의실 정보 저장
+        MeetingSelectResMeetingRoomSelectResult result = MeetingSelectResMeetingRoomSelectResult.builder() // 회의실 정보 저장
                 .roomIdx(meetingRoom.getMeetingRoomIdx())
                 .roomName(meetingRoom.getMeetingRoomName())
                 .roomCapacity(meetingRoom.getMeetingRoomCapacity())
