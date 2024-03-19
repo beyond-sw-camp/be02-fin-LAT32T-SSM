@@ -14,8 +14,11 @@ public class EventAccessException extends BusinessException {
 
     // 승인되지 않은 사용자가 일정 등록 시도할때
     public static EventAccessException forMemberId(String memberId) {
-        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, String.format("[%s]님이 등록한 일정이 아닙니다.", memberId));
+        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, String.format("일정에 접근 권한이 없습니다.", memberId));
     }
+//    public static EventAccessException forMemberId(Long memberIdx) {
+//        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, String.format("[%d]님이 등록한 일정이 아닙니다.", memberIdx));
+//    }
 
     // 입력할 수 없는 시간을 입력했을때
     public static EventAccessException forInvalidDateTime() {

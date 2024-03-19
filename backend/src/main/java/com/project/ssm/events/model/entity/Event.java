@@ -39,21 +39,19 @@ public class Event{
     private String createdAt;
     private String updatedAt;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "event")
     private List<EventParticipants> eventParticipantsList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberIdx")
-    private Member member;
-
+    //    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "memberIdx")
+//    private Member member;
+//
     @ManyToOne
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
 
     public static Event buildEvent(Member member, PostEventReq request) {
         return Event.builder()
-            .member(member)
-            .title(request.getTitle())
             .startedAt(request.getStartedAt())
             .closedAt(request.getClosedAt())
             .eventContent(request.getEventContent())

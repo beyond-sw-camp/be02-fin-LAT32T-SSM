@@ -2,6 +2,8 @@ package com.project.ssm.events.repository;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.QEvent;
+import com.project.ssm.events.model.entity.QEventParticipants;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +18,20 @@ public class EventRepositoryImpl implements EventCustomRepository {
     public List<Event> findEventsByYear(Long memberIdx, int year) {
 
         QEvent event = QEvent.event;
+        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
+
 
         return queryFactory
-                .selectFrom(event)
+                .select(event)
+                .from(event)
+                .leftJoin(eventParticipants)
+                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
                 .where(
-                        event.member.memberIdx.eq(memberIdx),
-                        event.startedAt.substring(0,4).eq(String.valueOf(year)).or(event.closedAt.substring(0,4).eq(String.valueOf(year)))
+                        eventParticipants.member.memberIdx.eq(memberIdx)
+                                .and(
+                                        event.startedAt.substring(0, 4).eq(String.valueOf(year))
+                                                .or(event.closedAt.substring(0, 4).eq(String.valueOf(year)))
+                                )
                 )
                 .fetch();
     }
