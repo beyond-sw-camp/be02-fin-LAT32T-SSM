@@ -27,9 +27,8 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item"/>
           </div>
         </section>
-        <button @click="send()">test</button>
-          <div>
-            <textarea id="summernote"></textarea>
+          <div @keyup="sendMessage">
+            <textarea id="summernote" v-model="message"></textarea>
           </div>
       </section>
     </section>
@@ -97,8 +96,12 @@ export default {
       this.roomList = response.data;
     },
     sendMessage(e) {
+      console.log(e);
+      console.log(this.message);
       if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
+        console.log(this.message);
         this.send();
+        console.log(this.message);
         this.message = ''
       }
     },
@@ -132,7 +135,7 @@ export default {
         .then(() => {
           // Script is loaded, do something
           $('#summernote').summernote({
-            placeholder: 'Hello stand alone ui',
+            placeholder: '메시지를 입력해주세요',
             tabsize: 2,
             height: 120,
             toolbar: [
@@ -145,8 +148,6 @@ export default {
               ['view', ['fullscreen', 'codeview', 'help']]
             ]
           });
-
-
         })
         .catch(() => {
           // Failed to fetch script
