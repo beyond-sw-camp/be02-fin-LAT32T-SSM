@@ -103,6 +103,10 @@ export default {
   padding-left: .75rem;
   margin-right: auto;
   margin-left: auto;
+  display: flex; /* Flexbox 사용 */
+  align-items: center; /* 세로 방향 가운데 정렬 */
+  justify-content: center; /* 가로 방향 가운데 정렬 */
+  height: 100vh; /* 부모 컨테이너의 높이를 화면 높이로 설정 */
 }
 
 .row {
@@ -111,11 +115,12 @@ export default {
   flex-wrap: wrap;
   margin-right: -.75rem;
   margin-left: -.75rem;
+  justify-content: center; /* 가운데 정렬 활성화 */
 }
 
-/* .justify-content-center {
+.justify-content-center {
   justify-content: center !important;
-} */
+}
 
 .col,
 .col-1,
@@ -176,6 +181,7 @@ export default {
 }
 
 .card {
+  margin: auto; /* 수평 중앙 정렬 */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -185,10 +191,12 @@ export default {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: .35rem;
+  min-width: 100px; /* 최소 너비 설정 */
+  max-width: 1000px; /* 최대 너비 설정 */
 }
 
 .o-hidden {
-  overflow: auto !important;
+  overflow: visible;
 }
 
 .border-0 {
@@ -215,7 +223,7 @@ export default {
 }
 
 .p-5 {
-  padding: 15rem !important;
+  padding: 10rem !important;
 }
 
 .text-center {
@@ -265,6 +273,7 @@ form.user .form-control-user {
   font-size: .8rem;
   border-radius: 10rem;
   padding: 1.5rem 1rem;
+  width: 30rem;
 }
 
 .custom-control {
