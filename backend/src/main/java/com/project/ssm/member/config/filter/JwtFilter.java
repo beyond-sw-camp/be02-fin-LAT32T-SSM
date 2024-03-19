@@ -75,7 +75,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                         // 인가하는 코드
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                member.getMemberId(), null,
+                                member, null,
                                 member.getAuthorities()
                         );
                         SecurityContextHolder.getContext().setAuthentication(authentication);

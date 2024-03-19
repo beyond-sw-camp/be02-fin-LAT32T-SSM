@@ -23,9 +23,11 @@ export const useChatRoomStore = defineStore("chatRoom", {
             })
             return toRaw(this.roomList);
         },
-        async createChatRoom(roomName, memberList) {
+        async createChatRoom(memberList) {
+           
+            console.log(memberList)
             const roomInfo = {
-                chatRoomName: roomName,
+                chatRoomName: this.roomName,
                 memberId: memberList
             };
 

@@ -1,7 +1,7 @@
 <template>
     <div id="app">
       <div class="meeting-room-container">
-        <h2 id="title">회의실 현황</h2>
+        <!-- <h2 id="title">회의실 현황</h2> -->
         <div class="meeting-rooms">
           <div v-for="room in meetingRooms" :key="room.roomIdx" 
                :class="{'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable}">
@@ -127,5 +127,6 @@
     font-size: 24px; 
     color: #333;
     margin-bottom: 20px;
+    font-weight: bold; 
   }
   </style>
