@@ -1,69 +1,179 @@
 <template>
-  <HeaderComponent></HeaderComponent>
   <main class="main">
-    <SidebarComponent></SidebarComponent>
-    
-    <section class="body">     
+    <section class="body">
       <section class="content">
         <section class="content-header">
           <article class="channel-content-header-details">
             <h4 class="channel-content-header-name">
-              프로젝트 채팅방 <i class="fas fa-star"></i>
+              마이 캘린더 <i class="fas fa-star"></i>
             </h4>
             <section class="content-header-icons">
-              <div>
-                <i class="far fa-user"></i><span class="content-header-counter">5</span>
-              </div>
               <p class="content-header-text">
-                프로젝트 채팅방 입니다.
+                김동규님의 캘린더 입니다.
               </p>
             </section>
-            
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
             <i class="fas fa-info-circle"></i>
           </button>
         </section>
         <section class="feeds">
-          <div>
-            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
-          </div>
-        </section>
-          <div @keyup="sendMessage">
-            <textarea id="summernote" v-model="message"></textarea>
-          </div>
-        <section class="right-sidebar-about">
-          <article class="about-header">
-            <h4>About</h4>
-            <i class="fas fa-chevron-down"></i>
-          </article>
-          <article class="about-details">
-            <div class="about-detail">
-              <h5>Topic</h5>
-              <p>Track and cordinate social media</p>
+          <div class="container">
+            <!-- 일자 클릭시 메뉴오픈 -->
+            <div id="contextMenu" class="dropdown clearfix contextOpened" style="display: none; left: 802px; top: 448px;">
+              <ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu"
+                  style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#">카테고리1</a></li>
+                <li><a tabindex="-1" href="#">카테고리2</a></li>
+                <li><a tabindex="-1" href="#">카테고리3</a></li>
+                <li><a tabindex="-1" href="#">카테고리4</a></li>
+                <li class="divider"></li>
+                <li><a tabindex="-1" href="#" data-role="close">Close</a></li>
+              </ul>
             </div>
-            <div class="about-detail">
-              <h5>Description</h5>
-              <p>Home of the social media team</p>
+
+            <div id="wrapper">
+              <div id="loading"></div>
+              <div id="calendar" class="fc fc-unthemed fc-ltr"></div>
             </div>
-            <div class="about-img">
-              <div class="about-img-wrapper">
-                <img src="images/user1.jpg" alt="User 1" />
+
+            <!-- 일정 추가 Component -->
+            <div class="modal fade" tabindex="-1" role="dialog" id="eventModal" style="display: none;">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">새로운 일정</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-allDay">하루종일</label>
+                        <input class="allDayNewEvent" id="edit-allDay" type="checkbox">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-title">일정명</label>
+                        <input class="inputModal" type="text" name="edit-title" id="edit-title"
+                               required="required">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-start">시작</label>
+                        <input class="inputModal" type="text" name="edit-start" id="edit-start">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-end">끝</label>
+                        <input class="inputModal" type="text" name="edit-end" id="edit-end">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-type">구분</label>
+                        <select class="inputModal" type="text" name="edit-type" id="edit-type">
+                          <option value="카테고리1">카테고리1</option>
+                          <option value="카테고리2">카테고리2</option>
+                          <option value="카테고리3">카테고리3</option>
+                          <option value="카테고리4">카테고리4</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-color">색상</label>
+                        <select class="inputModal" name="color" id="edit-color">
+                          <option value="#D25565" style="color:#D25565;">빨간색</option>
+                          <option value="#9775fa" style="color:#9775fa;">보라색</option>
+                          <option value="#ffa94d" style="color:#ffa94d;">주황색</option>
+                          <option value="#74c0fc" style="color:#74c0fc;">파란색</option>
+                          <option value="#f06595" style="color:#f06595;">핑크색</option>
+                          <option value="#63e6be" style="color:#63e6be;">연두색</option>
+                          <option value="#a9e34b" style="color:#a9e34b;">초록색</option>
+                          <option value="#4d638c" style="color:#4d638c;">남색</option>
+                          <option value="#495057" style="color:#495057;">검정색</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-desc">설명</label>
+                        <textarea rows="4" cols="50" class="inputModal" name="edit-desc"
+                                  id="edit-desc"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer modalBtnContainer-addEvent">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="save-event" >저장</button>
+                  </div>
+                  <div class="modal-footer modalBtnContainer-modifyEvent" style="display: none;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-danger" id="deleteEvent">삭제</button>
+                    <button type="button" class="btn btn-primary" id="updateEvent">저장</button>
+                  </div>
+                </div><!-- /.component-content -->
+              </div><!-- /.component-dialog -->
+            </div><!-- /.component -->
+
+            <!-- 필터 Component -->
+            <div class="panel panel-default">
+
+              <div class="panel-heading">
+                <h3 class="panel-title">필터</h3>
               </div>
-              <small>Created on October 8th, 2020</small>
+
+              <div class="panel-body">
+
+                <div class="col-lg-6">
+                  <label for="calendar_view">구분별</label>
+                  <div class="input-group">
+                    <select class="filter select2-hidden-accessible" id="type_filter" multiple=""
+                            data-select2-id="type_filter" tabindex="-1" aria-hidden="true">
+                      <option value="카테고리1">카테고리1</option>
+                      <option value="카테고리2">카테고리2</option>
+                      <option value="카테고리3">카테고리3</option>
+                      <option value="카테고리4">카테고리4</option>
+                    </select><span class="select2 select2-container select2-container--default" dir="ltr"
+                                   data-select2-id="1" style="width: 500px;"><span class="selection"><span
+                      class="select2-selection select2-selection--multiple" role="combobox"
+                      aria-haspopup="true" aria-expanded="false" tabindex="-1">
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline"><input
+                      class="select2-search__field" type="search" tabindex="0"
+                      autocomplete="off" autocorrect="off" autocapitalize="none"
+                      spellcheck="false" role="textbox" aria-autocomplete="list"
+                      placeholder="선택.." style="width: 498px;"></li>
+                </ul>
+            </span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <label for="calendar_view">등록자별</label>
+                  <div class="input-group">
+                    <label class="checkbox-inline"><input class="filter" type="checkbox" value="정연"
+                                                          checked="">정연</label>
+                    <label class="checkbox-inline"><input class="filter" type="checkbox" value="다현"
+                                                          checked="">다현</label>
+                    <label class="checkbox-inline"><input class="filter" type="checkbox" value="사나"
+                                                          checked="">사나</label>
+                    <label class="checkbox-inline"><input class="filter" type="checkbox" value="나연"
+                                                          checked="">나연</label>
+                    <label class="checkbox-inline"><input class="filter" type="checkbox" value="지효"
+                                                          checked="">지효</label>
+                  </div>
+                </div>
+
+              </div>
             </div>
-          </article>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Calendar</h4>
-          </article>
-          <CalendarComponent></CalendarComponent>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>FullCalendar</h4>                        
-          </article>    
+            <!-- 필터 Component -->
+          </div>
         </section>
       </section>
     </section>
@@ -71,128 +181,36 @@
 </template>
 
 <script>
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import SidebarComponent from '@/components/SidebarComponent.vue';
-import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
-import CalendarComponent from '@/components/CalendarComponent.vue';
-// import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
-
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-// import axios from "axios";
-import { useMessageStore } from "@/stores/useMessageStore";
-import { useStompStore } from "@/stores/useStompStore";
-import { useMainStore } from "@/stores/useMainStore";
-
-import { mapActions, mapState } from "pinia";
-import VueJwtDecode from 'vue-jwt-decode';
-import {useChatRoomStore} from "@/stores/useChatRoomStore";
-
 export default {
-  name: 'MainPage',
-  components: {
-    HeaderComponent, SidebarComponent, ChatBlockComponent,
-    CalendarComponent,
-  },
   data() {
     return {
-      memberName: "",
-      memberId: "",
-      message: "",
-      recvList: [],
-      chatRoomName: "",
-      roomList: [],
-      username: "",
-      chatRoomId: "",
-    }
-  },
-  created() {
-    console.log("============기본 연결================");
-    const stompClient = this.initSock();
-    this.basicConnect(stompClient);
-  },
-  computed: {
-    ...mapState(useMessageStore, ['getAllMessage']),
-    ...mapStores(useMainStore)
-  },
-  methods: {
-    ...mapActions(useStompStore, ['basicConnect']),
-    ...mapActions(useStompStore,['roomConnect']),
-    ...mapActions(useChatRoomStore, ['getRoomList']),
 
-    initSock() {
-      const server = "http://localhost:8080/chat"
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      return this.stompClient;
-    },
-    sendMessage(e) {
-      this.message = $('#summernote').summernote('code')
-      if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
-        this.message = this.message.replace(/<[^>]*>?/g, '');
-        this.send(this.message);
-        $('#summernote').summernote('reset');
-      }
-    },
-    send(message) {
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = {
-          memberId: this.memberId,
-          memberName: this.memberName,
-          message: message
-        };
-        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
-    setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.memberId = token.memberId;
-      this.memberName = token.memberName;
     }
   },
   mounted() {
-    this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
-        .then(() => {
-          // Script is loaded, do something
-          $('#summernote').summernote({
-            placeholder: '메시지를 입력해주세요',
-            tabsize: 2,
-            height: 80,
-            toolbar: [
-              ['style', ['style']],
-              ['font', ['bold', 'underline', 'clear']],
-              ['color', ['color']],
-              ['para', ['ul', 'ol', 'paragraph']],
-              ['table', ['table']],
-              ['insert', ['link', 'picture', 'video']],
-              ['view', ['fullscreen', 'codeview', 'help']]
-            ]
-          });
-        })
-        .catch(() => {
-          // Failed to fetch script
-        });
-    // this.getRoomList();
-    useChatRoomStore().getRoomList();
-    if (localStorage.getItem("accessToken") !== null) {
-      this.setMember(localStorage.getItem("accessToken"));
-    }
-    if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
-      this.chatRoomId = this.$route.params.chatRoomId;
-      // this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
-      useStompStore().roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
-    } else {
-      // this.basicConnect();
-    }
+    const script = document.createElement('script');
+    script.src = "/js/main.js";    
+    document.body.appendChild(script);
+
+    const script2 = document.createElement('script');
+    script2.src = "/js/addEvent.js";    
+    document.body.appendChild(script2);
+
+    const script3 = document.createElement('script');
+    script3.src = "/js/editEvent.js";
+    document.body.appendChild(script3);
+
+    const script4 = document.createElement('script');
+    script4.src = "/js/etcSetting.js";
+    document.body.appendChild(script4);
+  },
+  methods: {
     
-    
-  }
+  },
 }
 </script>
 
 <style scoped>
-
 .fa,
 .fas,
 .far {
@@ -656,7 +674,7 @@ th {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  monospace;
 }
 
 html {
@@ -688,8 +706,8 @@ html {
 body {
   margin: 0;
   font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
@@ -1260,7 +1278,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .right-sidebar-header-details p {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 300;
   margin-bottom: 0.6rem;
 }
@@ -1403,12 +1421,6 @@ body::-webkit-scrollbar-thumb {
 
 .other-section-header div i {
   margin-left: 0.5rem;
-}
-
-.other-section-header .cal {
-  display: inline-block;
-  margin-right: 10rem;
-  margin-top: 2rem;
 }
 
 .zenith-org {
@@ -1628,6 +1640,8 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 800px) {
   .feeds {
     display: grid;
+    justify-content: center;
+    align-items: center;
   }
 }
 

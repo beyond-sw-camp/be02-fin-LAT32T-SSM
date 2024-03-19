@@ -12,7 +12,7 @@
 <!--    </div>-->
     <div>
       <div class="subheading">
-        Defined by function
+        
       </div>
       <v-date-picker
           v-model="date2"
