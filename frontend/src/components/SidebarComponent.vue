@@ -21,7 +21,7 @@
                 <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
                 <div class="flex align-items-center gap-3 mb-3">
                     <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="chatRoomStore.roomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
+                    <InputText v-model="chatRoomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
                 </div>
                 <div class="flex align-items-center gap-3 mb-5">
                   <label for="email" class="font-semibold w-6rem">사용자아이디</label>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex justify-content-end gap-2">
                     <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button class="button-create" type="button" label="생성하기" @click="createRoom"></Button>
+                    <Button class="button-create" type="button" label="생성하기" @click="createChatRoom"></Button>
                 </div>
             </Dialog>
           </div>
@@ -100,6 +100,9 @@ import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import axios from "axios";
+
+const backend = 'http://localhost:8080'
 
 export default {
   name: "SidebarComponent",
@@ -133,10 +136,23 @@ export default {
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    createRoom() {
-      console.log(this.chatRoomStore.roomName)
-      // this.createChatRoom(this.roomName, this.memberList);
-      this.chatRoomStore.createChatRoom(this.memberList);
+    async createChatRoom() {
+      console.log(this.memberList)
+      console.log(this.chatRoomName);
+      const roomInfo = {
+        chatRoomName: this.chatRoomName,
+        memberId: this.memberList
+      };
+      const token = localStorage.getItem('accessToken');
+      console.log(token);
+      let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
+        headers: {
+          Authorization: token,
+        }
+      });
+      console.log(response.data);
+
+      this.visible = false;
     },
     // sendMessage(e) {
     //   console.log(e);
