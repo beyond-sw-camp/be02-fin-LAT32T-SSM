@@ -49,7 +49,7 @@ public class MeetingRoomService {
 
         // 예약 정보 탐색
         // sharedEventIdx 를 어떻게 처리할 것인가. 일정등록이 추가된다면 같이 조회
-        for (Events event : eventsList) {
+        for (Event event : eventsList) {
             MeetingSelectResReservation reservationDetail = MeetingSelectResReservation.builder()
                     .eventIdx(event.getEventIdx())
                     .createdAt(event.getCreatedAt()) // 필요에 따라 포맷 변경
