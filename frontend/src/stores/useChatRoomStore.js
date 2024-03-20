@@ -23,18 +23,5 @@ export const useChatRoomStore = defineStore("chatRoom", {
             })
             return toRaw(this.roomList);
         },
-        async createChatRoom(memberList) {
-           
-            console.log(memberList)
-            const roomInfo = {
-                chatRoomName: this.roomName,
-                memberId: memberList
-            };
-
-            let response = await axios.post(`${backend}/chat/room/create`, roomInfo);
-            console.log(response.data);
-
-            this.visible = false;
-        },
     }
 })

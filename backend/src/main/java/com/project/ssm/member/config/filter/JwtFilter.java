@@ -7,6 +7,7 @@ import com.project.ssm.member.config.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberAccountException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private MemberRepository memberRepository;
 
@@ -54,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
+            log.info("header = {}", header);
             String token;
             if (header != null && header.startsWith("Bearer ")) {
                 token = header.split(" ")[1];
