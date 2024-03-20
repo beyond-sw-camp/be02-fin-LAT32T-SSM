@@ -9,38 +9,48 @@
               <div class="text-center">
                 <h1 class="h4 text-gray-900 mb-4">회원 가입</h1>
               </div>
-              <form class="user">
+              <form class="user" enctype="multipart/form-data">
                 <div class="form-group">
-                  <input v-model="member.memberId" type="text" class="form-control form-control-user"
+                  <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
                     placeholder="아이디를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.name" type="text" class="form-control form-control-user"
+                  <input v-model="memberStore.member.name" type="text" class="form-control form-control-user"
                     placeholder="이름을 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.password" type="password" class="form-control form-control-user"
+                  <input v-model="memberStore.member.memberPw" type="password" class="form-control form-control-user"
                     placeholder="비밀번호를 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.department" type="text" class="form-control form-control-user"
+                  <input v-model="memberStore.member.memberPwChecked" type="password"
+                    class="form-control form-control-user" placeholder="비밀번호를 한번더 입력해주세요">
+                </div>
+                <div class="form-group">
+                  <input v-model="memberStore.member.department" type="text" class="form-control form-control-user"
                     placeholder="부서명을 입력해주세요">
                 </div>
                 <div class="form-group">
-                  <input v-model="member.position" type="text" class="form-control form-control-user"
+                  <input v-model="memberStore.member.position" type="text" class="form-control form-control-user"
                     placeholder="직책을 입력해주세요">
                 </div>
-                <button @click="signUp" class="btn btn-primary btn-user btn-block">
-                  회원 가입
-                </button>
+                <div class="form-group">
+                  <input type="file" id="fileUpload" @change="handleFileUpload" accept="image/*" style="display: none;">
+                  <label for="fileUpload" class="btn btn-primary btn-user btn-block">프로필 이미지 선택</label>
+                  <span id="fileName">선택된 파일 없음</span>
+                </div>
+                <!-- 이미지 미리보기 -->
+                <div class="form-group">
+                  <img id="imagePreview" src="" alt="이미지 미리보기" style="max-width: 100%; height: auto; display: none;">
+                </div>
                 <hr>
-                <a href="index.html" class="btn btn-google btn-user btn-block">
-                  <i class="fab fa-google fa-fw"></i> 구글로 회원 가입하기
-                </a>
               </form>
+              <button @click="memberStore.signup()" class="btn btn-primary btn-user btn-block">
+                회원 가입
+              </button>
               <hr>
               <div class="text-center">
-                <a class="small" href="login.html">이미 계정이 있으신가요? 로그인!</a>
+                <a class="small" href="/login">이미 계정이 있으신가요? 로그인!</a>
               </div>
             </div>
           </div>
@@ -51,32 +61,45 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapStores } from "pinia";
+import { useMemberStore } from "@/stores/useMemberStore";
 
 export default {
   name: 'SignUpPage',
   data() {
     return {
-      member: {
-        memberId: "",
-        password: "",
-        name: "",
-        department: "",
-        position: ""
-      }
+
     }
+  }, computed: {
+    ...mapStores(useMemberStore),
   },
   methods: {
-    async signUp() {
-      let response = await axios.post("http://localhost:8080/member/signup", this.member)
+    handleFileUpload(event) {
+      const file = event.target.files[0]; // 사용자가 선택한 파일
+      this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
 
-      console.log(response);
+      document.getElementById('fileName').textContent = file ? file.name : '선택된 파일 없음';
+    // 이미지 미리보기
+    if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+* {
+  box-sizing: border-box;
+}
+
 .container,
 .container-lg,
 .container-md,
@@ -201,6 +224,7 @@ export default {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: .35rem;
+  overflow-y: auto;
 }
 
 .o-hidden {
@@ -222,8 +246,9 @@ export default {
 
 .card-body {
   flex: 1 1 auto;
-  min-height: 1px;
+  min-height: 1px; /* 기존 설정 */
   padding: 1.25rem;
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
 
 .p-0 {
@@ -231,7 +256,7 @@ export default {
 }
 
 .p-5 {
-  padding: 15rem !important;
+  padding: 2.5rem !important;
 }
 
 .text-center {

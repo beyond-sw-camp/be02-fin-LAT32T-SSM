@@ -4,7 +4,6 @@ import com.project.ssm.member.model.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Builder
@@ -18,12 +17,10 @@ public class RoomParticipants {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomParticipantsIdx;
 
-    // TODO: 멤버랑 연관관계 맺기
     @ManyToOne
     @JoinColumn(name = "member_idx")
     private Member member;
 
-    // TODO: 채팅방이랑 연관관계 맺기
     @ManyToOne
     @JoinColumn(name = "chatRoom_idx")
     private ChatRoom chatRoom;

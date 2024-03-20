@@ -1,127 +1,132 @@
 <template>
-    <div class="meeting-room">
-        <div id="meeting-room-status"> 
-            <div class="meeting-rooms"> 회의실 현황
-                <div class="room-row">
-                    <div class="room available">201</div>
-                    <div class="room available">202</div>
-                    <div class="room available">203</div>
-                </div>
-                <div class="room-row">
-                    <div class="room available">301</div>
-                    <div class="room available">302</div>
-                    <div class="room available">303</div>
-                </div>
-                <div class="room-row">
-                    <div class="room available">401</div>
-                    <div class="room available">402</div>
-                    <div class="room available">403</div>
-                </div>
-            </div>
-            <div class="status-indicator">
-                <div class="status available">
-                    <div class="color-box"></div>
-                    이용 가능
-                </div>
-                <br>
-                <div class="status unavailable">
-                    <div class="color-box"></div>
-                    이용 불가
-                </div>
-            </div>
+    <div id="app">
+      <div class="meeting-room-container">
+        <!-- <h2 id="title">회의실 현황</h2> -->
+        <div class="meeting-rooms">
+          <div v-for="room in meetingRooms" :key="room.roomIdx" 
+               :class="{'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable}">
+            {{ room.roomName }}
+          </div>
         </div>
+        <div class="status-indicator">
+          <div class="status available">
+            <div class="color-box"></div>
+            이용 가능
+          </div>
+          <div class="status unavailable">
+            <div class="color-box"></div>
+            이용 불가
+          </div>
+        </div>
+      </div>
     </div>
-</template>
-
-<script>
-export default {
-    name: 'MeetingRoomCompornent',
-    props: {
-        msg: String
-    }
-}
-</script>
-
-<style scoped>
-#meeting-room-status {
+  </template>
+  
+  <script>
+  import axios from 'axios';
+  
+  export default {
+    data() {
+      return {
+        meetingRooms: [],
+      };
+    },
+    created() {
+      this.fetchMeetingRooms(); 
+    },
+    methods: {
+      async fetchMeetingRooms() {
+        try {
+          const response = await axios.get('http://localhost:8080/meetingroom/list');
+          this.meetingRooms = response.data.result.map(room => ({
+            ...room
+          }));
+        } catch (error) {
+          console.error('회의실 정보를 가져오지 못했습니다:', error);
+        }
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .meeting-room-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-.meeting-rooms {
-    display: flex;
-    flex-direction: column;
-    position: relative;
     margin-top: 20px;
-}
-.meeting-room-status {
+    font-family: 'Noto Sans KR', sans-serif; 
+  }
+  
+  .meeting-rooms {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; 
+    justify-items: center; 
+    max-width: 650px; 
+  }
+  
+  .room {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end; 
-    margin-right: 50px; 
-}
-.meeting-rooms,
-.status-indicator {
-    display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
-}
-.room-row {
-    display: flex;
-}
-.room {
-    width: 50px;
-    height: 50px;
-    border: 1px solid #ccc;
-    margin: 10px;
+    width: 100px; 
+    height: 60px; 
+    border: none; 
+    background-color: #f9f9f9; 
+    border-radius: 12px; 
     text-align: center;
-    line-height: 50px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-}
-.room.reserved {
-    background-color: #000000;
-    color: #ffffff;
-}
-#meeting-room-status::after {
-    content: "";
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease; 
+  }
+  
+  .room:hover {
+    transform: translateY(-5px); 
+  }
+  
+  .available {
+    background-color: gray; 
+    color: white;
+  }
+  
+  .unavailable {
+    background-color: black;
+    color: white;
+  }
+  
+  .status-indicator {
     display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-.status-indicators {
-    display: flex;
-}
-.status {
-    display: flex;
-    align-items: center;
+    justify-content: center; 
+    margin-top: 20px;
     margin-left: 10px;
-    font-size: 14px;
-    margin-left: 60px;
-}
-.color-box {
-    width: 20px;
+  }
+  
+  .status {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+  }
+  
+  .color-box {
     height: 20px;
     margin-right: 5px;
-}
-.available .color-box {
-    background-color: #b4ffab;
-}
-.unavailable .color-box {
-    background-color: #ff6347;
-}
-.room.unavailable {
-    background-color: #ff6347;
-}
-.room.available {
-    background-color: #b4ffab;
-}
-.room-row:not(:last-child) {
-    margin-bottom: 10px;
-}
-h2 {
-    margin-bottom: 10px;
-    font-size: 24px;
-}
-</style>
+    border-radius: 50%;
+  }
+  
+  .available .color-box {
+    background-color: gray;
+  }
+  
+  .unavailable .color-box {
+    background-color: black;
+  }
+  
+  #title {
+    text-align: center;
+    margin-left: 10px;
+    font-size: 24px; 
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold; 
+  }
+  </style>

@@ -1,4 +1,4 @@
-package com.project.ssm.config;
+package com.project.ssm.chat.config;
 
 import com.project.ssm.chat.interceptor.WebSocketBrokerInterceptor;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,10 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/chat").setAllowedOriginPatterns("*").withSockJS();
     }
 
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(interceptor);
-//    }
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(interceptor);
+    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
