@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EventParticipantsRepository extends JpaRepository<EventParticipants,Long> {
-    List<EventParticipants> findAllByMember_MemberId(String memberId);
-
     // 참조 데이터 삭제
     void deleteByEvent(Event event);
 

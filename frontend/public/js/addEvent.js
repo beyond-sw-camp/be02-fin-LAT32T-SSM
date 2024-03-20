@@ -9,7 +9,9 @@ var editType = $('#edit-type');
 var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
 var editMember = $('#edit-member');
+
 var editRoom = $('#edit-room');
+
 
 
 var addBtnContainer = $('.modalBtnContainer-addEvent');
@@ -30,7 +32,9 @@ var newEvent = function (start, end, eventType) {
     editEnd.val(end);
     editDesc.val('');
     editMember.val('');
+
     editRoom.val('');
+
 
 
     addBtnContainer.show();
