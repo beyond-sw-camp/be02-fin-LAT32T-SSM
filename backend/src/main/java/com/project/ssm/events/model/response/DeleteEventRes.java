@@ -17,5 +17,4 @@ public class DeleteEventRes {
                 .eventIdx(event.getEventIdx())
                 .build();
     }
-
 }

@@ -19,6 +19,4 @@ public class MeetingRoomReservationReq {
 
     private String startedAt;
     private String closedAt;
-
-
 }
