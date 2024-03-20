@@ -38,7 +38,6 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final MeetingRoomRepository meetingRoomRepository;
     private final MemberRepository memberRepository;
     private final EventParticipantsRepository eventParticipantsRepository;
 
@@ -104,6 +103,7 @@ public class EventService {
         else throw EventAccessException.forMemberId(verifiedMember.getMemberId());
     }
 
+    @Transactional
     public BaseResponse<DeleteEventRes> deleteEvent(Member member, Long eventIdx) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
@@ -111,6 +111,7 @@ public class EventService {
                 EventNotFoundException.forEventId(eventIdx));
         Long memberIdxOfEvent = verifiedMember.getMemberIdx();
         if (memberIdxOfEvent.equals(member.getMemberIdx())) {
+            eventParticipantsRepository.deleteByEvent(event);
             eventRepository.delete(event);
             DeleteEventRes deleteEventRes = DeleteEventRes.buildEventRes(event);
             return BaseResponse.successRes("EVENT_004", true, "일정이 삭제되었습니다.", deleteEventRes);
@@ -118,64 +119,4 @@ public class EventService {
             throw EventAccessException.forMemberId(member.getMemberId());
         }
     }
-//    public BaseResponse<MeetingRoomReservationRes> meetingRoomReservation(MeetingRoomReservationReq request) {
-//        Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(request.getMeetingRoomIdx());
-//
-//        if (!meetingRoomOptional.isPresent()) {
-//            throw new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
-//        }
-//        MeetingRoom meetingRoom = meetingRoomOptional.get();
-//
-//        boolean isOverlapping = eventRepository.isReservationDuplication(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt());
-//        if (isOverlapping) {
-//            throw new ReservationDuplicateException(ErrorCode.RESERVATION_DUPLICATE, "이미 예약된 시간입니다.");
-//        }
-//
-//        if (request.getMembers().size() > meetingRoom.getMeetingRoomCapacity()) {
-//            throw new ReservationOverException(ErrorCode.RESERVATION_OVER, "인원이 초과 되었습니다.");
-//        }
-//
-//        Event savedEvent = eventRepository.save(Event.buildRoomEvent(meetingRoom, request));
-//
-//        for (MeetingRoomReservationReq.MemberRequest memberRequest : request.getMembers()) {
-//            Optional<Member> memberOptional = memberRepository.findByMemberName(memberRequest.getMemberName());
-//            if (memberOptional.isPresent()) {
-//                Member member = memberOptional.get();
-//                eventParticipantsRepository.save(EventParticipants.buildEventPart(savedEvent, member));
-//            }
-//        }
-//
-//        // 응답
-//        MeetingRoomReservationRes meetingRoomReservationRes = MeetingRoomReservationRes.
-//                buildReservationRes(savedEvent.getEventIdx(), meetingRoom.getMeetingRoomName());
-//        return BaseResponse.successRes("EVENT_000", true, "---", meetingRoomReservationRes);
-//    }
-//
-//    // 외래키가 먼저 삭제되야 하므로 트랜젝션 처리
-//    @Transactional
-//    public BaseResponse<DeleteReservationCancelRes> meetingRoomReservationCancel(Long eventId) {
-//        Optional<Event> eventOptional = eventRepository.findById(eventId);
-//        if (!eventOptional.isPresent()) {
-//            throw new ReservationNotFoundException(ErrorCode.RESERVATION_NOT_FOUND, "예약을 찾을 수 없습니다.");
-//        }
-//
-//        Event event = eventOptional.get();
-//        MeetingRoom meetingRoom = event.getMeetingRoom();
-//        eventParticipantsRepository.deleteByEvent(event);
-//
-//        // 삭제 전에 updateAt 시간 저장
-//        event.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
-//        eventRepository.save(event);
-//
-//        // 예약 정보 삭제
-//        eventRepository.deleteById(eventId);
-//
-//        // 예약 정보
-//        DeleteReservationInfoRes reservationInfo = DeleteReservationInfoRes.buildCancel(event);
-//
-//        // 예약 정보 포함해 응답
-//        DeleteReservationCancelRes deleteReservationCancelRes = DeleteReservationCancelRes
-//                .buildReservationCancel(meetingRoom, reservationInfo);
-//        return BaseResponse.successRes("EVENT_000", true, "---", deleteReservationCancelRes);
-//    }
 }

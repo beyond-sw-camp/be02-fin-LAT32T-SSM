@@ -15,15 +15,7 @@ public class MeetingRoomReservationReq {
     private Long meetingRoomIdx;
 
     private List<String> memberNames;
-//    private List<MemberRequest> members;
 
     private String startedAt;
     private String closedAt;
-
-//    @Data
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class MemberRequest {
-//        private String memberName;
-//    }
 }

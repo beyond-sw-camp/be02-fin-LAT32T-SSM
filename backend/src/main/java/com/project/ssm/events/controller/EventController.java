@@ -39,8 +39,8 @@ public class EventController {
     }
 
     // 일정 상세 조회
-    @RequestMapping(method = RequestMethod.GET, value = "/detail")
-    public ResponseEntity getEvent(@RequestParam String date) {
+    @RequestMapping(method = RequestMethod.GET, value = "/date/{date}")
+    public ResponseEntity getEvent(@PathVariable String date) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.readEvent(member, date));
     }
@@ -53,10 +53,15 @@ public class EventController {
     }
 
     // 일정 삭제
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
-    public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@RequestParam Long eventIdx) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{eventIdx}")
+    public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@PathVariable Long eventIdx) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.deleteEvent(member, eventIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
+    public ResponseEntity test() {
+        return ResponseEntity.ok().body("ok");
     }
 
 //    // 회의실 예약
