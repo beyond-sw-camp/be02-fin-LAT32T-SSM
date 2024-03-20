@@ -16,11 +16,8 @@ public class EventRepositoryImpl implements EventCustomRepository {
 
     @Override
     public List<Event> findEventsByYear(Long memberIdx, int year) {
-
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
-
-
         return queryFactory
                 .select(event)
                 .from(event)
@@ -38,9 +35,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
 
     @Override
     public List<Event> findByYear(int year) {
-
         QEvent event = QEvent.event;
-
         return queryFactory
                 .selectFrom(event)
                 .where(
@@ -49,4 +44,11 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .fetch()
                 ;
     }
+
+    @Override
+    public List<Event> findEventsByDate(Long memberIdx, String date) {
+        return null;
+    }
+
+
 }
