@@ -15,6 +15,7 @@ public class MeetingRoomReservationReq {
     private Long meetingRoomIdx;
 
     private List<String> memberNames;
+    private List<MeetingRoomReqMemberRequest> members;
 
     private String startedAt;
     private String closedAt;
