@@ -40,13 +40,16 @@ public class EventService {
     private final EventRepository eventRepository;
     private final MemberRepository memberRepository;
     private final EventParticipantsRepository eventParticipantsRepository;
+    private final MeetingRoomRepository meetingRoomRepository;
 
     @Transactional
     public BaseResponse<PostEventRes> createEvent(Member member, PostEventReq request) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-        Event event = eventRepository.save(Event.buildEvent(verifiedMember, request));
-        eventParticipantsRepository.save(EventParticipants.buildEventPart(event,verifiedMember));
+        MeetingRoom meetingRoom = meetingRoomRepository.findById(request.getMeetingRoomIdx()).orElseThrow(() ->
+                MeetingRoomNotFoundException.forMeetingRoomIdx(request.getMeetingRoomIdx()));
+        Event event = eventRepository.save(Event.buildEvent(verifiedMember, request, meetingRoom));
+        eventParticipantsRepository.save(EventParticipants.buildEventPart(event, verifiedMember));
         PostEventRes postEventRes = PostEventRes.buidEventRes(event, verifiedMember);
         return BaseResponse.successRes("EVENT_001", true, "일정이 등록되었습니다.", postEventRes);
     }
@@ -57,7 +60,7 @@ public class EventService {
         List<Event> events = eventRepository.findEventsByYear(verifiedMember.getMemberIdx(), year);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
-            for (Event event: events) {
+            for (Event event : events) {
                 eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
             return eventsList;
@@ -76,7 +79,7 @@ public class EventService {
         List<Event> events = eventRepository.findEventsByDate(verifiedMember.getMemberIdx(), date);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
-            for (Event event: events) {
+            for (Event event : events) {
                 eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
             return BaseResponse.successRes("EVENT_002", true, "일정이 상세 조회되었습니다.", eventsList);
@@ -95,12 +98,11 @@ public class EventService {
         Event event = eventRepository.findById(request.getEventIdx()).orElseThrow(() ->
                 EventNotFoundException.forEventId(request.getEventIdx()));
         Long memberIdxOfEvent = verifiedMember.getMemberIdx();
-        if(memberIdxOfEvent.equals(member.getMemberIdx())){
+        if (memberIdxOfEvent.equals(member.getMemberIdx())) {
             Event updatedEvent = eventRepository.save(Event.setEvent(request, event));
             PatchEventRes patchEventRes = PatchEventRes.buildEventRes(updatedEvent);
             return BaseResponse.successRes("EVENT_003", true, "일정이 수정되었습니다.", patchEventRes);
-        }
-        else throw EventAccessException.forMemberId(verifiedMember.getMemberId());
+        } else throw EventAccessException.forMemberId(verifiedMember.getMemberId());
     }
 
     @Transactional

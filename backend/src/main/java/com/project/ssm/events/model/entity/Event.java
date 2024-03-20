@@ -50,8 +50,9 @@ public class Event {
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
 
-    public static Event buildEvent(Member member, PostEventReq request) {
+    public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
         return Event.builder()
+                .meetingRoom(meetingRoom)
                 .title(request.getTitle())
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())

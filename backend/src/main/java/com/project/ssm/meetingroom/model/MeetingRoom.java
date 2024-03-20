@@ -16,6 +16,7 @@ public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long meetingRoomIdx;
+
     private String meetingRoomName;
     private Integer meetingRoomCapacity;
 

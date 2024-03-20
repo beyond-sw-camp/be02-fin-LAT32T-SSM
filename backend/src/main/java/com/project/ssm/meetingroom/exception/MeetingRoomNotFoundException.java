@@ -8,7 +8,7 @@ public class MeetingRoomNotFoundException extends EntityNotFoundException {
         super(errorCode, message);
     }
 
-    public static MeetingRoomNotFoundException forEventId(Long eventIdx) {
+    public static MeetingRoomNotFoundException forMeetingRoomIdx (Long meetingRoomIdx) {
         return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
     }
 }
