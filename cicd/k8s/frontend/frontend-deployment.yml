@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssm-frontend-deployment
+spec:
+  selector:
+    matchLabels:
+      type: ssm-frontend-app
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        type: ssm-frontend-app
+    spec:
+      containers:
+        - name: front-container
+          image: hosin/lat32t:latest
+          readlinessProbe:
+            httpGet:
+              path: /login
+              port: 80
+            initialDelaySeconds: 5    # 최초 Probe전의 지연 시간
+            periodSeconds: 2          # Probe를 체크하는 시간 간격
+            successThreshold: 3       # 성공 결과 수신 횟수
+          ports:
+            - containerPort: 80
+      terminationGracePeriodSeconds: 5
