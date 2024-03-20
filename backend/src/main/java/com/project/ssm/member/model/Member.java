@@ -57,8 +57,8 @@ public class Member implements UserDetails {
 
     private Boolean status;
 
-    @OneToMany(mappedBy = "member")
-    List<Event> events = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<Event> events;
 
     @OneToMany(mappedBy = "member")
     private List<Message> messages;

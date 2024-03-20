@@ -1,6 +1,7 @@
 package com.project.ssm.events.model.response;
 
 import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.member.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class GetEventRes {
     private String textColor;
     private Boolean allDay;
 
-    public static GetEventRes buildEventRes(Event event) {
+    public static GetEventRes buildEventRes(Member member, Event event) {
         return GetEventRes.builder()
                 ._id(event.getEventIdx())
                 .title(event.getTitle())
@@ -29,7 +30,7 @@ public class GetEventRes {
                 .start(event.getStartedAt())
                 .end(event.getClosedAt())
                 .type(event.getType())
-                .username(event.getMemberName())
+                .username(member.getMemberName())
                 .backgroundColor(event.getBackgroundColor())
                 .textColor(event.getTextColor())
                 .allDay(event.getAllDay())

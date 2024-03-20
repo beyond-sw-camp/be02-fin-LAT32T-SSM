@@ -79,16 +79,26 @@ var newEvent = function (start, end, eventType) {
         editAllDay.prop('checked', false);
         eventModal.modal('hide');
 
+        console.log(localStorage.getItem('accessToken'))
+
         //새로운 일정 저장
         $.ajax({
             type: "post",
             url: "http://localhost:8080/calendar/event/create",
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('accessToken')
+            },
             datatype: "JSON",
             data: JSON.stringify({
                 "title": eventData.title,
                 "startedAt":eventData.start,
-                "closedAt":eventData.end
+                "closedAt":eventData.end,
+                "eventContent":eventData.description,
+                "memberName":eventData.type,
+                "backgroundColor":eventData.backgroundColor,
+                "textColor":eventData.textColor,
+                "allDay":eventData.allDay,
             }),
             success: function (response) {
                 //DB연동시 중복이벤트 방지를 위한

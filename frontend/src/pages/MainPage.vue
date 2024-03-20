@@ -29,43 +29,54 @@
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
-          <div @keyup="sendMessage">
+        <div @keyup="sendMessage">
             <textarea id="summernote" v-model="message"></textarea>
-          </div>
-        <section class="right-sidebar-about">
-          <article class="about-header">
-            <h4>About</h4>
-            <i class="fas fa-chevron-down"></i>
-          </article>
-          <article class="about-details">
-            <div class="about-detail">
-              <h5>Topic</h5>
-              <p>Track and cordinate social media</p>
-            </div>
-            <div class="about-detail">
-              <h5>Description</h5>
-              <p>Home of the social media team</p>
-            </div>
-            <div class="about-img">
-              <div class="about-img-wrapper">
-                <img src="images/user1.jpg" alt="User 1" />
-              </div>
-              <small>Created on October 8th, 2020</small>
-            </div>
-          </article>
+          </div>  
+        <section class="feeds2">
+          
         </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>Calendar</h4>
-          </article>
-          <CalendarComponent></CalendarComponent>
-        </section>
-        <section class="other-section">
-          <article class="other-section-header">
-            <h4>FullCalendar</h4>                        
-          </article>    
-        </section>
+        
       </section>
+      <section class="right-sidebar">
+            <section class="right-sidebar-about">
+              <article class="about-header">
+                <h4>About Me</h4>
+                <i class="fas fa-chevron-down" @click="aboutmeDetails" ></i>
+              </article>
+              <article class="about-details" v-show="isAboutmeVisible" >
+                <div class="about-detail">
+                  <h5>이름</h5>
+                  <p>{{ mainStore.member.name }}</p>
+                </div>
+                <div class="about-detail">
+                  <h5>부서</h5>
+                  <p>{{ mainStore.member.department }}</p>
+                </div>
+                <div class="about-detail">
+                  <h5>직책</h5>
+                  <p>{{ mainStore.member.position }}</p>
+                </div>                
+              </article>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
+                <h4>일정</h4>
+                <i class="fas fa-chevron-down" @click="calendarDetails" ></i>
+              </article>
+              <span v-show="isCalendarVisible">
+                <CalendarComponent></CalendarComponent>
+              </span>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
+                <h4>회의실 현황</h4>
+                <i class="fas fa-chevron-down" @click="meetingRoomDetails" ></i>
+              </article>
+              <span v-show="isMeetingroomVisible">
+                <MeetingRoomCompornent></MeetingRoomCompornent>
+              </span>
+            </section>           
+          </section>
     </section>
   </main>
 </template>
@@ -74,25 +85,27 @@
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
+import MeetingRoomCompornent from '@/components/MeetingRoomCompornent.vue';
 import CalendarComponent from '@/components/CalendarComponent.vue';
 // import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 // import axios from "axios";
+import { mapStores } from "pinia";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
 
 import { mapActions, mapState } from "pinia";
 import VueJwtDecode from 'vue-jwt-decode';
-import {useChatRoomStore} from "@/stores/useChatRoomStore";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
   name: 'MainPage',
   components: {
     HeaderComponent, SidebarComponent, ChatBlockComponent,
-    CalendarComponent,
+    MeetingRoomCompornent, CalendarComponent
   },
   data() {
     return {
@@ -104,9 +117,14 @@ export default {
       roomList: [],
       username: "",
       chatRoomId: "",
+      isAboutmeVisible: true,
+      isCalendarVisible: true,
+      isMeetingroomVisible: true,
     }
   },
   created() {
+    
+
     console.log("============기본 연결================");
     const stompClient = this.initSock();
     this.basicConnect(stompClient);
@@ -149,7 +167,20 @@ export default {
       token = VueJwtDecode.decode(token.split(" ")[1]);
       this.memberId = token.memberId;
       this.memberName = token.memberName;
+    },
+
+    // isDetailsVisible 값을 반전시켜 세부 정보의 표시 여부를 토글합니다
+    aboutmeDetails() {
+      this.isAboutmeVisible = !this.isAboutmeVisible;
+    },
+    calendarDetails(){
+      this.isCalendarVisible = !this.isCalendarVisible;
+    },
+    meetingRoomDetails(){
+      this.isMeetingroomVisible = !this.isMeetingroomVisible;
     }
+
+
   },
   mounted() {
     this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
@@ -186,12 +217,18 @@ export default {
       // this.basicConnect();
     }
     
-    
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
   }
 }
 </script>
 
 <style scoped>
+/* 마우스를 아이콘 위에 올렸을 때 커서 모양을 pointer로 변경합니다 */
+.fas.fa-chevron-down {
+  cursor: pointer;
+}
+
 
 .fa,
 .fas,
@@ -984,7 +1021,15 @@ body::-webkit-scrollbar-thumb {
   overflow: auto;
   padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
 }
-
+.feeds2 {  
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  position: fixed; /* 뷰포트에 대해 고정 */
+  bottom: 0; /* 하단에 위치 */
+  overflow: auto;
+  padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
+  margin-bottom: 1.5rem;
+  
+}
 .feed {
   display: flex;
   padding: 0.5rem;
@@ -1274,7 +1319,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .right-sidebar-contact {
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
@@ -1347,8 +1392,10 @@ body::-webkit-scrollbar-thumb {
 }
 
 .about-detail h5 {
-  margin-bottom: 0.2rem;
-  color: var(--dark-grey);
+  margin-bottom: 0.5rem;
+  color: black;
+  font-weight: bold; /* 굵은 글자로 설정 */
+  font-size: 18px; /* 폰트 크기를 18px로 설정, 원하는 크기로 조절 가능 */
 }
 
 .about-img {
@@ -1577,7 +1624,7 @@ body::-webkit-scrollbar-thumb {
   color: #9e9a9a;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1000px) {
   .body {
     grid-template-columns: 1.5fr;
   }

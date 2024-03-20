@@ -10,6 +10,6 @@ public class EventAccessException extends BusinessException {
     }
 
     public static EventAccessException forMemberId(String memberId) {
-        return new EventAccessException(ErrorCode.MEMBER_NOT_EVENT, String.format("[%s]님이 등록한 일정이 아닙니다.", memberId));
+        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, String.format("[%s]님이 등록한 일정이 아닙니다.", memberId));
     }
 }
