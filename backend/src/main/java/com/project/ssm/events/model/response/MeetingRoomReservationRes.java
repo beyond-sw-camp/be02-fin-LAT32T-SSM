@@ -8,21 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class MeetingRoomReservationRes {
-    private Result result;
+    private MeetingRoomReservationResResult result;
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class Result {
-        private Long eventIdx;
-        private String roomName;
-    }
+
 
     public static MeetingRoomReservationRes buildReservationRes(Long eventIdx, String meetingRoomName) {
         return MeetingRoomReservationRes.builder()
-                .result(MeetingRoomReservationRes.Result.builder()
+                .result(MeetingRoomReservationResResult.builder()
                 .eventIdx(eventIdx)
                 .roomName(meetingRoomName)
                 .build())
