@@ -10,6 +10,10 @@ var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
 var editMember = $('#edit-member');
 
+var editRoom = $('#edit-room');
+
+
+
 var addBtnContainer = $('.modalBtnContainer-addEvent');
 var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
 
@@ -28,6 +32,10 @@ var newEvent = function (start, end, eventType) {
     editEnd.val(end);
     editDesc.val('');
     editMember.val('');
+
+    editRoom.val('');
+
+
 
     addBtnContainer.show();
     modifyBtnContainer.hide();
@@ -80,7 +88,6 @@ var newEvent = function (start, end, eventType) {
         editAllDay.prop('checked', false);
         eventModal.modal('hide');
 
-        console.log(localStorage.getItem('accessToken'))
 
         //새로운 일정 저장
         $.ajax({
@@ -102,6 +109,7 @@ var newEvent = function (start, end, eventType) {
                 "allDay":eventData.allDay,
             }),
             success: function (response) {
+                console.log(response)
                 //DB연동시 중복이벤트 방지를 위한
                 //$('#calendar').fullCalendar('removeEvents');
                 //$('#calendar').fullCalendar('refetchEvents');

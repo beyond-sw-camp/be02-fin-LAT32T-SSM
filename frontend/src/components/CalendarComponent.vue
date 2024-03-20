@@ -10,8 +10,10 @@
   <!--          event-color="green lighten-1"-->
   <!--      ></v-date-picker>-->
   <!--    </div>-->
+
     <v-date-picker v-model="date2" :event-color="date => date[9] % 2 ? 'red' : 'yellow'" :events="functionEvents"
-      @change="mainStore.onDateClick()"></v-date-picker>
+      @click="mainStore.onDateClick()"></v-date-picker>
+
 </template>
 
 <script>
@@ -22,7 +24,7 @@ export default {
   data: () => ({
     arrayEvents: null,
     // date1: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    // date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
   }),
   computed: {
     ...mapStores(useMainStore)
