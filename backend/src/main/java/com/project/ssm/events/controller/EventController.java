@@ -6,7 +6,6 @@ import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +55,11 @@ public class EventController {
     public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@RequestParam Long eventIdx) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.deleteEvent(member, eventIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
+    public ResponseEntity<String> deleteEvent() {
+        return ResponseEntity.ok().body("ok");
     }
 
 //    // 회의실 예약
