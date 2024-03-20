@@ -32,9 +32,9 @@ public class EventController {
 
     // 일정 상세 조회
     @RequestMapping(method = RequestMethod.GET, value = "/detail")
-    public ResponseEntity<BaseResponse<GetEventRes>> getEvent(@RequestParam Long eventIdx) {
+    public ResponseEntity getEvent(@RequestParam String date) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return ResponseEntity.ok().body(eventService.readEvent(member, eventIdx));
+        return ResponseEntity.ok().body(eventService.readEvent(member, date));
     }
 
     // 연간 일정 조회
