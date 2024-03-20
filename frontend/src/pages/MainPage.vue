@@ -21,15 +21,18 @@
             
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
-            <i class="fas fa-info-circle"></i>
+            <div @click="fullCalendarDetails"> 달력 </div>
           </button>
         </section>
         <section class="feeds">
+          <div v-show="isFullcalendarVisible">
+            <FullCalendarComponent></FullCalendarComponent>
+          </div>
           <div>
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
-        <div @keyup="sendMessage">
+        <div @keyup="sendMessage" v-show="!isFullcalendarVisible">
             <textarea id="summernote" v-model="message"></textarea>
           </div>  
         <section class="feeds2">
@@ -87,7 +90,7 @@ import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 import MeetingRoomCompornent from '@/components/MeetingRoomCompornent.vue';
 import CalendarComponent from '@/components/CalendarComponent.vue';
-// import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
+import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -98,14 +101,13 @@ import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
 
 import { mapActions, mapState } from "pinia";
-import VueJwtDecode from 'vue-jwt-decode';
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
   name: 'MainPage',
   components: {
     HeaderComponent, SidebarComponent, ChatBlockComponent,
-    MeetingRoomCompornent, CalendarComponent
+    MeetingRoomCompornent, CalendarComponent, FullCalendarComponent
   },
   data() {
     return {
@@ -120,6 +122,7 @@ export default {
       isAboutmeVisible: true,
       isCalendarVisible: true,
       isMeetingroomVisible: true,
+      isFullcalendarVisible: true,
     }
   },
   created() {
@@ -164,9 +167,11 @@ export default {
       }
     },
     setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.memberId = token.memberId;
-      this.memberName = token.memberName;
+      token = token.split(" ")[1];
+      const payload = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
+      const tokenData = this.mainStore.base64UrlDecode(payload)
+      this.memberId = tokenData.memberId;
+      this.memberName = tokenData.memberName;
     },
 
     // isDetailsVisible 값을 반전시켜 세부 정보의 표시 여부를 토글합니다
@@ -178,6 +183,9 @@ export default {
     },
     meetingRoomDetails(){
       this.isMeetingroomVisible = !this.isMeetingroomVisible;
+    },
+    fullCalendarDetails(){
+      this.isFullcalendarVisible = ! this.isFullcalendarVisible;
     }
 
 
