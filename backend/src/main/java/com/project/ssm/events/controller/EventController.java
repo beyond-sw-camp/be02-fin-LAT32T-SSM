@@ -58,15 +58,15 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.deleteEvent(member, eventIdx));
     }
 
-//    // 회의실 예약
-//    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
-//    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
-//        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
-//    }
-//
-//    // 회의실 예약 취소
-//    @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
-//    public ResponseEntity<BaseResponse<DeleteReservationCancelRes>> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
-//        return ResponseEntity.ok().body(eventService.meetingRoomReservationCancel(reservationIdx));
-//    }
+    // 회의실 예약
+    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
+    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
+        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
+    }
+
+    // 회의실 예약 취소
+    @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
+    public ResponseEntity<BaseResponse<DeleteReservationCancelRes>> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
+        return ResponseEntity.ok().body(eventService.meetingRoomReservationCancel(reservationIdx));
+    }
 }
