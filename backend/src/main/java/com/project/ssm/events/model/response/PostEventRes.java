@@ -20,9 +20,7 @@ public class PostEventRes {
     private String memberName;
     private Boolean allDay;
     private Long memberIdx;
-
     private String type;
-
 
     public static PostEventRes buidEventRes(Event event, Member member) {
         return PostEventRes.builder()

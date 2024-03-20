@@ -44,20 +44,20 @@ public class RoomService {
     private String secretKey;
 
     @Transactional
-    public BaseResponse<PostCreateRoomRes> createRoom(PostCreateRoomReq postCreateRoom) {
-        ChatRoom room = ChatRoom.createRoom(postCreateRoom.getChatRoomName());
-        chatRoomRepository.save(room);
+    public BaseResponse<PostCreateRoomRes> createRoom(PostCreateRoomReq postCreateRoom, Member member) {
+        ChatRoom room = chatRoomRepository.save(ChatRoom.createRoom(postCreateRoom.getChatRoomName()));
+        roomPartRepository.save(RoomParticipants.buildRoomPart(member, room));
         for (String memberId : postCreateRoom.getMemberId()) {
-            Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
+            Member memberInfo = memberRepository.findByMemberId(memberId).orElseThrow(() ->
                     MemberNotFoundException.forMemberId(memberId));
-            roomPartRepository.save(RoomParticipants.buildRoomPart(member, room));
+            roomPartRepository.save(RoomParticipants.buildRoomPart(memberInfo, room));
         }
+
         PostCreateRoomRes postCreateRoomRes = PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getChatRoomId());
         return BaseResponse.successRes("CHATTING_001", true, "채팅방이 생성되었습니다.", postCreateRoomRes);
     }
 
     public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
-
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
         List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);

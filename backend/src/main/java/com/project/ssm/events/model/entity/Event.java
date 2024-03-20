@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Builder
 @Setter
-public class Event{
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,20 +52,21 @@ public class Event{
 
     public static Event buildEvent(Member member, PostEventReq request) {
         return Event.builder()
-            .startedAt(request.getStartedAt())
-            .closedAt(request.getClosedAt())
-            .eventContent(request.getEventContent())
-            .type(request.getType())
-            .memberName(member.getMemberName())
-            .backgroundColor(request.getBackgroundColor())
-            .textColor(request.getTextColor())
-            .allDay(request.getAllDay())
-            .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-            .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-            .build();
+                .title(request.getTitle())
+                .startedAt(request.getStartedAt())
+                .closedAt(request.getClosedAt())
+                .eventContent(request.getEventContent())
+                .type(request.getType())
+                .memberName(member.getMemberName())
+                .backgroundColor(request.getBackgroundColor())
+                .textColor(request.getTextColor())
+                .allDay(request.getAllDay())
+                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .build();
     }
 
-    public static Event setEvent(PatchEventReq request, Event event){
+    public static Event setEvent(PatchEventReq request, Event event) {
         event.setTitle(request.getTitle());
         event.setEventContent(request.getEventContent());
         event.setStartedAt(request.getStartedAt());

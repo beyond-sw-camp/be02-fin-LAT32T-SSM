@@ -29,18 +29,19 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.createEvent(member, request));
     }
 
-    // 일정 상세 조회
-    @RequestMapping(method = RequestMethod.GET, value = "/detail")
-    public ResponseEntity<BaseResponse<GetEventRes>> getEvent(@RequestParam Long eventIdx) {
-        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return ResponseEntity.ok().body(eventService.readEvent(member, eventIdx));
-    }
-
     // 연간 일정 조회
+
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
-    public ResponseEntity<BaseResponse<List<GetEventRes>>> listEvents(@PathVariable int year){
+    public ResponseEntity listEvents(@PathVariable int year){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.listEvents(member, year));
+    }
+
+    // 일정 상세 조회
+    @RequestMapping(method = RequestMethod.GET, value = "/date/{date}")
+    public ResponseEntity getEvent(@PathVariable String date) {
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok().body(eventService.readEvent(member, date));
     }
 
     // 일정 수정
@@ -51,8 +52,8 @@ public class EventController {
     }
 
     // 일정 삭제
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
-    public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@RequestParam Long eventIdx) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{eventIdx}")
+    public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@PathVariable Long eventIdx) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.deleteEvent(member, eventIdx));
     }
@@ -73,4 +74,16 @@ public class EventController {
 //    public ResponseEntity<BaseResponse<DeleteReservationCancelRes>> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
 //        return ResponseEntity.ok().body(eventService.meetingRoomReservationCancel(reservationIdx));
 //    }
+
+    // 회의실 예약
+    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
+    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
+        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
+    }
+
+    // 회의실 예약 취소
+    @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
+    public ResponseEntity<BaseResponse<DeleteReservationCancelRes>> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
+        return ResponseEntity.ok().body(eventService.meetingRoomReservationCancel(reservationIdx));
+    }
 }

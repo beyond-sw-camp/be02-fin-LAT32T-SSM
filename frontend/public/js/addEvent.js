@@ -8,6 +8,7 @@ var editEnd = $('#edit-end');
 var editType = $('#edit-type');
 var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
+var editMember = $('#edit-member');
 
 var addBtnContainer = $('.modalBtnContainer-addEvent');
 var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
@@ -26,13 +27,14 @@ var newEvent = function (start, end, eventType) {
     editStart.val(start);
     editEnd.val(end);
     editDesc.val('');
+    editMember.val('');
 
     addBtnContainer.show();
     modifyBtnContainer.hide();
     eventModal.modal('show');
 
     /******** 임시 RAMDON ID - 실제 DB 연동시 삭제 **********/
-    var eventId = 1 + Math.floor(Math.random() * 1000);
+    // var eventId = 1 + Math.floor(Math.random() * 1000);
     /******** 임시 RAMDON ID - 실제 DB 연동시 삭제 **********/
 
     //새로운 일정 저장버튼 클릭
@@ -40,13 +42,12 @@ var newEvent = function (start, end, eventType) {
     $('#save-event').on('click', function () {
 
         var eventData = {
-            _id: eventId,
             title: editTitle.val(),
             start: editStart.val(),
             end: editEnd.val(),
             description: editDesc.val(),
             type: editType.val(),
-            username: '사나',
+            username: editMember.val(),
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
             allDay: false

@@ -16,9 +16,18 @@ public enum ErrorCode {
 
 
     // 회원
-    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복됩니다."),
-    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없습니다."),
-    DIFFERENT_USER_PASSWORD(HttpStatus.BAD_REQUEST, "USER-004", "비밀번호가 일치하지 않습니다."),
+    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복된 경우"),
+    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없는 경우"),
+    DIFFERENT_USER_PASSWORD(HttpStatus.BAD_REQUEST, "USER-004", "회원의 패스워드가 저장된 데이터와 다른 경우"),
+  
+    // 회의실
+    MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "MEETINGROOM_000" , "회의실을 찾을 수 없습니다."),
+    MEETINGROOM_DUPLOCATE(HttpStatus.BAD_REQUEST, "MEETINGROOM_001","이미 있는 회의실 입니다."),
+
+    // 예약
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_000" , "예약을 찾을 수 없습니다."),
+    RESERVATION_OVER(HttpStatus.BAD_REQUEST, "RESERVATION_001" , "인원이 초과 되었습니다."),
+    RESERVATION_DUPLICATE(HttpStatus.BAD_REQUEST,"RESERVATION_002","이미 예약된 시간입니다.."),
 
     // 채팅방
     DUPLICATE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_009", "이미 존재하는 채팅방입니다."),
@@ -36,12 +45,12 @@ public enum ErrorCode {
     REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다."),
 
     // 일정
-    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_000", "일정을 찾을 수 없습니다."),
-    UNAUTHORIZED_ACCESS_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_000", "권한이 없는 사용자입니다."),
-    DUPLICATED_EVENT(HttpStatus.CONFLICT, "CALENDAR_000", "이미 존재하는 일정입니다."),
-    INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_000", "등록할 수 없는 시간입니다."),
-    EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_000", "필수 입력값을 입력하지 않았습니다."),
-    NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_000", "검색 결과가 없습니다."),
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_005", "일정을 찾을 수 없습니다."),
+    UNAUTHORIZED_ACCESS_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_006", "권한이 없는 사용자입니다."),
+    DUPLICATED_EVENT(HttpStatus.CONFLICT, "CALENDAR_007", "이미 존재하는 일정입니다."),
+    INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_008", "등록할 수 없는 시간입니다."),
+    EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_009", "필수 입력값을 입력하지 않았습니다."),
+    NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_010", "검색 결과가 없습니다."),
     ;
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
