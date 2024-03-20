@@ -8,6 +8,9 @@ var editEnd = $('#edit-end');
 var editType = $('#edit-type');
 var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
+var editMember = $('#edit-member');
+var editRoom = $('#edit-room');
+
 
 var addBtnContainer = $('.modalBtnContainer-addEvent');
 var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
@@ -26,13 +29,16 @@ var newEvent = function (start, end, eventType) {
     editStart.val(start);
     editEnd.val(end);
     editDesc.val('');
+    editMember.val('');
+    editRoom.val('');
+
 
     addBtnContainer.show();
     modifyBtnContainer.hide();
     eventModal.modal('show');
 
     /******** 임시 RAMDON ID - 실제 DB 연동시 삭제 **********/
-    var eventId = 1 + Math.floor(Math.random() * 1000);
+    // var eventId = 1 + Math.floor(Math.random() * 1000);
     /******** 임시 RAMDON ID - 실제 DB 연동시 삭제 **********/
 
     //새로운 일정 저장버튼 클릭
@@ -40,13 +46,12 @@ var newEvent = function (start, end, eventType) {
     $('#save-event').on('click', function () {
 
         var eventData = {
-            _id: eventId,
             title: editTitle.val(),
             start: editStart.val(),
             end: editEnd.val(),
             description: editDesc.val(),
             type: editType.val(),
-            username: '사나',
+            username: editMember.val(),
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
             allDay: false
@@ -79,7 +84,6 @@ var newEvent = function (start, end, eventType) {
         editAllDay.prop('checked', false);
         eventModal.modal('hide');
 
-        console.log(localStorage.getItem('accessToken'))
 
         //새로운 일정 저장
         $.ajax({
@@ -101,6 +105,7 @@ var newEvent = function (start, end, eventType) {
                 "allDay":eventData.allDay,
             }),
             success: function (response) {
+                console.log(response)
                 //DB연동시 중복이벤트 방지를 위한
                 //$('#calendar').fullCalendar('removeEvents');
                 //$('#calendar').fullCalendar('refetchEvents');

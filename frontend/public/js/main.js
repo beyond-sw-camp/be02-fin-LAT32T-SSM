@@ -105,17 +105,20 @@ var calendar = $('#calendar').fullCalendar({
    *  일정 받아옴
    * ************** */
   events: function (start, end, timezone, callback) {
-
-      var year = 2024;
-
-    $.ajax({
-      type: "get",
-      url: "http://localhost:8080/calendar/event/"+year, //http://localhost:8080/calendar/event
-      data: {
-        // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
-        //startDate : moment(start).format('YYYY-MM-DD'),
-        //endDate   : moment(end).format('YYYY-MM-DD')
+    var currentYear = new Date().getFullYear();
+  $.ajax({
+    type: "get",
+    url: "http://localhost:8080/calendar/event/" + currentYear,
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('accessToken')
       },
+      datatype: "JSON",
+    data: {
+      // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
+      // startDate : moment(start).format('YYYY-MM-DD'),
+      // endDate   : moment(end).format('YYYY-MM-DD')
+    },
       success: function (response) {
           console.log(response);
         var fixedDate = response.map(function (array) {
