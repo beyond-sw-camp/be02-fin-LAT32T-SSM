@@ -2,9 +2,11 @@ package com.project.ssm.common.error.exception;
 
 
 import com.project.ssm.common.error.ErrorCode;
-
+import lombok.Getter;
+@Getter
 public class BusinessException extends RuntimeException{
-    private ErrorCode errorCode;
+
+    private final ErrorCode errorCode;
     private String message;
 
     public BusinessException(ErrorCode errorCode, String message) {
@@ -12,7 +14,9 @@ public class BusinessException extends RuntimeException{
         this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
+    public BusinessException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+        this.message = errorCode.getDescription();
     }
+
 }

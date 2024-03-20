@@ -12,11 +12,11 @@
                   </div>
                   <form class="user">
                     <div class="form-group">
-                      <input v-model="member.memberId" type="text" class="form-control form-control-user"
+                      <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
                         placeholder="아이디를 입력해주세요">
                     </div>
                     <div class="form-group">
-                      <input v-model="member.password" type="password" class="form-control form-control-user"
+                      <input v-model="memberStore.member.memberPw" type="password" class="form-control form-control-user"
                         placeholder="비밀번호를 입력해주세요">
                     </div>
                     <!--                    <div class="form-group">-->
@@ -25,36 +25,24 @@
                     <!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
                     <!--                      </div>-->
                     <!--                    </div>-->
-                    <hr>
-                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                    
+                    <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
                       <i class="fab fa-google fa-fw"></i> 구글로 로그인
-                    </a>
+                    </a> -->
                   </form>
                   <hr>
-                  <div class="text-center">
+                  <!-- <div class="text-center">
                     <a class="small" href="forgot-password.html">비밀번호를 잊으셨나요?</a>
-                  </div>
+                  </div> -->
                   <div class="text-center">
                     <router-link to="/signup">
                       <a class="small">계정을 만드세요!</a>
                     </router-link>
                   </div>
-                  <button @click="login(member)" class="btn btn-primary btn-user btn-block">
+                  <hr>
+                  <button @click="memberStore.login(memberStore.member)" class="btn btn-primary btn-user btn-block">
                     로그인
-                  </button>
-                  <!-- 채팅방 나가기 모달창 -->
-                  <ConfirmDialog></ConfirmDialog>
-                  <div class="card flex flex-wrap gap-2 justify-content-center">
-                    <Button @click="confirm()" label="Delete" severity="danger" outlined>채팅방 나가기</Button>
-                  </div>
-                  <!--                  <Toast />-->
-                  <!-- 사이드 탭 테스트-->
-                  <div class="card flex justify-content-center">
-                    <Button icon="pi pi-arrow-left" @click="visibleRight = true">탭 열기</Button>
-                  </div>
-                  <Sidebar v-model:visible="visibleRight" header="사이드 탭" position="right">
-                    <SideTabComponent />
-                  </Sidebar>
+                  </button>              
                 </div>
               </div>
             </div>
@@ -65,65 +53,47 @@
   </div>
 </template>
 <script>
-import SideTabComponent from "@/components/SideTabComponent.vue";
-// import Sidebar from "primevue/sidebar";
-import ConfirmDialog from "primevue/confirmdialog";
-import axios from "axios";
-import { toRaw } from "vue";
-import { useConfirm } from "primevue/useconfirm";
+import { mapStores } from "pinia";
+import { useMemberStore } from "@/stores/useMemberStore";
 
 export default {
   name: 'LoginPage',
-  // components: {
-  //   SideTabComponent, Sidebar, ConfirmDialog
-  // },
   components: {
-    ConfirmDialog, SideTabComponent
+    
   },
   data() {
     return {
       visibleRight: false,
-      member: {
-        memberId: "",
-        password: ""
-      }
+      
     }
   },
+  computed: {
+    ...mapStores(useMemberStore,),
+  },
   methods: {
-    async login(member) {
-      member = toRaw(member);
-      let response = await axios.post("http://localhost:8080/member/login", member);
-      console.log(response.data);
-      // 로그인 성공 했을 때 Sse 접속하는 로직 구현
-      if (response.data.isSuccess === true) {
-        console.log("로그인 성공")
-      }
-      localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
-    },
-
-    confirm() {
-      const confirm = useConfirm();
-      confirm.require({
-        message: '정말로 채팅방에서 나가시겠습니까?',
-        header: '채팅방 나가기',
-        icon: 'pi pi-info-circle',
-        rejectLabel: '취소하기',
-        acceptLabel: '나가기',
-        rejectClass: 'p-button-secondary p-button-outlined',
-        acceptClass: 'p-button-danger',
-        accept: () => {
-          // 취소 이벤트
-        },
-        reject: () => {
-          // 채팅방 나가기 이벤트
-        }
-      });
-    }
+    
   }
 }
 </script>
 
-<style>
+<style scoped>
+.text-center a {
+  color: #dd1010; /* 링크 색상 */
+  text-decoration: none; /* 언더라인 제거 */
+  font-size: 1.3rem; /* 폰트 크기 */
+  margin-left: 3%;
+}
+.text-center a:hover {
+  color: #1d31b6; /* 호버 시 색상 변경 */
+}
+
+.text-center h1 {
+  font-size: 2.5rem; /* 헤더 크기 조정 */
+  color: #4a4e69; /* 헤더 색상 조정 */
+  font-weight: 700; /* 폰트 두께 */
+  margin-bottom: 1.5rem; /* 하단 요소와의 간격 */
+}
+
 .container,
 .container-lg,
 .container-md,
@@ -133,39 +103,10 @@ export default {
   padding-left: .75rem;
   margin-right: auto;
   margin-left: auto;
-}
-
-@media (min-width:576px) {
-  .container {
-    max-width: 540px;
-  }
-}
-
-@media (min-width:768px) {
-
-  .container,
-  .container-md {
-    max-width: 720px;
-  }
-}
-
-@media (min-width:992px) {
-
-  .container,
-  .container-lg,
-  .container-md {
-    max-width: 960px;
-  }
-}
-
-@media (min-width:1200px) {
-
-  .container,
-  .container-lg,
-  .container-md,
-  .container-xl {
-    max-width: 1140px;
-  }
+  display: flex; /* Flexbox 사용 */
+  align-items: center; /* 세로 방향 가운데 정렬 */
+  justify-content: center; /* 가로 방향 가운데 정렬 */
+  height: 100vh; /* 부모 컨테이너의 높이를 화면 높이로 설정 */
 }
 
 .row {
@@ -174,6 +115,7 @@ export default {
   flex-wrap: wrap;
   margin-right: -.75rem;
   margin-left: -.75rem;
+  justify-content: center; /* 가운데 정렬 활성화 */
 }
 
 .justify-content-center {
@@ -239,6 +181,7 @@ export default {
 }
 
 .card {
+  margin: auto; /* 수평 중앙 정렬 */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -248,10 +191,12 @@ export default {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: .35rem;
+  min-width: 100px; /* 최소 너비 설정 */
+  max-width: 1000px; /* 최대 너비 설정 */
 }
 
 .o-hidden {
-  overflow: hidden !important;
+  overflow: visible;
 }
 
 .border-0 {
@@ -278,7 +223,7 @@ export default {
 }
 
 .p-5 {
-  padding: 15rem !important;
+  padding: 10rem !important;
 }
 
 .text-center {
@@ -328,6 +273,7 @@ form.user .form-control-user {
   font-size: .8rem;
   border-radius: 10rem;
   padding: 1.5rem 1rem;
+  width: 30rem;
 }
 
 .custom-control {
@@ -372,11 +318,17 @@ small {
   color: #fff;
   background-color: #4e73df;
   border-color: #4e73df;
+  background-color: #4e73df; /* 배경 색상 */
+  border: none; /* 테두리 제거 */
+  padding: 0.75rem 1.25rem; /* 패딩 조정 */
+  font-size: 1rem; /* 폰트 크기 */
+  border-radius: 20px; /* 둥근 모서리 */
+  transition: background-color 0.3s; /* 배경 색상 변화 애니메이션 */
 }
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #2e59d9;
+  background-color: #2e59d9; /* 호버 시 배경 색상 */
   border-color: #2653d4;
 }
 

@@ -8,38 +8,39 @@
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
-          <h4>{{ member.name }}</h4>
+          <h4>{{ mainStore.member.name }}</h4>
           <i class="fas fa-chevron-down"></i>
         </div>
         <p class="sidebar-user-info-additional">
-          <i class="fas fa-circle"></i>{{ member.department }}
+          <i class="fas fa-circle"></i>{{ mainStore.member.department }}
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <SideButton label="Show" @click="visible = true" />
-            <AddDialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
-              <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
-              <div class="flex align-items-center gap-3 mb-3">
-                <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
-                <AddInputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
-              </div>
-              <div class="flex align-items-center gap-3 mb-5">
-                <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
-                <AddInputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
-                <SideButton type="button" label="추가" severity="secondary" @click="addMember(memberId)"></SideButton>
-              </div>
-              <div class="flex justify-content-end gap-2">
-                <SideButton type="button" label="취소하기" severity="secondary" @click="visible = false"></SideButton>
-                <SideButton type="button" label="생성하기" @click="createRoom"></SideButton>
-              </div>
-            </AddDialog>
+            <Button class="button-show" label="Show" @click="visible = true"/>
+            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '30rem' }">
+                <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
+                <div class="flex align-items-center gap-3 mb-3">
+                    <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
+                    <InputText v-model="chatRoomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
+                </div>
+                <div class="flex align-items-center gap-3 mb-5">
+                  <label for="email" class="font-semibold w-6rem">사용자아이디</label>
+                  <InputText v-model="memberId" id="사용자아이디" class="input-text flex-auto" autocomplete="off" />
+                  <Button class="button-secondary" type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
+                </div>
+                <div class="flex justify-content-end gap-2">
+                    <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
+                    <Button class="button-create" type="button" label="생성하기" @click="createChatRoom"></Button>
+                </div>
+            </Dialog>
           </div>
         </span>
       </section>
       <section class="unread">
         <h4 class="unread-header">
           <span class="unread-icons">
-            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i><i class="fas fa-minus fa-xs"></i>
+            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
+            ><i class="fas fa-minus fa-xs"></i>
           </span>
           읽지 않은 메시지
         </h4>
@@ -56,9 +57,9 @@
         <ul>
           <li v-for="(item, idx) in roomList" :key="idx">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click="enterRoom(item.chatRoomId)">
+              <a href="#" @click="stompStore.roomConnect(item.chatRoomId)">
                 <span class="make-white">
-                  <i class="fas fa-hashtag"></i>
+                <i class="fas fa-hashtag"></i>
                   {{ item.chatRoomName }}
                 </span>
               </a>
@@ -66,7 +67,7 @@
           </li>
         </ul>
       </section>
-      <section class="direct-messages">
+      <!-- <section class="direct-messages">
         <h4 class="direct-messages-header">
           <i class="fas fa-sort-down"></i> 다이렉트 메시지
         </h4>
@@ -86,21 +87,26 @@
             </a>
           </li>
         </ul>
-      </section>
+      </section> -->
     </article>
   </section>
 </template>
 <script>
-import axios from "axios";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
-import { mapActions } from "pinia";
-import VueJwtDecode from 'vue-jwt-decode';
+import { useStompStore } from "@/stores/useStompStore";
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
+import axios from "axios";
+
+const backend = 'http://localhost:8080'
 
 export default {
   name: "SidebarComponent",
-  components: {},
+  components: { Dialog, Button, InputText },
   data() {
     return {
       member: {
@@ -109,143 +115,169 @@ export default {
         memberId: ""
       },
       memberId: "",
-      roomName: "",
+      chatRoomName: "",
       memberList: [],
       visible: false,
       roomList: [],
       recvList: []
     }
   },
+  computed: {
+    ...mapStores(useChatRoomStore, useMainStore, useStompStore, useMessageStore)
+  },
   methods: {
-    ...mapActions(useMessageStore, ['addMessage']),
+    // ...mapActions(useMessageStore, ['getChatList']),
+    // ...mapActions(useStompStore, ['roomConnect']),
+    // ...mapActions(useChatRoomStore, ['getRoomList']),
+    // ...mapActions(useChatRoomStore, ['creatRoom']),
     toggle(event) {
       this.$refs.op.toggle(event);
     },
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    async createRoom() {
-      this.memberList.push(this.member.memberId);
+    async createChatRoom() {
+      console.log(this.memberList)
+      console.log(this.chatRoomName);
       const roomInfo = {
-        roomName: this.roomName,
+        chatRoomName: this.chatRoomName,
         memberId: this.memberList
       };
-
-      let response = await axios.post("http://localhost:8080/chat/room/create", roomInfo);
+      const token = localStorage.getItem('accessToken');
+      console.log(token);
+      let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
+        headers: {
+          Authorization: token,
+        }
+      });
       console.log(response.data);
 
       this.visible = false;
     },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        }
-      });
-      console.log(response.data)
-      this.roomList = response.data;
-      console.log(this.roomList);
-    },
-    enterRoom(roomId) {
-      console.log(roomId);
-      const server = "http://localhost:8080/chat"
-      // 
-      this.notificaiton();
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      window.localStorage.setItem("roomId", roomId);
-      this.stompClient.connect(
-        {},
-        frame => {
-          this.connected = true;
-          console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/sub/room/" + roomId, res => {
-            console.log("연결 후 채팅방 아이디", roomId);
-            console.log(res);
-            console.log("구독으로 받은 메시지입니다.", res.body);
-            this.addMessage(JSON.parse(res.body));
-          });
-        },
-        error => {
-          console.log('소켓 연결 실패', error);
-          this.connected = false;
-        }
-      )
-    },
-    sendMessage(e) {
-      console.log(e);
-      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-        this.send(this.chatRoomId);
-        this.message = ''
-      }
-    },
-    send() {
-      console.log('Send Message:' + this.message);
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = {
-          userName: this.member.name,
-          message: this.message
-        };
-        console.log(msg);
-        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
-    setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.member.name = token.memberName;
-      this.member.department = token.department;
-      this.member.memberId = token.memberId;
-    },
-    notificaiton() {
-
-      requestNotificationPermission();
-
-      // 알림 권한 요청
-      function requestNotificationPermission() {
-        // 알림 기능을 지원하는지 확인
-        if (!("Notification" in window)) {
-          alert("이 브라우저는 알림을 지원하지 않습니다.");
-        } else if (Notification.permission === "granted") {
-          // 이미 권한이 부여된 경우
-          console.log("알림 권한이 이미 부여되었습니다.");
-        } else if (Notification.permission !== "denied") {
-          // 권한 요청
-          Notification.requestPermission().then(function (permission) {
-            // 사용자가 알림을 허용하면
-            if (permission === "granted") {
-              console.log("알림 권한이 부여되었습니다.");
-            }
-          });
-        }
-      }
-
-      const evtSource = new EventSource("http://localhost:8080/notification");
-
-      evtSource.addEventListener("notification", function (event) {
-        // 사용자에게 알림 표시
-        if (Notification.permission === "granted") {
-          new Notification("알람 이벤트", {
-            body: event.data,
-            // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
-          });
-        }
-      }, false);
-    }
+    // sendMessage(e) {
+    //   console.log(e);
+    //   if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
+    //     this.send(this.chatRoomId);
+    //     this.message = ''
+    //   }
+    // },
+    // send() {
+    //   console.log('Send Message:' + this.message);
+    //   if (this.stompClient && this.stompClient.connected) {
+    //     const msg = {
+    //       userName: this.member.name,
+    //       message: this.message
+    //     };
+    //     console.log(msg);
+    //     this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+    //   }
+    // },
+    
   },
   mounted() {
-    this.getRoomList();
-    if (localStorage.getItem("accessToken") !== null) {
-      this.setMember(localStorage.getItem("accessToken"));
+    // this.getRoomList();
+    console.log("=======채팅방 불러오기======");
+    this.roomList = this.chatRoomStore.getRoomList();
+    console.log(this.roomList);
+    
+    if (localStorage.getItem("chatRoomId") !== null) {
+      this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
     }
+
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
   }
 };
 </script>
 
-<style>
-.fa,
-.fas,
-.far {
+<style scoped>
+/* 기본 스타일링 */
+body {
+    font-family: 'Arial', sans-serif; /* 기본 글꼴 */
+    padding: 20px; /* 페이지 내부 여백 */
+    background-color: #f4f4f4; /* 배경색 */
+}
+
+/* 제목 스타일 */
+.p-text-secondary {
+    color: #333; /* 제목 글자색 */
+    margin-bottom: 1.25rem; /* 아래쪽 여백 */
+    font-size: 1.5rem; /* 글자 크기 */
+    font-weight: bold; /* 글자 두께 */
+}
+
+/* 플렉스 컨테이너 */
+.flex {
+    display: flex; /* 플렉스 박스 사용 */
+    align-items: center; /* 항목들을 가운데 정렬 */
+    gap: 1rem; /* 항목들 사이의 간격 */
+}
+
+/* 입력 필드와 레이블 스타일 */
+label {
+    font-weight: bold; /* 레이블 글자 두께 */
+    width: 6rem; /* 레이블 너비 */
+}
+
+.input-text {
+    flex-grow: 1; /* 입력 필드가 남은 공간을 모두 차지하도록 */
+    padding: 0.5rem; /* 입력 필드 내부 여백 */
+    border: 1px solid #ccc; /* 테두리 스타일 */
+    border-radius: 0.25rem; /* 테두리 모서리 둥글게 */
+}
+
+/* 버튼 스타일 */
+.button {
+    padding: 0.5rem 1rem; /* 버튼 내부 여백 */
+    border: none; /* 테두리 없애기 */
+    border-radius: 0.25rem; /* 모서리 둥글게 */
+    color: white; /* 글자색 */
+    cursor: pointer; /* 마우스 커서를 포인터로 */
+    transition: background-color 0.3s; /* 배경색 변경시 애니메이션 효과 */
+}
+
+/* "추가" 버튼 스타일 */
+.button-secondary {
+    background-color: #6c757d; /* 배경색 */
+}
+
+.button-secondary:hover {
+    background-color: #5a6268; /* 호버 시 배경색 */
+}
+
+/* "취소하기" 버튼 스타일 */
+.button-cancel {
+    background-color: #dc3545; /* 배경색 */
+}
+
+.button-cancel:hover {
+    background-color: #c82333; /* 호버 시 배경색 */
+}
+
+/* "생성하기" 버튼 스타일 */
+.button-create {
+    background-color: #28a745; /* 배경색 */
+}
+
+.button-create:hover {
+    background-color: #218838; /* 호버 시 배경색 */
+}
+
+/* 맨 아래 버튼 그룹 정렬 */
+.flex.justify-content-end {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+/* 하단 마진 조정 */
+.mb-3, .mb-5 {
+    margin-bottom: 1rem; /* 여백 조정 */
+}
+
+.gap-2, .gap-3 {
+    gap: 0.5rem; /* 간격 조정 */
+}
+
+.fa,.fas,.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -309,7 +341,7 @@ export default {
   padding-left: 0;
 }
 
-.fa-ul>li {
+.fa-ul > li {
   position: relative;
 }
 
@@ -472,6 +504,10 @@ export default {
   content: "\f503";
 }
 
+*, :before, :after {
+  box-sizing: inherit;
+}
+
 @font-face {
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
@@ -504,30 +540,12 @@ export default {
   src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg");
 }
 
-.fa,
-.fas {
+.fa,.fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
 
-html,
-body,
-div,
-span,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a,
-i,
-ul,
-li,
-article,
-header,
-section {
+html,body,div,span,h1,h2,h3,h4,h5,h6,p,a,i,ul,li,article,header,section {
   margin: 0;
   padding: 0;
   border: 0;
@@ -629,6 +647,7 @@ body::-webkit-scrollbar-thumb {
   background-color: var(--slack-other-bckground);
   display: grid;
   grid-template-columns: 4rem minmax(6.25rem, 16.25rem);
+  z-index: 100;
 }
 
 /* body  */
@@ -680,8 +699,7 @@ body::-webkit-scrollbar-thumb {
   margin-top: 1rem;
 }
 
-.sidebar-1 .box-1,
-.sidebar-1 .box-2 {
+.sidebar-1 .box-1,.sidebar-1 .box-2 {
   height: 2rem;
   width: 2rem;
   margin-bottom: 0.5rem;
@@ -697,8 +715,7 @@ body::-webkit-scrollbar-thumb {
   background-color: orangered;
 }
 
-.sidebar-1 .box-2:hover,
-.sidebar-1 .box-1:hover {
+.sidebar-1 .box-2:hover,.sidebar-1 .box-1:hover {
   box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
 }
 
@@ -872,7 +889,7 @@ body::-webkit-scrollbar-thumb {
   font-weight: bold;
 }
 
-.channels .active>a {
+.channels .active > a {
   color: var(--slack-green);
   font-size: 1rem;
 }
@@ -928,7 +945,7 @@ body::-webkit-scrollbar-thumb {
   font-weight: bold;
 }
 
-.direct-messages .active>a {
+.direct-messages .active > a {
   color: var(--slack-green);
   font-size: 1rem;
 }
@@ -1092,4 +1109,5 @@ body::-webkit-scrollbar-thumb {
     font-size: 0.7rem;
   }
 }
+ 
 </style>

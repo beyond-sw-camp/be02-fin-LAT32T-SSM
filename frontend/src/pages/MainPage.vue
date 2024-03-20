@@ -2,7 +2,8 @@
   <HeaderComponent></HeaderComponent>
   <main class="main">
     <SidebarComponent></SidebarComponent>
-    <section class="body">
+    
+    <section class="body">     
       <section class="content">
         <section class="content-header">
           <article class="channel-content-header-details">
@@ -17,38 +18,77 @@
                 프로젝트 채팅방 입니다.
               </p>
             </section>
+            
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
-            <i class="fas fa-info-circle"></i>
+            <div @click="fullCalendarDetails"> 달력 </div>
           </button>
         </section>
         <section class="feeds">
+          <div v-show="isFullcalendarVisible">
+            <FullCalendarComponent></FullCalendarComponent>
+          </div>
           <div>
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
-        <form action="." class="form" name="feedForm">
-          <input placeholder="이름" v-model="memberName" type="text" class="input" contenteditable="true">
-          <input placeholder="내용" type="text" v-model="message" @keyup="sendMessage" class="input"
-            contenteditable="true">
-          <div class="input-toolbar-icons">
-            <div class="move-right">
-              <i class="fas fa-bolt"></i>
-              <i class="fas fa-bold" data-command="b"></i>
-              <i class="fas fa-italic" data-command="i"></i>
-              <i class="fas fa-strikethrough"></i>
-              <i class="fas fa-code" data-command="code"></i>
-              <i class="fas fa-link" data-command="a"></i>
-              <i class="fas fa-list-ol" data-command="ol"></i>
-              <i class="fas fa-list-ul" data-command="ul"></i>
-              <i class="fas fa-quote-left" data-command="blockquote"></i>
-              <i class="far fa-file-code" data-command="pre"></i>
-              <i class="fas fa-print" onclick="printDoc();"></i>
-            </div>
-          </div>
-          <div class="input-toolbar-selection"></div>
-        </form>
+        <div @keyup="sendMessage" v-show="!isFullcalendarVisible">
+            <textarea id="summernote" v-model="message"></textarea>
+          </div>  
+        <section class="feeds2">
+          
+        </section>
+        
       </section>
+      <section class="right-sidebar">
+            <section class="right-sidebar-about">
+              <article class="about-header">
+                <h4>About Me</h4>
+                <i class="fas fa-chevron-down" @click="aboutmeDetails" ></i>
+              </article>
+              <article class="about-details" v-show="isAboutmeVisible" >
+                <div class="about-detail">
+                  <h5>이름</h5>
+                  <p>{{ mainStore.member.name }}</p>
+                </div>
+                <div class="about-detail">
+                  <h5>부서</h5>
+                  <p>{{ mainStore.member.department }}</p>
+                </div>
+                <div class="about-detail">
+                  <h5>직책</h5>
+                  <p>{{ mainStore.member.position }}</p>
+                </div>                
+              </article>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
+                <h4>필터</h4>
+                <i class="fas fa-chevron-down" @click="filterDetails" ></i>
+              </article>
+              <span v-show="isFilterVisible">
+                <FilterComponent></FilterComponent>
+              </span>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
+                <h4>일정</h4>
+                <i class="fas fa-chevron-down" @click="calendarDetails" ></i>
+              </article>
+              <span v-show="isCalendarVisible">
+                <CalendarComponent></CalendarComponent>
+              </span>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
+                <h4>회의실 현황</h4>
+                <i class="fas fa-chevron-down" @click="meetingRoomDetails" ></i>
+              </article>
+              <span v-show="isMeetingroomVisible">
+                <MeetingRoomCompornent></MeetingRoomCompornent>
+              </span>
+            </section>           
+          </section>
     </section>
   </main>
 </template>
@@ -57,18 +97,28 @@
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
+import MeetingRoomCompornent from '@/components/MeetingRoomCompornent.vue';
+import CalendarComponent from '@/components/CalendarComponent.vue';
+import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
+import FilterComponent from '@/components/FilterComponent.vue';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import axios from "axios";
+// import axios from "axios";
+import { mapStores } from "pinia";
 import { useMessageStore } from "@/stores/useMessageStore";
-import { mapState } from "pinia";
-import VueJwtDecode from 'vue-jwt-decode';
+import { useStompStore } from "@/stores/useStompStore";
+import { useMainStore } from "@/stores/useMainStore";
+
+import { mapActions, mapState } from "pinia";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
   name: 'MainPage',
   components: {
-    HeaderComponent, SidebarComponent, ChatBlockComponent
+    HeaderComponent, SidebarComponent, ChatBlockComponent,
+    MeetingRoomCompornent, CalendarComponent, FullCalendarComponent,
+    FilterComponent,
   },
   data() {
     return {
@@ -76,123 +126,133 @@ export default {
       memberId: "",
       message: "",
       recvList: [],
-      roomName: "",
+      chatRoomName: "",
       roomList: [],
       username: "",
-      chatRoomId: ""
+      chatRoomId: "",
+      isAboutmeVisible: true,
+      isCalendarVisible: true,
+      isMeetingroomVisible: true,
+      isFullcalendarVisible: true,
+      isFilterVisible: true,
     }
   },
   created() {
-    this.basicConnect();
+    
+
+    console.log("============기본 연결================");
+    const stompClient = this.initSock();
+    this.basicConnect(stompClient);
   },
   computed: {
-    ...mapState(useMessageStore, ['getAllMessage'])
+    ...mapState(useMessageStore, ['getAllMessage']),
+    ...mapStores(useMainStore)
   },
   methods: {
-    basicConnect() {
+    ...mapActions(useStompStore, ['basicConnect']),
+    ...mapActions(useStompStore,['roomConnect']),
+    ...mapActions(useChatRoomStore, ['getRoomList']),
+
+    initSock() {
       const server = "http://localhost:8080/chat"
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      this.stompClient.connect(
-        {},
-        frame => {
-          this.connected = true;
-          console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/sub/room/", res => {
-            console.log(res);
-            console.log("구독으로 받은 메시지입니다.", res.body);
-            this.recvList.push(JSON.parse(res.body))
-          });
-        },
-        error => {
-          console.log('소켓 연결 실패', error);
-          this.connected = false;
-        }
-      )
-    },
-    roomConnect(chatRoomId) {
-      const server = "http://localhost:8080/chat"
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      console.log(chatRoomId);
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      this.stompClient.connect(
-        {},
-        frame => {
-          this.connected = true;
-          console.log('소켓 연결 성공', frame);
-          this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
-            console.log("연결 후 채팅방 아이디", chatRoomId);
-            console.log(res);
-            console.log("구독으로 받은 메시지입니다.", res.body);
-            this.recvList.push(JSON.parse(res.body))
-          });
-        },
-        error => {
-          console.log('소켓 연결 실패', error);
-          this.connected = false;
-        }
-      )
-    },
-    async createRoom(e) {
-      console.log(e);
-      const postCreateRoom = {
-        username: this.username,
-        roomName: this.roomName
-      }
-      console.log(postCreateRoom);
-      let response = await axios.post("http://localhost:8080/chat/room/create", postCreateRoom);
-      console.log(response.data);
-    },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        },
-      });
-      console.log(response.data)
-      this.roomList = response.data;
+      return this.stompClient;
     },
     sendMessage(e) {
-      console.log(e);
-      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-        this.send(this.chatRoomId);
-        this.message = ''
+      this.message = $('#summernote').summernote('code')
+      if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
+        this.message = this.message.replace(/<[^>]*>?/g, '');
+        this.send(this.message);
+        $('#summernote').summernote('reset');
       }
     },
-    send() {
-      console.log('Send Message:' + this.message);
+    send(message) {
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           memberId: this.memberId,
           memberName: this.memberName,
-          message: this.message
+          message: message
         };
-        console.log(msg);
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
       }
     },
     setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.memberId = token.memberId;
-      this.memberName = token.memberName;
+      token = token.split(" ")[1];
+      const payload = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
+      const tokenData = this.mainStore.base64UrlDecode(payload)
+      this.memberId = tokenData.memberId;
+      this.memberName = tokenData.memberName;
+    },
+
+    // isDetailsVisible 값을 반전시켜 세부 정보의 표시 여부를 토글합니다
+    aboutmeDetails() {
+      this.isAboutmeVisible = !this.isAboutmeVisible;
+    },
+    calendarDetails(){
+      this.isCalendarVisible = !this.isCalendarVisible;
+    },
+    meetingRoomDetails(){
+      this.isMeetingroomVisible = !this.isMeetingroomVisible;
+    },
+    fullCalendarDetails(){
+      this.isFullcalendarVisible = ! this.isFullcalendarVisible;
+    },
+    filterDetails(){
+      this.isFilterVisible = ! this.isFilterVisible;
     }
+
+
   },
   mounted() {
-    this.getRoomList();
+    this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
+        .then(() => {
+          // Script is loaded, do something
+          $('#summernote').summernote({
+            placeholder: '메시지를 입력해주세요',
+            tabsize: 2,
+            height: 80,
+            toolbar: [
+              ['style', ['style']],
+              ['font', ['bold', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+          });
+        })
+        .catch(() => {
+          // Failed to fetch script
+        });
+    // this.getRoomList();
+    useChatRoomStore().getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
-    if (this.$route.params.chatRoomId !== null) {
+    if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
       this.chatRoomId = this.$route.params.chatRoomId;
-      this.roomConnect(this.chatRoomId);
+      // this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+      useStompStore().roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
+    } else {
+      // this.basicConnect();
     }
+    
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
   }
 }
 </script>
 
 <style scoped>
+/* 마우스를 아이콘 위에 올렸을 때 커서 모양을 pointer로 변경합니다 */
+.fas.fa-chevron-down {
+  cursor: pointer;
+}
+
+
 .fa,
 .fas,
 .far {
@@ -984,7 +1044,15 @@ body::-webkit-scrollbar-thumb {
   overflow: auto;
   padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
 }
-
+.feeds2 {  
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  position: fixed; /* 뷰포트에 대해 고정 */
+  bottom: 0; /* 하단에 위치 */
+  overflow: auto;
+  padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
+  margin-bottom: 1.5rem;
+  
+}
 .feed {
   display: flex;
   padding: 0.5rem;
@@ -1260,7 +1328,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .right-sidebar-header-details p {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 300;
   margin-bottom: 0.6rem;
 }
@@ -1274,7 +1342,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .right-sidebar-contact {
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
@@ -1347,8 +1415,10 @@ body::-webkit-scrollbar-thumb {
 }
 
 .about-detail h5 {
-  margin-bottom: 0.2rem;
-  color: var(--dark-grey);
+  margin-bottom: 0.5rem;
+  color: black;
+  font-weight: bold; /* 굵은 글자로 설정 */
+  font-size: 18px; /* 폰트 크기를 18px로 설정, 원하는 크기로 조절 가능 */
 }
 
 .about-img {
@@ -1403,6 +1473,12 @@ body::-webkit-scrollbar-thumb {
 
 .other-section-header div i {
   margin-left: 0.5rem;
+}
+
+.other-section-header .cal {
+  display: inline-block;
+  margin-right: 10rem;
+  margin-top: 2rem;
 }
 
 .zenith-org {
@@ -1571,7 +1647,7 @@ body::-webkit-scrollbar-thumb {
   color: #9e9a9a;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1000px) {
   .body {
     grid-template-columns: 1.5fr;
   }
@@ -1622,8 +1698,6 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 800px) {
   .feeds {
     display: grid;
-    justify-content: center;
-    align-items: center;
   }
 }
 
