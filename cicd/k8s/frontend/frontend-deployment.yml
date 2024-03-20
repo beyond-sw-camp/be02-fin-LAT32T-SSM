@@ -20,7 +20,7 @@ spec:
           image: hosin/lat32t:latest
           readlinessProbe:
             httpGet:
-              path: /login
+              path: /login            # readlinessProbe 헬스체크를 위한 경로 설정
               port: 80
             initialDelaySeconds: 5    # 최초 Probe전의 지연 시간
             periodSeconds: 2          # Probe를 체크하는 시간 간격
