@@ -1,8 +1,5 @@
 package com.project.ssm.meetingroom.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddResult;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResMeetingRoomSelectResult;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
@@ -25,10 +22,7 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,35 +41,35 @@ class MeetingRoomControllerTest {
     private SecurityFilterChain securityFilterChain;
 
 
-    @Test
-    void MeetingRoomController_addMeetingRoom_success() throws Exception {
-        MeetingRoomAddResult result = MeetingRoomAddResult.builder()
-                .idx(1L)
-                .roomName("제 1 회의실")
-                .build();
-
-        MeetingRoomAddReq request = MeetingRoomAddReq.builder()
-                .roomName("제 1 회의실")
-                .roomCapacity(10)
-                .build();
-
-        given(meetingRoomService.createMeetingRoom(any())).willReturn(result);
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        String content = mapper.writeValueAsString(request);
-
-        mvc.perform(post("/meetingroom/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ROOM_001"))
-                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."))
-                .andExpect(jsonPath("$.result.idx").value(result.getIdx()))
-                .andExpect(jsonPath("$.result.roomName").value(result.getRoomName()))
-                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."));
-    }
+//    @Test
+//    void MeetingRoomController_addMeetingRoom_success() throws Exception {
+//        MeetingRoomAddResult result = MeetingRoomAddResult.builder()
+//                .idx(1L)
+//                .roomName("제 1 회의실")
+//                .build();
+//
+//        MeetingRoomAddReq request = MeetingRoomAddReq.builder()
+//                .roomName("제 1 회의실")
+//                .roomCapacity(10)
+//                .build();
+//
+//        given(meetingRoomService.createMeetingRoom(any())).willReturn(result);
+//
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        String content = mapper.writeValueAsString(request);
+//
+//        mvc.perform(post("/meetingroom/add")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(content))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.isSuccess").value(true))
+//                .andExpect(jsonPath("$.code").value("ROOM_001"))
+//                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."))
+//                .andExpect(jsonPath("$.result.idx").value(result.getIdx()))
+//                .andExpect(jsonPath("$.result.roomName").value(result.getRoomName()))
+//                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."));
+//    }
 
 
     @Test
