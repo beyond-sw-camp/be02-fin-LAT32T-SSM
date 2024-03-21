@@ -62,11 +62,10 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
-    public ResponseEntity test() {
+    public ResponseEntity<String> deleteEvent() {
         return ResponseEntity.ok().body("ok");
     }
 
-    // 회의실 예약 생성
     @RequestMapping(method = RequestMethod.POST, value = "/reservation")
     public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PostReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -78,13 +77,6 @@ public class EventController {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.listReservations(member, meetingRoomIdx, date));
     }
-
-
-    // 회의실 예약
-//    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
-//    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
-//        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
-//    }
 
     // 회의실 예약 취소
     @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
