@@ -1,7 +1,7 @@
 FROM nginx:latest
 ADD ./dist/css /usr/share/nginx/html/css
-ADD ./dist/icon /usr/share/nginx/html/icon
-ADD ./dist/image /usr/share/nginx/html/image
+#ADD ./dist/icon /usr/share/nginx/html/icon
+#ADD ./dist/image /usr/share/nginx/html/image
 ADD ./dist/img /usr/share/nginx/html/img
 ADD ./dist/js /usr/share/nginx/html/js
 RUN rm -rf /usr/share/nginx/html/index.html
