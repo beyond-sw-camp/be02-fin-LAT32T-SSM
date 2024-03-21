@@ -6,7 +6,6 @@ import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +59,21 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
-    public ResponseEntity test() {
+    public ResponseEntity<String> deleteEvent() {
         return ResponseEntity.ok().body("ok");
     }
+
+//    // 회의실 예약
+//    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
+//    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
+//        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
+//    }
+//
+//    // 회의실 예약 취소
+//    @RequestMapping(method = RequestMethod.DELETE, value = "/reservation/delete/{reservationIdx}")
+//    public ResponseEntity<BaseResponse<DeleteReservationCancelRes>> reservationDeleteMeetingRoom(@PathVariable Long reservationIdx) {
+//        return ResponseEntity.ok().body(eventService.meetingRoomReservationCancel(reservationIdx));
+//    }
 
     // 회의실 예약
     @RequestMapping(method = RequestMethod.POST, value = "/reservation")
