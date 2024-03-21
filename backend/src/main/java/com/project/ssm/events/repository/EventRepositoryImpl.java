@@ -69,5 +69,20 @@ public class EventRepositoryImpl implements EventCustomRepository {
         return fetch;
     }
 
+    @Override
+    public List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date) {
+        QEvent event = QEvent.event;
+        return queryFactory
+                .selectFrom(event)
+                .where(
+                        event.meetingRoom.meetingRoomIdx.eq(meetingRoomIdx)
+                                .and(
+                                        event.startedAt.substring(0).eq(date)
+                                                .or(event.closedAt.substring(0).eq(date))
+                                )
+                )
+                .fetch();
+    }
+
 
 }

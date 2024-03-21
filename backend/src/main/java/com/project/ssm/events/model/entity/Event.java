@@ -1,10 +1,9 @@
 package com.project.ssm.events.model.entity;
 
-import com.project.ssm.chat.model.entity.RoomParticipants;
 import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PostEventReq;
-import com.project.ssm.meetingroom.model.MeetingRoom;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -50,9 +49,8 @@ public class Event {
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
 
-    public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
+    public static Event buildEvent(Member member, PostEventReq request) {
         return Event.builder()
-                .meetingRoom(meetingRoom)
                 .title(request.getTitle())
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
@@ -76,6 +74,11 @@ public class Event {
         event.setBackgroundColor(request.getBackgroundColor());
         event.setAllDay(request.getAllDay());
 
+        return event;
+    }
+
+    public static Event setReservation (MeetingRoom meetingRoom, Event event) {
+        event.setMeetingRoom(meetingRoom);
         return event;
     }
 
