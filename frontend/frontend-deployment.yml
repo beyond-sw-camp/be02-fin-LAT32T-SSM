@@ -18,7 +18,7 @@ spec:
       containers:
         - name: front-container
           image: hosin/lat32t:latest
-          readlinessProbe:
+          readinessProbe:
             httpGet:
               path: /login            # readlinessProbe 헬스체크를 위한 경로 설정
               port: 80

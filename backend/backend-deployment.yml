@@ -21,7 +21,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: cm-ssm-backend
-          readlinessProbe:
+          readinessProbe:
             httpGet:
               path: /calendar/event/healthcheck # readlinessProbe 헬스체크를 위한 경로 설정
               port: 8080
