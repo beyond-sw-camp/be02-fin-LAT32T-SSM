@@ -63,6 +63,15 @@
             </section>
             <section class="other-section">
               <article class="about-header">
+                <h4>필터</h4>
+                <i class="fas fa-chevron-down" @click="filterDetails" ></i>
+              </article>
+              <span v-show="isFilterVisible">
+                <FilterComponent></FilterComponent>
+              </span>
+            </section>
+            <section class="other-section">
+              <article class="about-header">
                 <h4>일정</h4>
                 <i class="fas fa-chevron-down" @click="calendarDetails" ></i>
               </article>
@@ -91,6 +100,7 @@ import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
 import MeetingRoomCompornent from '@/components/MeetingRoomCompornent.vue';
 import CalendarComponent from '@/components/CalendarComponent.vue';
 import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
+import FilterComponent from '@/components/FilterComponent.vue';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -107,7 +117,8 @@ export default {
   name: 'MainPage',
   components: {
     HeaderComponent, SidebarComponent, ChatBlockComponent,
-    MeetingRoomCompornent, CalendarComponent, FullCalendarComponent
+    MeetingRoomCompornent, CalendarComponent, FullCalendarComponent,
+    FilterComponent,
   },
   data() {
     return {
@@ -123,6 +134,7 @@ export default {
       isCalendarVisible: true,
       isMeetingroomVisible: true,
       isFullcalendarVisible: true,
+      isFilterVisible: true,
     }
   },
   created() {
@@ -186,6 +198,9 @@ export default {
     },
     fullCalendarDetails(){
       this.isFullcalendarVisible = ! this.isFullcalendarVisible;
+    },
+    filterDetails(){
+      this.isFilterVisible = ! this.isFilterVisible;
     }
 
 
