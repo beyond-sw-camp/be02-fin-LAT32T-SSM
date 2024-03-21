@@ -1,0 +1,79 @@
+pipeline {
+    agent any
+    tools {
+            nodejs "nodejs-20.10.0"
+    }
+    environment {
+        //Docker Hub 아이디와 비밀번호 설정
+        dockerhubid = '[DockerHub ID]'
+        dockerhubpw = '[DockerHub PW]'
+    }
+    stages {
+        stage('git clone') {
+                steps {
+                    // GitHub 저장소에서 코드를 클론합니다.
+                    git branch: 'main', url: 'https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM.git'
+                }
+        }
+        stage('Build') {
+            steps {
+                dir('be02-fin-LAT32T-SSM/ssm-service') {
+                    sh '/usr/local/maven/bin/mvn package'
+                }
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                // Docker 이미지 빌드
+                dir('be02-fin-LAT32T-SSM') {
+                    sh "docker push hosin/lat32t:backend1.${BUILD_ID} ."
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                // Docker Hub에 로그인해서 Docker 이미지를 push
+                sh "docker login -u $dockerhubid -p $dockerhubpw"
+                sh "docker push hosin/lat32t:backend1.${BUILD_ID} ."
+            }
+        }
+        stage('Send Artifacts Over SSH') {
+            steps {
+               // k8s ssm-service 매니패스트 파일을 SSH를 통해 전송
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'master',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: 'be02-fin-LAT32T-SSM/backend-deployment.yml',
+                                    removePrefix: 'be02-fin-LAT32T-SSM/',
+                                    remoteDirectory: '/root'
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+        stage('Modify and Apply Deployment') {
+            steps {
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'master',
+                            transfers: [
+                                sshTransfer(
+                                    execCommand: '''
+                                        sed -i 's/VERSION/${BUILD_ID}/g' /root/backend-deployment.yml
+                                        kubectl apply -f /root/backend-deployment.yml
+                                    '''
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+    }
+}
