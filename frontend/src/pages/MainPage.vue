@@ -242,6 +242,9 @@ export default {
     
     // 토큰 데이터 load
     this.mainStore.loadMemberData();
+
+    // SSE 연결 함수
+    this.mainStore.notificaiton();
   }
 }
 </script>

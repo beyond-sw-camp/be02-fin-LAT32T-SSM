@@ -37,6 +37,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final MemberRepository memberRepository;
     private final EventParticipantsRepository eventParticipantsRepository;
+    private final MeetingRoomRepository meetingRoomRepository;
 
     @Transactional
     public BaseResponse<PostEventRes> createEvent(Member member, PostEventReq request) {

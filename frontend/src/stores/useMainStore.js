@@ -34,6 +34,36 @@ export const useMainStore = defineStore("main", {
             console.log("선택된 날짜: ", date);
             // 여기에 사용자가 날짜를 클릭했을 때 실행하고 싶은 코드를 추가하세요.
         },
+        requestNotificationPermission() {
+            // 알림 기능을 지원하는지 확인
+            if (!("Notification" in window)) {
+              alert("이 브라우저는 알림을 지원하지 않습니다.");
+            } else if (Notification.permission === "granted") {
+              // 이미 권한이 부여된 경우
+              console.log("알림 권한이 이미 부여되었습니다.");
+            } else if (Notification.permission !== "denied") {
+              // 권한 요청
+              Notification.requestPermission().then(function (permission) {
+                // 사용자가 알림을 허용하면
+                if (permission === "granted") {
+                  console.log("알림 권한이 부여되었습니다.");
+                }
+              });
+            }
+          },
+          notificaiton() {
+            this.requestNotificationPermission();  
+            const evtSource = new EventSource("http://localhost:8080/notification");
+            evtSource.addEventListener("notification", function (event) {
+              // 사용자에게 알림 표시
+              if (Notification.permission === "granted") {
+                new Notification("알람 이벤트", {
+                  body: event.data,
+                  // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
+                });
+              }
+            }, false);
+          }        
     },
     getters: {
 
