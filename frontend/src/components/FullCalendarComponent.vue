@@ -85,7 +85,7 @@
                                 <label class="col-xs-4" for="edit-member">회의실</label>
                                 <select class="inputModal" type="text" name="edit-room" id="edit-room">
                                     <option value="없음">없음</option>
-                                    <option v-for="(room, index) in meetingRooms" :key="index" :value="room.roomName">
+                                    <option @click="temp" v-for="(room, index) in meetingRooms" :key="index" :value="room.roomName">
                                         {{ room.roomName }}</option> 
                                 </select>
                             </div>
@@ -213,6 +213,10 @@ export default {
         }
       },
     },
+
+    async temp(){
+        
+    }
 }
 </script>
 
