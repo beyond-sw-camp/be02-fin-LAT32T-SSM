@@ -1,19 +1,22 @@
 package com.project.ssm.meetingroom.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddResult;
+import com.project.ssm.events.model.request.PostEventReq;
+import com.project.ssm.events.model.response.PostEventRes;
+import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
+import com.project.ssm.meetingroom.model.response.PostMeetingRoomRes;
+import com.project.ssm.meetingroom.model.response.PostReservationRes;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
+import com.project.ssm.member.model.Member;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @CrossOrigin("*")
 @RestController
@@ -23,19 +26,14 @@ public class MeetingRoomController {
 
     private final MeetingRoomService meetingRoomService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/add") // 회의실 추가
-    public ResponseEntity<BaseResponse> addMeetingRoom(@RequestBody MeetingRoomAddReq request) {
-        MeetingRoomAddResult result = meetingRoomService.createMeetingRoom(request);
-
-        BaseResponse response = BaseResponse.builder()
-                .isSuccess(true)
-                .code("ROOM_001")
-                .message("새로운 회의실이 생성되었습니다.")
-                .result(result)
-                .build();
-
-        return ResponseEntity.ok().body(response);
+    // 회의실 생성
+    @RequestMapping(method = RequestMethod.POST, value = "/create")
+    public ResponseEntity<BaseResponse<PostMeetingRoomRes>> createMeetingRoom(@RequestBody PostMeetingRoomReq request){
+//        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok().body(meetingRoomService.createMeetingRoom(request));
     }
+
+    // 회의실 조회
 
     @RequestMapping(method = RequestMethod.GET, value = "/select/{meetingRoomIdx}") // 회의실 단일 조회
     public ResponseEntity<BaseResponse> getMeetingRoom(@PathVariable Long meetingRoomIdx) {
