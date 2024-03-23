@@ -33,15 +33,13 @@
 - k8s 아키텍처 - 클러스터 구성
 
 - Master Node :1대
-
 - Worker Node: 4대
-
 - Node간 Connection을 위해 Calico CNI를 설치
-
 - Service 생성시 LoadBalance Type 사용을 위해 Metallb를 설치
+- 프로메테우스와 그라파나로 모니터링 시스템 구축
 </br>
 <p align="center">
-<img width="80%" src="./img/back/02. k8s_내부_아키텍처.png"></p>
+<img width="80%" src="./img/k8s_system.png"></p>
 </details>
 
 <details>
@@ -49,15 +47,12 @@
 <span style="font-size:150%"> k8s 전체 서비스 아키텍쳐 </span></summary>
 
 <p align="center">
-<img width="80%" src="./img/back/01. k8s_전체서비스_아키텍처.png">
+<img width="80%" src="./img/k8s.png">
 
 서비스 아키텍처
 User는 Load Balancer Service를 통해 Nginx Server에 접속 가능하다.
 </p>
 </details>
-
-
-
 
 
 ## ✨젠킨스 파이프라인(배포 시나리오)
@@ -68,13 +63,24 @@ User는 Load Balancer Service를 통해 Nginx Server에 접속 가능하다.
 <img width="80%" src="img/jenkins-backend.png">
 
 1. git push
+    - 브랜치에 대한 설명
 2. webhook
+    - 어떤 경로로 웹 훅이 이뤄지는지
 3. Project Clean ~ Project Build
+    - 스프링 프로젝트가 어떤 과정으로 처리되는지
 4. Docker Build ~ Docker Push
+    - 도커 관련 작업
 5. Docker Image Push
+    - 도커 허브에 이미지 푸쉬
 6. Send Artifacts ~ Apply Deployment
+    - 마스터 노드에 적용하는 과정
 7. K8S Deployment Docker Image Update
+    - 마스터 노드에서 이뤄지는 작업 설명
 8. Send Slack Alert
+    - 성공시 메시지를 어떻게 보내는지
+    - 실패시 메시지를 어떻게 보내는지
+</br>
+</br>
 </details>
 
 <details>
@@ -84,11 +90,22 @@ User는 Load Balancer Service를 통해 Nginx Server에 접속 가능하다.
 <img width="80%" src="img/jenkins-front.png">
 
 1. git push
+    - 브랜치에 대한 설명
 2. webhook
-3. Project Clean ~ Project Build
-4. Docker Build ~ Docker Push
-5. Docker Image Push
-6. Send Artifacts ~ Apply Deployment
-7. K8S Deployment Docker Image Update
-8. Send Slack Alert
+    - 어떤 경로로 웹 훅이 이뤄지는지
+3. Install Dependencies
+    - npm 설치하는 과정
+4. Project Test ~ Project Build
+    - 프로젝트 테스트와 빌드되는 과정 설명
+5. Docker Build ~ Docker Push
+    - 도커 관련 작업
+6. Docker Image Push
+    - 도커 허브에 이미지 푸쉬
+7. Send Artifacts ~ Apply Deployment
+    - 마스터 노드에 적용하는 과정
+8. K8S Deployment Docker Image Update
+    - 마스터 노드에서 이뤄지는 작업 설명
+9. Send Slack Alert
+    - 성공시 메시지를 어떻게 보내는지
+    - 실패시 메시지를 어떻게 보내는지
 </details>
