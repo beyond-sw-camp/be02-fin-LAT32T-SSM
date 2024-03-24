@@ -4,11 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
 @Builder
-public class DeleteEventReq {
+@Getter
+public class PatchReservationReq {
 
+    private Long meetingRoomIdx;
     private Long eventIdx;
 
+    private String reservationStart;
+    private String reservationEnd;
 }

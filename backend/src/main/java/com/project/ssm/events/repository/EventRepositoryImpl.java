@@ -51,7 +51,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
 
-        List<Event> fetch = queryFactory
+        return queryFactory
                 .select(event)
                 .from(event)
                 .leftJoin(eventParticipants)
@@ -64,9 +64,6 @@ public class EventRepositoryImpl implements EventCustomRepository {
                                 )
                 )
                 .fetch();
-
-
-        return fetch;
     }
 
     @Override

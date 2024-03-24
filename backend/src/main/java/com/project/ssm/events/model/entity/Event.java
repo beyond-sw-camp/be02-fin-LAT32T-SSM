@@ -2,8 +2,10 @@ package com.project.ssm.events.model.entity;
 
 import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
+import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -30,7 +32,7 @@ public class Event {
 
     private String eventContent;
     private String type;
-    private String memberName;
+    private String eventMaker;
     private String backgroundColor;
     private String textColor;
     private Boolean allDay;
@@ -49,14 +51,15 @@ public class Event {
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
 
-    public static Event buildEvent(Member member, PostEventReq request) {
+    public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
         return Event.builder()
+                .meetingRoom(meetingRoom)
                 .title(request.getTitle())
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
                 .eventContent(request.getEventContent())
                 .type(request.getType())
-                .memberName(member.getMemberName())
+                .eventMaker(member.getMemberName())
                 .backgroundColor(request.getBackgroundColor())
                 .textColor(request.getTextColor())
                 .allDay(request.getAllDay())
@@ -77,8 +80,10 @@ public class Event {
         return event;
     }
 
-    public static Event setReservation (MeetingRoom meetingRoom, Event event) {
+    public static Event setReservation (PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
         event.setMeetingRoom(meetingRoom);
+        event.setStartedAt(request.getReservationStart());
+        event.setClosedAt(request.getReservationEnd());
         return event;
     }
 

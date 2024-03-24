@@ -2,10 +2,12 @@ package com.project.ssm.events.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
+import com.project.ssm.events.config.ReservationFilter;
 import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
 import com.project.ssm.events.model.request.PatchEventReq;
+import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.repository.EventParticipantsRepository;
@@ -22,9 +24,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,23 +43,36 @@ public class EventService {
     private final MemberRepository memberRepository;
     private final EventParticipantsRepository eventParticipantsRepository;
     private final MeetingRoomRepository meetingRoomRepository;
+    private final ReservationFilter reservationFilter;
 
     // 회의실 예약 없이
     @Transactional
     public BaseResponse<PostEventRes> createEvent(Member member, PostEventReq request) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-//        Optional<MeetingRoom> result = meetingRoomRepository.findByMeetingRoomIdx(request.getMeetingRoomIdx());
-//        MeetingRoom meetingRoom;
-//        if (result.isPresent()) {
-//            meetingRoom = result.get();
-//        } else {
-//            meetingRoom = null;
-//        }
-        Event event = eventRepository.save(Event.buildEvent(verifiedMember, request));
-        eventParticipantsRepository.save(EventParticipants.buildEventPart(event, verifiedMember));
-        PostEventRes postEventRes = PostEventRes.buidEventRes(event, verifiedMember);
-        return BaseResponse.successRes("EVENT_001", true, "일정이 등록되었습니다.", postEventRes);
+        Optional<MeetingRoom> result = meetingRoomRepository.findByMeetingRoomIdx(request.getMeetingRoomIdx());
+        MeetingRoom meetingRoom;
+        if (result.isPresent()) {
+            meetingRoom = result.get();
+        } else {
+            if(request.getMeetingRoomIdx()==null) {meetingRoom = null;}
+            else{
+                throw MeetingRoomNotFoundException.forMeetingRoomIdx();
+            }
+        }
+        if(reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt())){
+            Event event = eventRepository.save(Event.buildEvent(verifiedMember, request, meetingRoom));
+            List<String> memberIds = request.getMemberId();
+            for (String memberId : memberIds) {
+                Member byMemberId = memberRepository.findByMemberId(memberId).orElseThrow(()->
+                        MemberNotFoundException.forMemberId(memberId));
+                eventParticipantsRepository.save(EventParticipants.buildEventPart(event, byMemberId));
+            }
+            PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
+            return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
+        } else {
+            throw ReservationAccessException.forReservationTime();
+        }
     }
 
     public List<GetEventRes> listEvents(Member member, int year) {
@@ -85,7 +103,7 @@ public class EventService {
             for (Event event : events) {
                 eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
-            return BaseResponse.successRes("EVENT_002", true, "일정이 상세 조회되었습니다.", eventsList);
+            return BaseResponse.successRes("CALENDAR_002", true, "일정이 상세 조회되었습니다.", eventsList);
         } else {
             // 찾는 데이터가 없을 경우 예외 처리
 //            for (Event event: events) {
@@ -104,7 +122,7 @@ public class EventService {
         if (memberIdxOfEvent.equals(member.getMemberIdx())) {
             Event updatedEvent = eventRepository.save(Event.setEvent(request, event));
             PatchEventRes patchEventRes = PatchEventRes.buildEventRes(updatedEvent);
-            return BaseResponse.successRes("EVENT_003", true, "일정이 수정되었습니다.", patchEventRes);
+            return BaseResponse.successRes("CALENDAR_004", true, "일정이 수정되었습니다.", patchEventRes);
         } else throw EventAccessException.forMemberId(verifiedMember.getMemberId());
     }
 
@@ -119,39 +137,32 @@ public class EventService {
             eventParticipantsRepository.deleteByEvent(event);
             eventRepository.delete(event);
             DeleteEventRes deleteEventRes = DeleteEventRes.buildEventRes(event);
-            return BaseResponse.successRes("EVENT_004", true, "일정이 삭제되었습니다.", deleteEventRes);
+            return BaseResponse.successRes("CALENDAR_005", true, "일정이 삭제되었습니다.", deleteEventRes);
         } else {
             throw EventAccessException.forMemberId(member.getMemberId());
         }
     }
 
-    // 일정 예약 생성
+    // 회의실 예약 생성
     @Transactional
-    public BaseResponse<PostReservationRes> createReservation(Member member, PostReservationReq request) {
+    public BaseResponse<PostReservationRes> createReservation(Member member, PatchReservationReq request) {
         memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
 
         MeetingRoom meetingRoom = meetingRoomRepository.findById(request.getMeetingRoomIdx()).orElseThrow(() ->
-                MeetingRoomNotFoundException.forMeetingRoomIdx(request.getMeetingRoomIdx()));
+                MeetingRoomNotFoundException.forMeetingRoomIdx());
 
         Event event = eventRepository.findById(request.getEventIdx()).orElseThrow(() ->
                 EventNotFoundException.forEventId(request.getEventIdx()));
 
-        // 이벤트의 시간, 회의실 번호 요청 받은거 갖고 와서 이벤트 레포지토리에서 찾아
-        // 회의실 예약된
-        List<Event> events = eventRepository.findEventsByReservationTime(request.getMeetingRoomIdx(), event.getStartedAt());
-//        if(){
-//
-//        }
-
-
-        Event reservation = Event.setReservation(meetingRoom, event);
-
-        eventRepository.save(reservation);
-
-        PostReservationRes postReservationRes = PostReservationRes.buildReservationRes(reservation);
-
-        return BaseResponse.successRes("MEETING_000", true, "회의실 예약이 완료되었습니다.", postReservationRes);
+        if(reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getReservationStart(), request.getReservationEnd())){
+            Event reservation = Event.setReservation(request, meetingRoom, event);
+            eventRepository.save(reservation);
+            PostReservationRes postReservationRes = PostReservationRes.buildReservationRes(reservation);
+            return BaseResponse.successRes("MEETING_000", true, "회의실 예약이 완료되었습니다.", postReservationRes);
+        } else {
+            throw ReservationAccessException.forReservationTime();
+        }
     }
 
     // 회의실 예약 조회
@@ -178,6 +189,41 @@ public class EventService {
             throw EventNotFoundException.forEventId(eventIdx);
         }
     }
+
+//    // Reservation Filter
+//    // 예약하려는 이벤트 시작시간이 종료시간보다 앞에 있어야 함
+//    // 예약하려는 이벤트 시작시간이 예약내역 이벤트의 끝시간 앞에 있거나
+//    // 예약하려는 이벤트 종료시간이 예약내역 이벤트의 시작시간 앞에 있거나
+//    public Boolean reservationFilter(Long meetingRoomIdx, String startedAt, String closedAt){
+//        Boolean result = null;
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        String date = startedAt.substring(0,9);
+//        // date에 회의실이 예약된 이벤트 내역들
+//        List<Event> events = eventRepository.findEventsByReservationTime(meetingRoomIdx, date);
+//        for (Event event: events) {
+//            try {
+//                // 예약내역 이벤트의 시작시간
+//                Date bookedEventStartTime = sdf.parse(event.getStartedAt());
+//                // 예약내역 이벤트의 끝시간
+//                Date bookedEventCloseTime = sdf.parse(event.getClosedAt());
+//                // 예약하려는 이벤트 시작시간
+//                Date reservationStartTime = sdf. parse(startedAt);
+//                // 예약하려는 이벤트 종료시간
+//                Date reservationCloseTime = sdf. parse(closedAt);
+//                if((reservationStartTime.before(reservationCloseTime))&&
+//                        (reservationStartTime.before(bookedEventCloseTime)||(reservationCloseTime.after(bookedEventStartTime)))){
+//                    result = true;
+//                } else {
+//                    result = false;
+//                }
+//            } catch (ParseException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        return result;
+//    }
+
+
 //    public BaseResponse<MeetingRoomReservationRes> meetingRoomReservation(MeetingRoomReservationReq request) {
 //        Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(request.getMeetingRoomIdx());
 //

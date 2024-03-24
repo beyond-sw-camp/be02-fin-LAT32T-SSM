@@ -8,7 +8,11 @@ public class MeetingRoomNotFoundException extends EntityNotFoundException {
         super(errorCode, message);
     }
 
-    public static MeetingRoomNotFoundException forMeetingRoomIdx (Long meetingRoomIdx) {
-        return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
+    public static MeetingRoomNotFoundException forMeetingRoomIdx () {
+        return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "존재하지 않는 회의실입니다.");
+    }
+
+    public static MeetingRoomNotFoundException forMeetingRoomName (String meetingRoomName) {
+        return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, String.format("[%s]는 존재하지 않는 회의실입니다.", meetingRoomName));
     }
 }
