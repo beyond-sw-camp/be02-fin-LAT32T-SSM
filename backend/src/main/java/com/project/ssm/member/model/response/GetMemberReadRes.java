@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostMemberSignupRes {
-
-    private Long memberIdx;
+public class GetMemberReadRes {
     private String memberId;
     private String memberName;
+    private String department;
+    private String position;
 }

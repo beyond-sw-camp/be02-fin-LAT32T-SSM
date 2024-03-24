@@ -3,7 +3,7 @@
       <div class="meeting-room-container">
         <!-- <h2 id="title">회의실 현황</h2> -->
         <div class="meeting-rooms">
-          <div v-for="room in meetingRooms" :key="room.roomIdx" 
+          <div v-for="(room, index) in mainStore.meetingRooms" :key="index" :value="room.roomName" 
                :class="{'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable}">
             {{ room.roomName }}
           </div>
@@ -23,28 +23,18 @@
   </template>
   
   <script>
-  import axios from 'axios';
-  
+  import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";  
   export default {
     data() {
       return {
-        meetingRooms: [],
       };
     },
-    created() {
-      this.fetchMeetingRooms(); 
+    computed: {
+        ...mapStores(useMainStore)
     },
     methods: {
-      async fetchMeetingRooms() {
-        try {
-          const response = await axios.get('http://localhost:8080/meetingroom/list');
-          this.meetingRooms = response.data.result.map(room => ({
-            ...room
-          }));
-        } catch (error) {
-          console.error('회의실 정보를 가져오지 못했습니다:', error);
-        }
-      },
+      
     },
   };
   </script>

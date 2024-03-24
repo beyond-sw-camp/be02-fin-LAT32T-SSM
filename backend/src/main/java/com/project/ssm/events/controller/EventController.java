@@ -36,8 +36,7 @@ public class EventController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
     public ResponseEntity listEvents(@PathVariable int year){
-        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return ResponseEntity.ok().body(eventService.listEvents(member, year));
+        return ResponseEntity.ok().body(eventService.listEvents(year));
     }
 
     // 일정 상세 조회

@@ -109,7 +109,7 @@ var editEvent = function (event, element, view) {
     $('#deleteEvent').on('click', function () {
     
     $('#deleteEvent').unbind();
-    $("#calendar").fullCalendar('removeEvents', $(this).data('id'));
+    //$("#calendar").fullCalendar('removeEvents', $(this).data('id'));
     eventModal.modal('hide');
 
     //삭제시
@@ -124,8 +124,10 @@ var editEvent = function (event, element, view) {
             
         },
         success: function (response) {
-            console.log(response)
+            console.log(response)           
             alert('삭제되었습니다.');
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
         }
     });
 

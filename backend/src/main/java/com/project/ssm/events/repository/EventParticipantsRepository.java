@@ -13,4 +13,7 @@ public interface EventParticipantsRepository extends JpaRepository<EventParticip
     // 참조 데이터 삭제
     void deleteByEvent(Event event);
 
+    // 참조하고 있는 모든 이벤트 삭제
+    void deleteAllByEvent(Event event);
+
 }

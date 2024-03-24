@@ -245,6 +245,12 @@ export default {
 
     // SSE 연결 함수
     this.mainStore.notificaiton();
+
+    // 멤버정보를 불러온다.
+    this.mainStore.readMember();
+
+    // 회의실정보를 불러온다.
+    this.mainStore.readMeetingRooms();
   }
 }
 </script>

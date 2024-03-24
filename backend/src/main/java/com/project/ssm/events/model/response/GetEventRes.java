@@ -1,7 +1,7 @@
 package com.project.ssm.events.model.response;
 
 import com.project.ssm.events.model.entity.Event;
-import com.project.ssm.member.model.Member;
+import com.project.ssm.events.model.entity.EventParticipants;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,18 +22,18 @@ public class GetEventRes {
     private String textColor;
     private Boolean allDay;
 
-    public static GetEventRes buildEventRes(Member member, Event event) {
+    public static GetEventRes buildEventRes(EventParticipants eventParticipants) {
         return GetEventRes.builder()
-                ._id(event.getEventIdx())
-                .title(event.getTitle())
-                .description(event.getEventContent())
-                .start(event.getStartedAt())
-                .end(event.getClosedAt())
-                .type(event.getType())
-                .username(member.getMemberName())
-                .backgroundColor(event.getBackgroundColor())
-                .textColor(event.getTextColor())
-                .allDay(event.getAllDay())
+                ._id(eventParticipants.getEvent().getEventIdx())
+                .title(eventParticipants.getEvent().getTitle())
+                .description(eventParticipants.getEvent().getEventContent())
+                .start(eventParticipants.getEvent().getStartedAt())
+                .end(eventParticipants.getEvent().getClosedAt())
+                .type(eventParticipants.getEvent().getType())
+                .username(eventParticipants.getMember().getMemberName())
+                .backgroundColor(eventParticipants.getEvent().getBackgroundColor())
+                .textColor(eventParticipants.getEvent().getTextColor())
+                .allDay(eventParticipants.getEvent().getAllDay())
                 .build();
     }
 

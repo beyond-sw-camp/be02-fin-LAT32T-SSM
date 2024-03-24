@@ -1,11 +1,15 @@
 package com.project.ssm.events.repository;
 
 import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.events.model.entity.EventParticipants;
 
 import java.util.List;
 
 public interface EventCustomRepository {
-    List<Event> findEventsByYear(Long memberIdx, int year);
+
+    List<EventParticipants> findEventsByYear(int year);
+
+//    List<Event> findEventsByYear(Long memberIdx, int year);
 
     List<Event> findByYear(int year);
 

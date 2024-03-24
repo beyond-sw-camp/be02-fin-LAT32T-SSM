@@ -71,12 +71,14 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <label class="col-xs-4" for="edit-member">인물</label>
-                                <select class="inputModal" type="text" name="edit-member" id="edit-member">
-                                    <option value="사나">사나</option>
-                                    <option value="모모">모모</option>
-                                    <option value="다현">다현</option>
-                                    <option value="유진">유진</option>
-                                    <option value="이동규">이동규</option>
+                                <select class="inputModal" type="text" name="edit-member" id="edit-member"
+                                    multiple="multiple" required="required">
+                                    <option @click="temp" v-for="(member, index) in mainStore.members" :key="index"
+                                        :value="member.memberId">
+                                        {{ member.memberId }} /
+                                        {{ member.memberName }} /
+                                        {{ member.department }} /
+                                        {{ member.position }}</option>
                                 </select>
                             </div>
                         </div>
@@ -85,8 +87,9 @@
                                 <label class="col-xs-4" for="edit-member">회의실</label>
                                 <select class="inputModal" type="text" name="edit-room" id="edit-room">
                                     <option value="없음">없음</option>
-                                    <option @click="temp" v-for="(room, index) in meetingRooms" :key="index" :value="room.roomName">
-                                        {{ room.roomName }}</option> 
+                                    <option @click="temp" v-for="(room, index) in mainStore.meetingRooms" :key="index"
+                                        :value="room.roomName">
+                                        {{ room.roomName }}</option>
                                 </select>
                             </div>
                         </div>
@@ -126,60 +129,24 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
-        <!-- <div class="panel panel-default">
-
-            <div class="panel-heading">
-                <h3 class="panel-title">필터</h3>
-            </div>
-
-            <div class="panel-body">
-                <div class="col-lg-6">
-                    <label for="calendar_view">구분별</label>
-                    <div class="input-group">
-                        <select class="filter" id="type_filter" multiple="multiple">
-                            <option value="카테고리1">카테고리1</option>
-                            <option value="카테고리2">카테고리2</option>
-                            <option value="카테고리3">카테고리3</option>
-                            <option value="카테고리4">카테고리4</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <label for="calendar_view">등록자별</label>
-                    <div class="input-group">
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="정연"
-                                checked>정연</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="다현"
-                                checked>다현</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="사나"
-                                checked>사나</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="나연"
-                                checked>나연</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="지효"
-                                checked>지효</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="이동규"
-                                checked>이동규</label>
-                    </div>
-                </div>
-
-            </div>
-        </div> -->
-        <!-- /.filter panel -->
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
 
 export default {
     data() {
         return {
-            meetingRooms: [],
+            selectedMembers: [],
         }
     },
-    created(){
-        
+    computed: {
+        ...mapStores(useMainStore)
+    },
+    created() {
+
     },
     mounted() {
         const script = document.createElement('script');
@@ -197,26 +164,13 @@ export default {
         const script4 = document.createElement('script');
         script4.src = "/js/etcSetting.js";
         document.body.appendChild(script4);
-        
-        // 회의실 불러온다.
-        this.fetchMeetingRooms();
+
+
     },
     methods: {
-        async fetchMeetingRooms() {
-        try {
-          const response = await axios.get('http://localhost:8080/meetingroom/list');
-          this.meetingRooms = response.data.result.map(room => ({
-            ...room
-          }));
-        } catch (error) {
-          console.error('회의실 정보를 가져오지 못했습니다:', error);
-        }
-      },
-    },
 
-    async temp(){
-        
-    }
+
+    },
 }
 </script>
 
