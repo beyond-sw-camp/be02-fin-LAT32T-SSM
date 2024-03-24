@@ -1,4 +1,10 @@
+![header](https://capsule-render.vercel.app/api?type=Venom&color=ffe599&height=300&section=header&text=SSM&desc=📆Smart%20Schedule%20Manager&descSize=30&descAlign=50&descAlignY=70&fontSize=100&animation=fadeIn&fontColor=5f475f)
 
+### :sunny: **[플레이 데이터] 한화시스템 BEYOND SW캠프 2기 / Latest** :sunny:
+
+<br>
+
+<br>
 
 
 
@@ -13,15 +19,15 @@
 ## ✔️ 기술 스택
 <br>
 <div align="center">
-<img src="https://img.shields.io/badge/k8s-326CE5?style=for-the-badge&logo=#326CE5&logoColor=white">
-<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
-<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white">
-<img src="https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white">
-<img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
-<img src="https://img.shields.io/badge/webhook-2088FF?style=for-the-badge&logo=webhook&logoColor=white">
+<img src="https://img.shields.io/badge/k8s-326CE5?style=for-the-badge&logo=#326CE5&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white" style="border-radius: 5px;"></br>
+<img src="https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/webhook-2088FF?style=for-the-badge&logo=webhook&logoColor=white" style="border-radius: 5px;">
 </div>
 <br>
 
@@ -30,7 +36,6 @@
 <details>
     <summary>
 <span style="font-size:150%"> k8s 내부 아키텍처 </span></summary>
-- k8s 아키텍처 - 클러스터 구성
 
 - Master Node :1대
 - Worker Node: 4대
@@ -45,13 +50,18 @@
 
 <details>
     <summary>
-<span style="font-size:150%"> k8s 전체 서비스 아키텍쳐 </span></summary>
+<span style="font-size:150%"> k8s 전체 서비스 아키텍처 </span></summary>
 
+- 사용자가 lat32t 서비스에 접속하면 로드밸런서를 통해 화면이 보여지고 nginx 웹 서버의 프록시 설정에 따라 백엔드 서버와 통신하게 된다.
+- 사용자는 회원가입을 진행할 때 프로필 사진을 등록하게 되며 aws s3 스토리지에 저장되고 해당 이미지를 받아와서 확인할 수 있다.
+- 백엔드 서버는 nginx 웹 서버의 프록시 설정에 따라서 프론트엔드에서 요청을 받아 처리하게 된다. 이때 백엔드 서버의 설정은 미리 정의된 컨피그 맵을 통해서 이뤄진다.
+- 백엔드에서 DB와 통신을 할 경우 사전에 정의된 DB의 ClusterIP 서비스를 통해서 접근하게 되고 이때 DB 설정은 미리 정의된 컨피그맵을 통해서 이뤄진다.
+- DB는 Pod로 생성하게 되는데 이때 발생하는 데이터 휘발성 문제를 해결하기 위해 PV와 PVC를 구성하여 데이터가 휘발되는 문제를 예방한다.
+- 개발자는 개발을 진행하고 Pull Request를 작성하여 develop 브랜치에 merge가 이루어질 시 미리 지정된 젠킨스 서버로 Webhook을 진행하게 된다.
+- 젠킨스 서버에서는 사전에 작성된 파이프라인을 통해 각 프로젝트를 Build 하면서 도커 허브에 이미지를 푸쉬하는 작업을 진행하게 된다.
+- 젠킨스 파이프라인이 실행되는 동안 발생하는 성공 및 실패 이벤트는 slack 알림을 통해 개발자에게 알림이 전송된다.
 <p align="center">
 <img width="80%" src="./img/k8s.png">
-
-k8s 서비스 아키텍처
-
 </p>
 </details>
 
