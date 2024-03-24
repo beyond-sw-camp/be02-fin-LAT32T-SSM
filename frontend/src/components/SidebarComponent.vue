@@ -67,27 +67,6 @@
           </li>
         </ul>
       </section>
-      <!-- <section class="direct-messages">
-        <h4 class="direct-messages-header">
-          <i class="fas fa-sort-down"></i> 다이렉트 메시지
-        </h4>
-        <ul>
-          <li>
-            <a href="#">
-              <i class="fas fa-circle online"></i>
-              정주연
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span class="make-white">
-                <i class="fas fa-circle offline"></i>
-              </span>
-              최대현
-            </a>
-          </li>
-        </ul>
-      </section> -->
     </article>
   </section>
 </template>
@@ -177,9 +156,13 @@ export default {
   mounted() {
     // this.getRoomList();
     console.log("=======채팅방 불러오기======");
-    this.roomList = this.chatRoomStore.getRoomList();
-    console.log(this.roomList);
-    
+    console.log(this.chatRoomStore.getRoomList());
+    this.chatRoomStore.getRoomList()
+        .then(roomList => {
+          console.log(roomList);
+          this.roomList = roomList;
+        });
+
     if (localStorage.getItem("chatRoomId") !== null) {
       this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
     }

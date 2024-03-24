@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { toRaw } from "vue";
 
 const backend = 'http://localhost:8080'
 
@@ -18,10 +17,10 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 },
             });
             console.log(response.data.result);
-            response.data.result.forEach((chatRoom) => {
-                this.roomList.push(chatRoom);
-            })
-            return toRaw(this.roomList);
+            // response.data.result.forEach((chatRoom) => {
+            //     this.roomList.push(chatRoom);
+            // })
+            return response.data.result;
         },
     }
 })
