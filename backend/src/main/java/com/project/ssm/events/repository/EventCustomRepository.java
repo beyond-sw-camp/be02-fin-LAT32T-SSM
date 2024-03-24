@@ -12,5 +12,9 @@ public interface EventCustomRepository {
     List<Event> findEventsByDate(Long memberIdx, String date);
 
     List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date);
+    /**
+     * 일정 알람을 위한 메소드
+     */
+    List<Event> findEventsByMemberIdx(Long memberIdx);
 }
 

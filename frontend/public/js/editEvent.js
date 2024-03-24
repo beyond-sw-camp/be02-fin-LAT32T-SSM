@@ -80,21 +80,33 @@ var editEvent = function (event, element, view) {
 
         //일정 업데이트
         $.ajax({
-            type: "get",
-            url: "",
-            data: {
-                //...
+            type: "PATCH",
+            url: "http://localhost:8080/calendar/event/update",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('accessToken')
             },
+            datatype: "JSON",
+            data: JSON.stringify({
+                "eventIdx":event._id,
+                "title": event.title,
+                "startedAt":event.start,
+                "closedAt":event.end,
+                "eventContent":event.description,
+                "type":"null",
+                "backgroundColor":event.backgroundColor,
+                "allDay":statusAllDay,
+            }),
             success: function (response) {
+                console.log(response)
                 alert('수정되었습니다.')
             }
         });
 
     });
-};
 
-// 삭제버튼
-$('#deleteEvent').on('click', function () {
+    // 삭제버튼
+    $('#deleteEvent').on('click', function () {
     
     $('#deleteEvent').unbind();
     $("#calendar").fullCalendar('removeEvents', $(this).data('id'));
@@ -102,14 +114,21 @@ $('#deleteEvent').on('click', function () {
 
     //삭제시
     $.ajax({
-        type: "get",
-        url: "",
+        type: "DELETE",
+        url: "http://localhost:8080/calendar/event/delete/" + event._id,
+        headers: {
+            'Authorization': localStorage.getItem('accessToken')
+        },
+        dataType: "JSON",
         data: {
-            //...
+            
         },
         success: function (response) {
+            console.log(response)
             alert('삭제되었습니다.');
         }
     });
 
 });
+};
+

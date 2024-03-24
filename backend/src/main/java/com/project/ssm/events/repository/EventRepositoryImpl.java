@@ -82,4 +82,25 @@ public class EventRepositoryImpl implements EventCustomRepository {
     }
 
 
+    /**
+     * 일정 알람을 위한 메소드
+     */
+    @Override
+    public List<Event> findEventsByMemberIdx(Long memberIdx) {
+        QEvent event = QEvent.event;
+        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
+
+        List<Event> eventList = queryFactory
+                .select(event)
+                .from(event)
+                .leftJoin(eventParticipants)
+                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
+                .where(
+                        eventParticipants.member.memberIdx.eq(memberIdx)
+                )
+                .fetch();
+
+
+        return eventList;
+    }
 }
