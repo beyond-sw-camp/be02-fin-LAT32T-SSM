@@ -30,7 +30,7 @@ public class Event {
 
     private String eventContent;
     private String type;
-    private String memberName;
+    private String eventMaker;
     private String backgroundColor;
     private String textColor;
     private Boolean allDay;
@@ -55,8 +55,8 @@ public class Event {
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
                 .eventContent(request.getEventContent())
+                .eventMaker(member.getMemberId())
                 .type(request.getType())
-                .memberName(member.getMemberName())
                 .backgroundColor(request.getBackgroundColor())
                 .textColor(request.getTextColor())
                 .allDay(request.getAllDay())

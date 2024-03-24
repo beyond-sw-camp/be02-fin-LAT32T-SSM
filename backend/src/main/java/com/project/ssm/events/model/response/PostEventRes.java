@@ -22,11 +22,9 @@ public class PostEventRes {
     private Long memberIdx;
     private String type;
 
-    public static PostEventRes buidEventRes(Event event, Member member) {
+    public static PostEventRes buildEventRes(Event event) {
         return PostEventRes.builder()
                 .eventIdx(event.getEventIdx())
-                .memberIdx(member.getMemberIdx())
-                .memberName(member.getMemberName())
                 .title(event.getTitle())
                 .eventContent(event.getEventContent())
                 .startedAt(event.getStartedAt())

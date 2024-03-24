@@ -56,4 +56,10 @@ public class MemberController {
 
         return ResponseEntity.ok().body("ok");
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/read")
+    public ResponseEntity memberRead() {
+
+        return ResponseEntity.ok().body(memberService.read());
+    }
 }

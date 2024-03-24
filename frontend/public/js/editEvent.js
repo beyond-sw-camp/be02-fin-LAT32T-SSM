@@ -125,6 +125,8 @@ var editEvent = function (event, element, view) {
         },
         success: function (response) {
             console.log(response)
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
             alert('삭제되었습니다.');
         }
     });

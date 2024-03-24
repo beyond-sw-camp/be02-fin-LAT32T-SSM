@@ -9,7 +9,6 @@ var editType = $('#edit-type');
 var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
 var editMember = $('#edit-member');
-
 var editRoom = $('#edit-room');
 
 
@@ -31,8 +30,8 @@ var newEvent = function (start, end, eventType) {
     editStart.val(start);
     editEnd.val(end);
     editDesc.val('');
-    editMember.val('');
-
+    editMember.val('');    
+    console.log(editMember.val(''));
     editRoom.val('');
 
 
@@ -71,6 +70,11 @@ var newEvent = function (start, end, eventType) {
             return false;
         }
 
+        if (eventData.username.length === 0) {
+            alert('멤버선택은 필수입니다.');
+            return false;
+        }
+
         var realEndDay;
 
         if (editAllDay.is(':checked')) {
@@ -103,7 +107,7 @@ var newEvent = function (start, end, eventType) {
                 "startedAt":eventData.start,
                 "closedAt":eventData.end,
                 "eventContent":eventData.description,
-                "memberName":eventData.type,
+                "memberId":eventData.username,
                 "backgroundColor":eventData.backgroundColor,
                 "textColor":eventData.textColor,
                 "allDay":eventData.allDay,
@@ -111,8 +115,8 @@ var newEvent = function (start, end, eventType) {
             success: function (response) {
                 console.log(response)
                 //DB연동시 중복이벤트 방지를 위한
-                //$('#calendar').fullCalendar('removeEvents');
-                //$('#calendar').fullCalendar('refetchEvents');
+                $('#calendar').fullCalendar('removeEvents');
+                $('#calendar').fullCalendar('refetchEvents');
             }
         });
     });
