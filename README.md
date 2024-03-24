@@ -92,7 +92,7 @@
 
 <details>
 <summary><b>Front</b></summary><br>
-    <img src="https://drive.google.com/uc?export=view&id=1APh-lvABOBAuyDSbDPs5ZrYurgfeJtgB"/>
+    <div>이미지 자리</div>
 </details> 
 
 ---
@@ -109,7 +109,7 @@
 <br>
 <details>
 <summary><b>CICD</b></summary><br>
-    <div>이미지 자리</div>
+    <img src="https://drive.google.com/uc?export=view&id=1APh-lvABOBAuyDSbDPs5ZrYurgfeJtgB"/>
 </details> 
 
 ---
