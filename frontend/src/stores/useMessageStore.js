@@ -6,15 +6,15 @@ export const useMessageStore = defineStore("message", {
         recvList: [],
     }),
     actions: {
-         addMessage(message) {
-             const date = new Date(message.createdAt);
-             const minutes = date.getMinutes().toString().padStart(2, '0');
-             const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
-             const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
-             message.createdAt = amOrPm + formatHour + ':' + minutes;
-             console.log(message);
-             this.recvList.push(message);
-         },
+        addMessage(message) {
+            const date = new Date(message.createdAt);
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
+            const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
+            message.createdAt = amOrPm + formatHour + ':' + minutes;
+            console.log(message);
+            this.recvList.push(message);
+        },
         async getChatList(chatRoomId, token, page, size) {
             let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
                 headers: {

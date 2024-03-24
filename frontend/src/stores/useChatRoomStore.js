@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import {toRaw} from "vue";
+import { toRaw } from "vue";
 
 const backend = 'http://localhost:8080'
 

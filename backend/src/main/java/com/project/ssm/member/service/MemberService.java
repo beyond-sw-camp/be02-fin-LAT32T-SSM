@@ -11,11 +11,13 @@ import com.project.ssm.member.model.request.GetMemberCheckIdReq;
 import com.project.ssm.member.model.request.PatchMemberUpdatePasswordReq;
 import com.project.ssm.member.model.request.PostMemberLoginReq;
 import com.project.ssm.member.model.request.PostMemberSignupReq;
+import com.project.ssm.member.model.response.GetMemberReadRes;
 import com.project.ssm.member.model.response.PostMemberLoginRes;
 import com.project.ssm.member.model.response.PostMemberSignupRes;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Literal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,7 +64,7 @@ public class MemberService {
                 .message("회원이 등록되었습니다.")
                 .result(PostMemberSignupRes.builder()
                         .memberIdx(member.getMemberIdx())
-                        .name(member.getMemberName())
+                        .memberName(member.getMemberName())
                         .memberId(member.getMemberId())
                         .build())
                 .build();
@@ -165,4 +169,27 @@ public class MemberService {
         return null;
     }
 
+    // 멤버 조회를 위한 메소드
+    public BaseResponse read(){
+        List<Member> all = memberRepository.findAll();
+        List<GetMemberReadRes> members = new ArrayList<>();
+
+        for (Member member : all) {
+            GetMemberReadRes result = GetMemberReadRes.builder()
+                    .memberId(member.getMemberId())
+                    .memberName(member.getMemberName())
+                    .department(member.getDepartment())
+                    .position(member.getPosition())
+                    .build();
+
+            members.add(result);
+        }
+
+        return BaseResponse.builder()
+                .isSuccess(true)
+                .code("temp")
+                .message("회원조회가 성공했습니다")
+                .result(members)
+                .build();
+    }
 }

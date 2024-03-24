@@ -7,6 +7,8 @@ import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.events.model.request.MeetingRoomReservationReq;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
+import com.project.ssm.meetingroom.model.response.PostReservationRes;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +36,7 @@ public class EventController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
     public ResponseEntity listEvents(@PathVariable int year){
-        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return ResponseEntity.ok().body(eventService.listEvents(member, year));
+        return ResponseEntity.ok().body(eventService.listEvents(year));
     }
 
     // 일정 상세 조회
@@ -60,14 +61,20 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
-    public ResponseEntity test() {
+    public ResponseEntity<String> deleteEvent() {
         return ResponseEntity.ok().body("ok");
     }
 
-    // 회의실 예약
     @RequestMapping(method = RequestMethod.POST, value = "/reservation")
-    public ResponseEntity<BaseResponse<MeetingRoomReservationRes>> reservationMeetingRoom(@RequestBody MeetingRoomReservationReq request) {
-        return ResponseEntity.ok().body(eventService.meetingRoomReservation(request));
+    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PostReservationReq request){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok().body(eventService.createReservation(member, request));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/reservation/{meetingRoomIdx}/{date}")
+    public ResponseEntity listReservations(@PathVariable String date, @PathVariable Long meetingRoomIdx){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok().body(eventService.listReservations(member, meetingRoomIdx, date));
     }
 
     // 회의실 예약 취소

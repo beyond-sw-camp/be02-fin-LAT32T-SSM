@@ -22,18 +22,9 @@
                 <div class="col-lg-6">
                     <label for="calendar_view">등록자별</label>
                     <div class="input-group">
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="정연"
-                                checked>정연</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="다현"
-                                checked>다현</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="사나"
-                                checked>사나</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="나연"
-                                checked>나연</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="지효"
-                                checked>지효</label>
-                        <label class="checkbox-inline"><input class='filter' type="checkbox" value="이동규"
-                                checked>이동규</label>
+                        <label v-for="(member, index) in mainStore.members" :key="index" :value="member.memberName" class="checkbox-inline"><input class='filter' type="checkbox" :value="member.memberName"
+                                checked>{{ member.memberName }}</label>
+                       
                     </div>
                 </div>
 
@@ -44,11 +35,17 @@
 </template>
 
 <script>
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
+
 export default {
     data() {
         return {
 
         }
+    },
+    computed:{
+        ...mapStores(useMainStore)
     },
     mounted() {
         const script = document.createElement('script');

@@ -13,5 +13,5 @@ public class PostMemberSignupRes {
 
     private Long memberIdx;
     private String memberId;
-    private String name;
+    private String memberName;
 }

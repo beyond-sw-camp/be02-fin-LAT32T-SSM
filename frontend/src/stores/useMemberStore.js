@@ -1,15 +1,14 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-// import VueJwtDecode from "vue-jwt-decode";
+
 
 const backend = 'http://localhost:8080'
-// const storedToken = localStorage.getItem("accessToken");
 export const useMemberStore = defineStore("member", {
     state: () => ({
-        member:{
-            memberId:"",
-            memberPw:"",
-            memberPwChecked:"",    
+        member: {
+            memberId: "",
+            memberPw: "",
+            memberPwChecked: "",
             name: "",
             department: "",
             position: "",
@@ -19,9 +18,9 @@ export const useMemberStore = defineStore("member", {
     actions: {
         async login(member) {
             let loginMember = { memberId: member.memberId, password: member.memberPw }
-            try{
+            try {
                 let response = await axios.post(backend + "/member/login", loginMember, {
-                    headers:{
+                    headers: {
                         "Content-Type": "application/json",
                     }
                 });
@@ -30,23 +29,24 @@ export const useMemberStore = defineStore("member", {
                 localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
 
                 window.location.href = "/";
-            }catch(e){
+            } catch (e) {
                 localStorage.removeItem("accessToken");
-                this.member.memberId="";
-                this.member.memberPw="";
+                this.member.memberId = "";
+                this.member.memberPw = "";
                 alert(
                     "아이디 또는 비밀번호가 일치하지 않습니다."
-                  );
-            }          
-          },
-        async signup(){
-            if(this.member.memberPw === this.member.memberPwChecked){
+                );
+            }
+        },
+        async signup() {
+            if (this.member.memberPw === this.member.memberPwChecked) {
                 let signupMember = {
-                    memberId: this.member.memberId, 
+                    memberId: this.member.memberId,
                     password: this.member.memberPw,
                     memberName: this.member.name,
                     department: this.member.department,
-                    position: this.member.position}
+                    position: this.member.position
+                }
 
                 let formData = new FormData();
                 let json = JSON.stringify(signupMember);
@@ -57,36 +57,31 @@ export const useMemberStore = defineStore("member", {
                 );
 
                 formData.append("profileImage", this.member.profileImage);
-                
+
                 console.log(this.member.profileImage)
-                try{
+                try {
                     let response = await axios.post(backend + "/member/signup", formData, {
-                        headers:{
+                        headers: {
                             "Content-Type": "multipart/form-data",
                         }
                     });
                     console.log(response.data);
                     alert(
                         "회원가입에 성공했습니다"
-                      );
-                      
+                    );
+
                     window.location.href = "/login";
 
-                }catch(e){
+                } catch (e) {
                     alert(
                         "회원가입에 실패했습니다."
-                      );
+                    );
                 }
-            }else{
+            } else {
                 alert("비밀번호를 확인해주세요")
             }
-            
+
         },
-        // setMember(token) {
-        //     token = VueJwtDecode.decode(token.split(" ")[1]);
-        //     this.memberId = token.memberId;
-        //     this.memberName = token.memberName;
-        // }
     },
     getters: {
 

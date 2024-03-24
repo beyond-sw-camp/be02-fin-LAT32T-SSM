@@ -1,4 +1,4 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";

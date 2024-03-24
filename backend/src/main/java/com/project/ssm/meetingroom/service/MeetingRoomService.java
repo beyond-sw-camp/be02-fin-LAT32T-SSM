@@ -1,12 +1,13 @@
 package com.project.ssm.meetingroom.service;
 
+import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.exception.MeetingDuplicateException;
 import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
-import com.project.ssm.meetingroom.model.MeetingRoom;
-import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
 import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,35 +24,23 @@ public class MeetingRoomService {
     private final EventRepository eventRepository;
 
     // 회의실 생성
-    public MeetingRoomAddResult createMeetingRoom(MeetingRoomAddReq request) {
-
-        Optional<MeetingRoom> existingMeetingRoom = meetingRoomRepository.findByMeetingRoomName(request.getRoomName());
-
-        if (existingMeetingRoom.isPresent()) {
-            throw new MeetingDuplicateException(ErrorCode.MEETINGROOM_DUPLOCATE, "이미 있는 회의실입니다.");
+    public BaseResponse<PostMeetingRoomRes> createMeetingRoom(PostMeetingRoomReq request) {
+        Optional<MeetingRoom> result = meetingRoomRepository.findByMeetingRoomName(request.getMeetingRoomName());
+        if(result.isPresent()){
+            throw MeetingDuplicateException.forMeetingRoomName(request.getMeetingRoomName());
         }
-
-        MeetingRoom meetingRoom = MeetingRoom.builder()
-                .meetingRoomName(request.getRoomName())
-                .meetingRoomCapacity(request.getRoomCapacity())
-                .build();
-
-        meetingRoom = meetingRoomRepository.save(meetingRoom);
-
-
-        return MeetingRoomAddResult.builder()
-                .idx(meetingRoom.getMeetingRoomIdx())
-                .roomName(meetingRoom.getMeetingRoomName())
-                .build();
+        MeetingRoom meetingRoom = meetingRoomRepository.save(MeetingRoom.buildMeetingRoom(request));
+        PostMeetingRoomRes response = PostMeetingRoomRes.buildMeetingRoomRes(meetingRoom);
+        return BaseResponse.successRes("MEETING_000",true, "회의실이 생성되었습니다.",response);
     }
+
+    // 회의실 조회
+//    public BaseResponse<GetMeetingRoomRes> getMeetingRooms(GetMeetingRoomsReq request) {}
 
     // 회의실 단일 조회
     public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
-        Optional<MeetingRoom> optionalMeetingRoom = meetingRoomRepository.findById(meetingRoomIdx);
-        if (!optionalMeetingRoom.isPresent()) {
-            throw new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, "회의실을 찾을 수 없습니다.");
-        }
-        MeetingRoom meetingRoom = optionalMeetingRoom.get();
+        MeetingRoom meetingRoom = meetingRoomRepository.findById(meetingRoomIdx).orElseThrow(() ->
+                MeetingRoomNotFoundException.forMeetingRoomIdx(meetingRoomIdx));
         // 회의실 ID에 대한 모든 예약을 List 반환
         List<Event> eventsList = eventRepository.findByMeetingRoom(meetingRoom);
         // 정보 저장할 리스트 생성

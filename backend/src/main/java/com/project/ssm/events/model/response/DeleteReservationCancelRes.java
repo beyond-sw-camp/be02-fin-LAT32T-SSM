@@ -1,6 +1,6 @@
 package com.project.ssm.events.model.response;
 
-import com.project.ssm.meetingroom.model.MeetingRoom;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import lombok.*;
 
 @Getter
