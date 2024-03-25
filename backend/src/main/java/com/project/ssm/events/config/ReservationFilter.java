@@ -40,7 +40,7 @@ public class ReservationFilter {
                     // 예약하려는 이벤트 종료시간
                     Date reservationCloseTime = sdf. parse(closedAt);
                     if((reservationStartTime.before(reservationCloseTime))&&
-                            (reservationStartTime.before(bookedEventCloseTime)||(reservationCloseTime.after(bookedEventStartTime)))){
+                            (reservationStartTime.after(bookedEventCloseTime)||(reservationCloseTime.before(bookedEventStartTime)))){
                         // 회의실 예약 저장
                         return true;
                     } else {

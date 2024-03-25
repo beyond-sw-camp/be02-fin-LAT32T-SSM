@@ -74,8 +74,8 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .where(
                         event.meetingRoom.meetingRoomIdx.eq(meetingRoomIdx)
                                 .and(
-                                        event.startedAt.substring(0).eq(date)
-                                                .or(event.closedAt.substring(0).eq(date))
+                                        event.startedAt.substring(0,10).eq(date)
+                                                .or(event.closedAt.substring(0,10).eq(date))
                                 )
                 )
                 .fetch();

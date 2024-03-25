@@ -22,11 +22,11 @@ public class PostEventRes {
     private String startedAt;
     private String closedAt;
     private String eventContent;
-    private List<String> memberId;
+    //private List<String> memberId;
     private Boolean allDay;
-    private Long memberIdx;
+    //private Long memberIdx;
     private String type;
-    private Long meetingRoomIdx;
+    //private Long meetingRoomIdx;
 
     public static PostEventRes buildEventRes(Event event, Member member) {
 
@@ -35,23 +35,23 @@ public class PostEventRes {
 //            meetingRoomIdx = event.getMeetingRoom().getMeetingRoomIdx();
 //        }
 
-        List<EventParticipants> members = event.getEventParticipantsList();
-        List<String> memberIds = new ArrayList<>();
-        for (int i = 0; i < members.size(); i++) {
-            String memberId = event.getEventParticipantsList().get(i).getMember().getMemberId();
-            memberIds.add(memberId);
-        }
+//        List<EventParticipants> members = event.getEventParticipantsList();
+//        List<String> memberIds = new ArrayList<>();
+//        for (int i = 0; i < members.size(); i++) {
+//            String memberId = event.getEventParticipantsList().get(i).getMember().getMemberId();
+//            memberIds.add(memberId);
+//        }
         return PostEventRes.builder()
                 .eventIdx(event.getEventIdx())
-                .memberIdx(member.getMemberIdx())
-                .memberId(memberIds)
+//                .memberIdx(member.getMemberIdx())
+//                .memberId(memberIds)
                 .title(event.getTitle())
                 .eventContent(event.getEventContent())
                 .startedAt(event.getStartedAt())
                 .closedAt(event.getClosedAt())
                 .allDay(event.getAllDay())
                 .type(event.getType())
-                .meetingRoomIdx(event.getMeetingRoom().getMeetingRoomIdx())
+                //.meetingRoomIdx(event.getMeetingRoom().getMeetingRoomIdx())
                 .build();
     }
 }

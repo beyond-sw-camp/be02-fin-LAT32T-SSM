@@ -22,7 +22,7 @@ public enum ErrorCode {
   
     // 회의실
     MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "MEETINGROOM_000" , "회의실을 찾을 수 없습니다."),
-    MEETINGROOM_DUPLOCATE(HttpStatus.BAD_REQUEST, "MEETINGROOM_001","이미 있는 회의실 입니다."),
+    MEETINGROOM_DUPLOCATE(HttpStatus.BAD_REQUEST, "MEETINGROOM_001","이미 존재하는 회의실 입니다."),
 
     // 예약
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_000" , "예약을 찾을 수 없습니다."),

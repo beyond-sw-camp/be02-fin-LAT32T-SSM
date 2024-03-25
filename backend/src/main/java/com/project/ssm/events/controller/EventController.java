@@ -2,6 +2,7 @@ package com.project.ssm.events.controller;
 
 
 import com.project.ssm.events.model.request.PatchEventReq;
+import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
@@ -33,7 +34,6 @@ public class EventController {
     }
 
     // 연간 일정 조회
-
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
     public ResponseEntity listEvents(@PathVariable int year){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -67,7 +67,7 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/reservation")
-    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PostReservationReq request){
+    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PatchReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createReservation(member, request));
     }
