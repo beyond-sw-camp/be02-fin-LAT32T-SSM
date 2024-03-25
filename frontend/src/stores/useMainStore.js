@@ -57,7 +57,7 @@ export const useMainStore = defineStore("main", {
           },
           notificaiton() {
             this.requestNotificationPermission();  
-            const evtSource = new EventSource(backend+ "/notification");
+            const evtSource = new EventSource(backend+ "/notification/"+this.member.memberId);
             evtSource.addEventListener("notification", function (event) {
               // 사용자에게 알림 표시
               if (Notification.permission === "granted") {
