@@ -4,6 +4,7 @@ import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -35,11 +36,6 @@ public class NotificationController {
         return emitter;
     }
 
-    @RequestMapping(value = "/notification/test", method = RequestMethod.GET)
-    public ResponseEntity test() {
-
-        return ResponseEntity.ok().body(notificationService.memberEventRead());
-    }
     // 알람 발생 시 모든 클라이언트에게 알람 전송
     public static void sendAlarmToClients(String memberId ,String message) {
         SseEmitter emitter = emitters.get(memberId);
@@ -50,6 +46,13 @@ public class NotificationController {
                 emitters.remove(memberId);
             }
         }
+    }
+
+    // 일정알람 기능을 임의로 불러올 때 사용 하는 곳
+    @RequestMapping(value = "/notification/test", method = RequestMethod.GET)
+    public ResponseEntity test() {
+        notificationService.memberEventRead();
+        return ResponseEntity.ok().body("ok");
     }
 
 }

@@ -2,6 +2,7 @@ package com.project.ssm.events.repository;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
+import com.project.ssm.member.model.Member;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ public interface EventCustomRepository {
     List<Event> findEventsByDate(Long memberIdx, String date);
 
     List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date);
+
+
     /**
      * 일정 알람을 위한 메소드
      */
-    List<Event> findEventsByMemberIdx(Long memberIdx);
+    List<EventParticipants> findMemberByEventTime();
 }
 

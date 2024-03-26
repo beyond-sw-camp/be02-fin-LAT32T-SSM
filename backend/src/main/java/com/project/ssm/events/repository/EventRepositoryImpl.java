@@ -5,6 +5,8 @@ import com.project.ssm.events.model.entity.EventParticipants;
 import com.project.ssm.events.model.entity.QEvent;
 
 import com.project.ssm.events.model.entity.QEventParticipants;
+import com.project.ssm.member.model.Member;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -104,21 +106,27 @@ public class EventRepositoryImpl implements EventCustomRepository {
     /**
      * 일정 알람을 위한 메소드
      */
+
+
     @Override
-    public List<Event> findEventsByMemberIdx(Long memberIdx) {
+    public List<EventParticipants> findMemberByEventTime() {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
 
-        List<Event> eventList = queryFactory
-                .select(event)
-                .from(event)
-                .leftJoin(eventParticipants)
-                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
+        List<EventParticipants> eventList = queryFactory
+                .select(eventParticipants)
+                .from(eventParticipants)
+                .leftJoin(event)
+                .on(eventParticipants.event.eventIdx.eq(event.eventIdx))
                 .where(
-                        eventParticipants.member.memberIdx.eq(memberIdx)
+                        // startedAt을 날짜/시간으로 변환
+                        Expressions.numberTemplate(Integer.class,
+                                        "TIMESTAMPDIFF(MINUTE, STR_TO_DATE({0}, '%Y-%m-%d %H:%i'), CURRENT_TIMESTAMP)",
+                                        event.startedAt)
+                                // 현재 시간과의 차이가 10분 이내인 경우
+                                .loe(10)
                 )
                 .fetch();
-
 
         return eventList;
     }

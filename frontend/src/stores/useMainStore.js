@@ -9,7 +9,7 @@ export const useMainStore = defineStore("main", {
             memberId:"",  
             name: "",
             department: "",
-            position: "",
+            position: ""
         },
         meetingRooms:[],
         members:[],
