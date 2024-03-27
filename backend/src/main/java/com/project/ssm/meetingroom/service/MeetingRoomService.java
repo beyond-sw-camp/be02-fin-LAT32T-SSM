@@ -34,8 +34,11 @@ public class MeetingRoomService {
         return BaseResponse.successRes("MEETING_000",true, "회의실이 생성되었습니다.",response);
     }
 
-    // 회의실 조회
-//    public BaseResponse<GetMeetingRoomRes> getMeetingRooms(GetMeetingRoomsReq request) {}
+    // 현재 회의실 조회
+    public BaseResponse<GetCurrentMeetingRoomRes>GetCurrentMeetingRoom(){
+
+        return null;
+    }
 
     // 회의실 단일 조회
     public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
@@ -86,6 +89,8 @@ public class MeetingRoomService {
         }
         return meetingRoomListResList;
     }
+
+    //
 
 
 
