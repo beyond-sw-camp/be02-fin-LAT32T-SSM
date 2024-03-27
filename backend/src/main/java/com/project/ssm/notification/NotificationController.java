@@ -48,7 +48,7 @@ public class NotificationController {
         }
     }
 
-    // 일정알람 기능을 임의로 불러올 때 사용 하는 곳
+    // 테스트용 맵핑
     @RequestMapping(value = "/notification/test", method = RequestMethod.GET)
     public ResponseEntity test() {
         notificationService.memberEventRead();
