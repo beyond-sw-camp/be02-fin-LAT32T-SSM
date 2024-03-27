@@ -15,6 +15,8 @@ public interface EventCustomRepository {
 
     List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date);
 
+    List<Event> findEventsByCurrentTime(String date);
+
 
     /**
      * 일정 알람을 위한 메소드

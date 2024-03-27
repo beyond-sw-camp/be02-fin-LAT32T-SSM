@@ -23,7 +23,7 @@ public class MeetingRoom {
 
     private String meetingRoomName;
     private Integer meetingRoomCapacity;
-    // private Boolean isOccupied;     // false(0)이면 공실, true(1)이면 예약
+    private Boolean isAvailable;     // false(0)이면 공실, true(1)이면 사용중
 
     @OneToMany(mappedBy = "meetingRoom")
     private List<Event> events;
@@ -35,7 +35,7 @@ public class MeetingRoom {
         return MeetingRoom.builder()
                 .meetingRoomName(request.getMeetingRoomName())
                 .meetingRoomCapacity(request.getMeetingRoomCapacity())
-                //.isOccupied(false)
+                .isAvailable(false)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
