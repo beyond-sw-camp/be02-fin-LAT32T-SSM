@@ -33,8 +33,8 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .leftJoin(event)
                 .on(eventParticipants.event.eventIdx.eq(event.eventIdx))
                 .where(
-                       event.startedAt.substring(0, 4).eq(String.valueOf(year))
-                               .or(event.closedAt.substring(0, 4).eq(String.valueOf(year)))
+                        event.startedAt.substring(0, 4).eq(String.valueOf(year))
+                                .or(event.closedAt.substring(0, 4).eq(String.valueOf(year)))
                 )
                 .fetch();
     }
@@ -79,13 +79,23 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .where(
                         event.meetingRoom.meetingRoomIdx.eq(meetingRoomIdx)
                                 .and(
-                                        event.startedAt.substring(0,10).eq(date)
-                                                .or(event.closedAt.substring(0,10).eq(date))
+                                        event.startedAt.substring(0, 10).eq(date)
+                                                .or(event.closedAt.substring(0, 10).eq(date))
                                 )
                 )
                 .fetch();
     }
 
+
+    // 이벤트 끝 시간이 지금 시간보다 앞에 있으면 다 지워
+    @Override
+    public List<Event> findEventsByCurrentTime(String now) {
+        QEvent event = QEvent.event;
+        long execute = queryFactory.update(event)
+                .set(event.startedAt, Expressions.stringTemplate("STR_TO_DATE({0}, {1})", event.startedAt, "%Y-%m-%d %H:%i:%s"))
+                .execute();
+        return null;
+    }
 
 
     /**

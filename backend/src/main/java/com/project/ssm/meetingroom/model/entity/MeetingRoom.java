@@ -35,7 +35,7 @@ public class MeetingRoom {
         return MeetingRoom.builder()
                 .meetingRoomName(request.getMeetingRoomName())
                 .meetingRoomCapacity(request.getMeetingRoomCapacity())
-                //.isAvailable(false)
+                .isAvailable(false)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
