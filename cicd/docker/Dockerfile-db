@@ -1,0 +1,3 @@
+FROM mariadb:latest
+CMD ["mariadbd"]
+EXPOSE map[3306/tcp:{}]
