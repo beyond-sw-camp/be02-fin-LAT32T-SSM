@@ -187,8 +187,10 @@ public class EventService {
             // 찾는 데이터가 없을 경우 예외 처리
 //            for (Event event: events) {
 //            }
-            Long eventIdx = null;
-            throw EventNotFoundException.forEventId(eventIdx);
+//            Long eventIdx = null;
+//            throw EventNotFoundException.forEventId(eventIdx);
+
+            return null;
         }
     }
 

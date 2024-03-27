@@ -12,7 +12,7 @@ public class PostMeetingRoomRes {
     private Long meetingRoomIdx;
     private String meetingRoomName;
     private Integer meetingRoomCapacity;
-    private Boolean isOccupied;
+    private Boolean isAvailable;
     private String createdAt;
     private String updatedAt;
 
@@ -21,7 +21,7 @@ public class PostMeetingRoomRes {
                 .meetingRoomIdx(meetingRoom.getMeetingRoomIdx())
                 .meetingRoomName(meetingRoom.getMeetingRoomName())
                 .meetingRoomCapacity(meetingRoom.getMeetingRoomCapacity())
-                //.isOccupied(meetingRoom.getIsOccupied())
+                //.isAvailable(meetingRoom.getisAvailable())
                 .createdAt(meetingRoom.getCreatedAt())
                 .updatedAt(meetingRoom.getUpdatedAt())
                 .build();

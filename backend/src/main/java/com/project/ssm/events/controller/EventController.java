@@ -62,7 +62,7 @@ public class EventController {
         return ResponseEntity.ok().body("ok");
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/reservation")
+    @RequestMapping(method = RequestMethod.PATCH, value = "/reservation")
     public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PatchReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createReservation(member, request));

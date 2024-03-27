@@ -37,9 +37,11 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-    public ResponseEntity updatePassword(@RequestBody @Valid PatchMemberUpdatePasswordReq req) {
+    public ResponseEntity updatePassword(
+            @RequestPart(value = "member") @Valid PatchMemberUpdatePasswordReq req,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(memberService.updatePassword(member, req));
+        return ResponseEntity.ok().body(memberService.updatePassword(member, req, profileImage));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/delete")
