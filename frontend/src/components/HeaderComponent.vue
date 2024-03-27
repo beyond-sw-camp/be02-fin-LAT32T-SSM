@@ -15,9 +15,6 @@
         <li class="nav-item">
           <a id="logout" @click.prevent="logout">로그아웃</a>
         </li>
-        <div class="user-img-wrapper" id="user">
-          <img src="images/user2.jpg" alt="User 1" />
-        </div>
       </div>
     </nav>
   </header>

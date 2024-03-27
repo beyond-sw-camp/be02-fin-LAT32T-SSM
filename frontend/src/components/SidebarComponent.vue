@@ -16,7 +16,7 @@
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <Button class="button-show" label="Show" @click="visible = true"/>
+            <Button class="button-show" label="+" @click="visible = true"/>
             <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '30rem' }">
                 <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
                 <div class="flex align-items-center gap-3 mb-3">
@@ -52,16 +52,17 @@
       </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomListDetails" v-show="isChatRoomListVisible"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomListHide" v-show="!isChatRoomListVisible"></i> 채널
         </h4>
         <ul>
-          <li v-for="(item, idx) in roomList" :key="idx">
+          <li v-for="(item, idx) in roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
               <a href="#" @click="stompStore.roomConnect(item.chatRoomId)">
-                <span class="make-white">
-                <i class="fas fa-hashtag"></i>
-                  {{ item.chatRoomName }}
-                </span>
+              <span class="make-white">
+              <i class="fas fa-hashtag"></i>
+                {{ item.chatRoomName }}
+              </span>
               </a>
             </router-link>
           </li>
@@ -98,17 +99,25 @@ export default {
       memberList: [],
       visible: false,
       roomList: [],
-      recvList: []
+      recvList: [],
+      isChatRoomListVisible: true,
     }
   },
   computed: {
     ...mapStores(useChatRoomStore, useMainStore, useStompStore, useMessageStore)
   },
   methods: {
-    // ...mapActions(useMessageStore, ['getChatList']),
-    // ...mapActions(useStompStore, ['roomConnect']),
-    // ...mapActions(useChatRoomStore, ['getRoomList']),
-    // ...mapActions(useChatRoomStore, ['creatRoom']),
+    chatRoomListDetails() {
+      this.chatRoomStore.getRoomList()
+          .then(roomList => {
+            this.roomList = roomList;
+          });
+      this.isChatRoomListVisible = !this.isChatRoomListVisible;
+    },
+    chatRoomListHide() {
+      this.chatRoomStore.roomList = [];
+      this.isChatRoomListVisible = !this.isChatRoomListVisible;
+    },
     toggle(event) {
       this.$refs.op.toggle(event);
     },
@@ -133,40 +142,8 @@ export default {
 
       this.visible = false;
     },
-    // sendMessage(e) {
-    //   console.log(e);
-    //   if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-    //     this.send(this.chatRoomId);
-    //     this.message = ''
-    //   }
-    // },
-    // send() {
-    //   console.log('Send Message:' + this.message);
-    //   if (this.stompClient && this.stompClient.connected) {
-    //     const msg = {
-    //       userName: this.member.name,
-    //       message: this.message
-    //     };
-    //     console.log(msg);
-    //     this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-    //   }
-    // },
-    
   },
   mounted() {
-    // this.getRoomList();
-    console.log("=======채팅방 불러오기======");
-    console.log(this.chatRoomStore.getRoomList());
-    this.chatRoomStore.getRoomList()
-        .then(roomList => {
-          console.log(roomList);
-          this.roomList = roomList;
-        });
-
-    if (localStorage.getItem("chatRoomId") !== null) {
-      this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
-    }
-
     // 토큰 데이터 load
     this.mainStore.loadMemberData();
   }
@@ -1091,6 +1068,17 @@ body::-webkit-scrollbar-thumb {
     margin-right: 0.5rem;
     font-size: 0.7rem;
   }
+}
+
+.chat-room-list-detail {
+  padding: 0.3rem 0.5rem;
+  margin: 0.5rem 1rem;
+  //background-color: var(--slack-tag-background);
+  border-radius: 0.625rem;
+  color: var(--slack-tag-border-color);
+  display: flex;
+  align-items: flex-start;
+  flex-grow: 1;
 }
  
 </style>
