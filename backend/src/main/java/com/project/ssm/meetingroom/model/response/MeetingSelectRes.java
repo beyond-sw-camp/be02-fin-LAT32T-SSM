@@ -8,6 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class MeetingSelectRes {
-    private MeetingSelectResMeetingRoomSelectResult result;
-
+    private GetMeetingRoomSelectRes result;
 }

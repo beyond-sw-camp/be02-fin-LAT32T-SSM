@@ -1,7 +1,7 @@
 package com.project.ssm.meetingroom.controller;
 
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectResMeetingRoomSelectResult;
+import com.project.ssm.meetingroom.model.response.GetMeetingRoomSelectRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ class MeetingRoomControllerTest {
                 .startedAt(startedAt)
                 .closedAt(closedAt)
                 .build();
-        MeetingSelectResMeetingRoomSelectResult roomSelectResult = MeetingSelectResMeetingRoomSelectResult.builder()
+        GetMeetingRoomSelectRes roomSelectResult = GetMeetingRoomSelectRes.builder()
                 .roomIdx(1L)
                 .roomName("제 1 회의실")
                 .roomCapacity(10)
