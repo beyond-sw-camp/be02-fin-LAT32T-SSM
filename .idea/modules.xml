@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/be02-fin-LAT32T-SSM.iml" filepath="$PROJECT_DIR$/.idea/be02-fin-LAT32T-SSM.iml" />
-      <module fileurl="file://$PROJECT_DIR$/backend/ssm.iml" filepath="$PROJECT_DIR$/backend/ssm.iml" />
     </modules>
   </component>
 </project>

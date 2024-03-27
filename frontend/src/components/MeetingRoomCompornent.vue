@@ -1,11 +1,11 @@
 <template>
     <div id="app">
       <div class="meeting-room-container">
-        <!-- <h2 id="title">회의실 현황</h2> -->
         <div class="meeting-rooms">
           <div v-for="room in meetingRooms" :key="room.roomIdx" 
-               :class="{'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable}">
-            {{ room.roomName }}
+               :class="{'room': true, 'available': room.status, 'unavailable': !room.status}"
+          >
+            <button @click="selectMeetingRoom(room.roomIdx)">{{ room.roomName }}</button>
           </div>
         </div>
         <div class="status-indicator">
@@ -41,9 +41,17 @@
           this.meetingRooms = response.data.result.map(room => ({
             ...room
           }));
+          console.log('===========회의실 조회===========')
+          console.log(this.meetingRooms);
         } catch (error) {
           console.error('회의실 정보를 가져오지 못했습니다:', error);
         }
+      },
+
+      async selectMeetingRoom(roomIdx) {
+        console.log(roomIdx);
+        const response = await axios.get('http://localhost:8080/meetingroom/select/' + roomIdx);
+        console.log(response);
       },
     },
   };

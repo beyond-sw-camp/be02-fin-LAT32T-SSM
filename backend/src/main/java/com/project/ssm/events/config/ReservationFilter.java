@@ -26,8 +26,10 @@ public class ReservationFilter {
         // date에 회의실이 예약된 이벤트 내역들
         List<Event> events = eventRepository.findEventsByReservationTime(meetingRoomIdx, date);
 
+        Boolean result = false;
+
         if (events.isEmpty()) {
-            return true;
+            result = true;
         } else {
             for (Event event: events) {
                 try {
@@ -39,18 +41,22 @@ public class ReservationFilter {
                     Date reservationStartTime = sdf. parse(startedAt);
                     // 예약하려는 이벤트 종료시간
                     Date reservationCloseTime = sdf. parse(closedAt);
-                    if((reservationStartTime.before(reservationCloseTime))&&
+                    if(reservationStartTime.after(bookedEventStartTime)&&reservationCloseTime.before(bookedEventCloseTime)){
+                        result = false;
+                    } else if((reservationStartTime.before(reservationCloseTime))&&
                             (reservationStartTime.after(bookedEventCloseTime)||(reservationCloseTime.before(bookedEventStartTime)))){
                         // 회의실 예약 저장
-                        return true;
+                        result = true;
                     } else {
-                        return false;
+                        result = false;
                     }
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
             }
-            return false;
+//            result = false;
         }
+
+        return result;
     }
 }

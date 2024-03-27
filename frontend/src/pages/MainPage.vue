@@ -58,7 +58,12 @@
                 <div class="about-detail">
                   <h5>직책</h5>
                   <p>{{ mainStore.member.position }}</p>
-                </div>                
+                </div>
+                <div class="about-detail about-img">
+<!--                  <img alt="" :src="mainStore.member.profileImage">-->
+                  <h5>프로필 사진</h5>
+                  <p>{{ mainStore.member.profileImage }}</p>
+                </div>
               </article>
             </section>
             <section class="other-section">

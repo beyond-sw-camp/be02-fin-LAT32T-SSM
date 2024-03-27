@@ -72,7 +72,7 @@ public class EventService {
                     PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
                     return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
                 } else {
-                    throw ReservationAccessException.forReservationTime();
+                    throw ReservationAccessException.forDuplicatedReservationTime();
                 }
             } else {
                 throw MeetingRoomNotFoundException.forMeetingRoomIdx();
