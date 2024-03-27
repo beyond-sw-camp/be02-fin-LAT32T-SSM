@@ -2,10 +2,15 @@ package com.project.ssm.events.model.response;
 
 
 import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.events.model.entity.EventParticipants;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import com.project.ssm.member.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter

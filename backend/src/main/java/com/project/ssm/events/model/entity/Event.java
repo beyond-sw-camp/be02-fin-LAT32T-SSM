@@ -5,6 +5,7 @@ import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 

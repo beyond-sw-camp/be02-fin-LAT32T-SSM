@@ -72,7 +72,7 @@ public class EventService {
                     PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
                     return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
                 } else {
-                    throw ReservationAccessException.forReservationTime();
+                    throw ReservationAccessException.forDuplicatedReservationTime();
                 }
             } else {
                 throw MeetingRoomNotFoundException.forMeetingRoomIdx();
@@ -89,15 +89,10 @@ public class EventService {
 //            for (Event event : events) {
 //                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
 //            }
-//            return eventsList;
-//        } else {
-//            // 찾는 데이터가 없을 경우 예외 처리
-////            for (Event event: events) {
-////            }
-////            Long eventIdx = null;
-////            throw EventNotFoundException.forEventId(eventIdx);
+//            Long eventIdx = null;
+//            throw EventNotFoundException.forEventId(eventIdx);
             return null;
-//        }
+        }
     }
 
     public BaseResponse<List<GetEventRes>> readEvent(Member member, String date) {

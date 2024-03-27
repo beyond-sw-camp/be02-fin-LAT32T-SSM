@@ -2,6 +2,7 @@ package com.project.ssm.meetingroom.model.entity;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import lombok.*;
 
 import javax.persistence.*;
