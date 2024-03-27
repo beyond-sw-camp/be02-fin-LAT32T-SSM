@@ -35,9 +35,19 @@ export const useMainStore = defineStore("main", {
                 this.member.position = tokenData.position;
             }
         },
-        onDateClick(date) {
-            console.log("선택된 날짜: ", date);
-            // 여기에 사용자가 날짜를 클릭했을 때 실행하고 싶은 코드를 추가하세요.
+        async onDateClick(date) {
+            date = new Date(date);
+            let year = date.getFullYear();
+            let month = ('0' + (date.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1을 해주고, 두 자리로 표시하도록 포맷합니다.
+            let day = ('0' + date.getDate()).slice(-2);
+            const formattedDate = year + "-" + month + "-" + day;
+
+            const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
+                headers: {
+                    Authorization: localStorage.getItem('accessToken'),
+                }
+            })
+            console.log(response.data);
         },
         requestNotificationPermission() {
             // 알림 기능을 지원하는지 확인
