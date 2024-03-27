@@ -19,5 +19,4 @@ public class PostEventReq {
     private String textColor;
     private Boolean allDay;
     private Long meetingRoomIdx;
-
 }

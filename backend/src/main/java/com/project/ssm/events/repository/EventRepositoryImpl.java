@@ -18,7 +18,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<EventParticipants> findEventsByYear(int year) {
+    public List<EventParticipants> findEventsByYear(Long memberIdx, int year) {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
         return queryFactory
@@ -53,6 +53,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
 //                .fetch();
 //    }
 
+
     @Override
     public List<Event> findByYear(int year) {
         QEvent event = QEvent.event;
@@ -69,7 +70,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
 
-        List<Event> fetch = queryFactory
+        return queryFactory
                 .select(event)
                 .from(event)
                 .leftJoin(eventParticipants)
@@ -82,9 +83,6 @@ public class EventRepositoryImpl implements EventCustomRepository {
                                 )
                 )
                 .fetch();
-
-
-        return fetch;
     }
 
     @Override
@@ -95,8 +93,8 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .where(
                         event.meetingRoom.meetingRoomIdx.eq(meetingRoomIdx)
                                 .and(
-                                        event.startedAt.substring(0).eq(date)
-                                                .or(event.closedAt.substring(0).eq(date))
+                                        event.startedAt.substring(0,10).eq(date)
+                                                .or(event.closedAt.substring(0,10).eq(date))
                                 )
                 )
                 .fetch();

@@ -40,7 +40,7 @@ public class MeetingRoomService {
     // 회의실 단일 조회
     public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
         MeetingRoom meetingRoom = meetingRoomRepository.findById(meetingRoomIdx).orElseThrow(() ->
-                MeetingRoomNotFoundException.forMeetingRoomIdx(meetingRoomIdx));
+                MeetingRoomNotFoundException.forMeetingRoomIdx());
         // 회의실 ID에 대한 모든 예약을 List 반환
         List<Event> eventsList = eventRepository.findByMeetingRoom(meetingRoom);
         // 정보 저장할 리스트 생성

@@ -42,7 +42,7 @@
       </section>
       <section class="right-sidebar">
             <section class="right-sidebar-about">
-              <article class="about-header">
+              <article class="about-header">z
                 <h4>About Me</h4>
                 <i class="fas fa-chevron-down" @click="aboutmeDetails" ></i>
               </article>
@@ -58,7 +58,11 @@
                 <div class="about-detail">
                   <h5>직책</h5>
                   <p>{{ mainStore.member.position }}</p>
-                </div>                
+                </div>
+                <div class="about-detail about-img">
+                  <h5>프로필 사진</h5>
+                  <img :src="mainStore.member.profileImage" alt="" width="200px" height="200px">
+                </div>
               </article>
             </section>
             <section class="other-section">
@@ -138,8 +142,6 @@ export default {
     }
   },
   created() {
-    
-
     console.log("============기본 연결================");
     const stompClient = this.initSock();
     this.basicConnect(stompClient);
@@ -251,6 +253,9 @@ export default {
 
     // 회의실정보를 불러온다.
     this.mainStore.readMeetingRooms();
+
+    // 프로필 이미지 불러오기
+    this.mainStore.getProfileImage();
   }
 }
 </script>

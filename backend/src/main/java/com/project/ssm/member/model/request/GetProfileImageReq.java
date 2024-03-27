@@ -12,13 +12,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostMemberLoginReq {
+public class GetProfileImageReq {
 
     @NotBlank
     @Size(max = 45)
     private String memberId;
-
-    @NotBlank
-    @Size(max = 45)
-    private String password;
 }
