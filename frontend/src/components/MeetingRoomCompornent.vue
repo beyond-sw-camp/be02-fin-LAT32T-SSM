@@ -1,11 +1,10 @@
 <template>
-    <div id="app">
-      <div class="meeting-room-container">
-        <div class="meeting-rooms">
-          <div v-for="room in meetingRooms" :key="room.roomIdx" 
-               :class="{'room': true, 'available': room.status, 'unavailable': !room.status}"
-          >
-            <button @click="selectMeetingRoom(room.roomIdx)">{{ room.roomName }}</button>
+  <div id="app">
+    <div class="meeting-room-container">
+      <div class="meeting-rooms">
+        <div v-for="(room, index) in mainStore.meetingRooms" :key="index"
+             :class="{ 'room': true, 'available': room.status, 'unavailable': !room.status }">
+          <button @click="selectMeetingRoom(room.roomIdx)">{{ room.roomName }}</button>
           </div>
         </div>
         <div class="status-indicator">
