@@ -40,11 +40,10 @@ public class NotificationService {
                 // parse와 currentDate 사이의 밀리초 단위 차이 계산
                 long difference = parse.getTime() - currentDate.getTime();
 
-
                 // 차이가 10분 이내인 경우 startList에 추가
                 if (difference >= 0 && difference <= 600000) {
                     startList.add(parse);
-                    sendAlarmToClients(event.getTitle() + "일정 이 곧 시작예정입니다.");
+                    sendAlarmToClients(member.getMemberId(), event.getTitle() + " 일정이 곧 시작예정입니다.");
                 }
 
             } catch (ParseException e) {

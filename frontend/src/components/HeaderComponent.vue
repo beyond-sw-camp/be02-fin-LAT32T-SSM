@@ -15,6 +15,7 @@
         <a href="#"><i class="far fa-question-circle"></i></a>
         <div class="user-img-wrapper" id="user">
           <img src="images/user2.jpg" alt="User 1" />
+          asdf
         </div>
       </div>
     </nav>

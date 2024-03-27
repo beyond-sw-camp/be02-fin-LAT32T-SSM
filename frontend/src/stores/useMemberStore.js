@@ -81,15 +81,6 @@ export const useMemberStore = defineStore("member", {
             }else{
                 alert("비밀번호를 확인해주세요")
             }
-            
         },
-        // setMember(token) {
-        //     token = VueJwtDecode.decode(token.split(" ")[1]);
-        //     this.memberId = token.memberId;
-        //     this.memberName = token.memberName;
-        // }
     },
-    getters: {
-
-    }
 })
