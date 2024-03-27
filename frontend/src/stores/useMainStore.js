@@ -72,8 +72,10 @@ export const useMainStore = defineStore("main", {
           
           // 회의실 정보를 불러온다.
         async readMeetingRooms() {
-            try {
+          console.log("메서드 진입")  
+          try {
                 const response = await axios.get(backend + '/meetingroom/list');
+
                 this.meetingRooms = response.data.result;
             } catch (error) {
                 console.error('회의실 정보를 가져오지 못했습니다:', error);

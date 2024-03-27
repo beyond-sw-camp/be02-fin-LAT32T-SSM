@@ -115,6 +115,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
                                         , event.startedAt
                                         , ConstantImpl.create("%Y-%m-%d %H:%i"))
                                 .between(nowStr, tenMinutesAfterStr)
+                        // 스트링  데이트타입    스트링 사이에서
                 )
                 .fetch();
         return eventParticipantsList;
