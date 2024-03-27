@@ -10,6 +10,7 @@ export const useMainStore = defineStore("main", {
             name: "",
             department: "",
             position: "",
+            profileImage: "",
         },
         meetingRooms:[],
         members:[],
@@ -70,27 +71,30 @@ export const useMainStore = defineStore("main", {
           },
           
           // 회의실 정보를 불러온다.
-          async readMeetingRooms() {
+        async readMeetingRooms() {
             try {
-              const response = await axios.get(backend + '/meetingroom/list');
-              this.meetingRooms = response.data.result;
+                const response = await axios.get(backend + '/meetingroom/list');
+                this.meetingRooms = response.data.result;
             } catch (error) {
-              console.error('회의실 정보를 가져오지 못했습니다:', error);
+                console.error('회의실 정보를 가져오지 못했습니다:', error);
             }
-          },
+        },
 
           // 멤버 정보를 불러온다.
-          async readMember() {
+        async readMember() {
             try {
-              const response = await axios.get(backend + '/member/read');
-              this.members = response.data.result;
-            } catch (error) {
-              console.error('멤버 정보를 가져오지 못했습니다:', error);
-            }
-          },
-          
+                const response = await axios.get(backend + '/member/read');
+                this.members = response.data.result;
+                } catch (error) {
+                  console.error('멤버 정보를 가져오지 못했습니다:', error);
+                }
+            },
+        async getProfileImage() {
+            const response = await axios.post(backend + '/member/profile', {
+                memberId: this.member.memberId
+            })
+            console.log(response.data[0].imageAddr);
+            this.member.profileImage = response.data[0].imageAddr;
+        }
     },
-    getters: {
-
-    }
 })

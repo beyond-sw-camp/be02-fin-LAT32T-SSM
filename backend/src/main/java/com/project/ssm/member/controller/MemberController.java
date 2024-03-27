@@ -2,10 +2,7 @@ package com.project.ssm.member.controller;
 
 
 import com.project.ssm.member.model.Member;
-import com.project.ssm.member.model.request.GetMemberCheckIdReq;
-import com.project.ssm.member.model.request.PatchMemberUpdatePasswordReq;
-import com.project.ssm.member.model.request.PostMemberLoginReq;
-import com.project.ssm.member.model.request.PostMemberSignupReq;
+import com.project.ssm.member.model.request.*;
 import com.project.ssm.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,13 +50,16 @@ public class MemberController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/profile/add")
     public ResponseEntity profileAdd() {
-
         return ResponseEntity.ok().body("ok");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read")
     public ResponseEntity memberRead() {
-
         return ResponseEntity.ok().body(memberService.read());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/profile")
+    public ResponseEntity getProfileImage(@RequestBody GetProfileImageReq getProfileImageReq) {
+        return ResponseEntity.ok().body(memberService.getMemberProfile(getProfileImageReq));
     }
 }

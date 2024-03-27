@@ -1,9 +1,10 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 
-const backend = 'http://localhost:8080'
+// const backend = 'http://192.168.0.41/api'
+const backend = 'http://localhost:8080';
 
 export const useStompStore = defineStore("stomp", {
     actions: {

@@ -2,12 +2,11 @@ package com.project.ssm.events.controller;
 
 
 import com.project.ssm.events.model.request.PatchEventReq;
+import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.events.model.request.MeetingRoomReservationReq;
-import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.meetingroom.model.response.PostReservationRes;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,10 +30,10 @@ public class EventController {
     }
 
     // 연간 일정 조회
-
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
     public ResponseEntity listEvents(@PathVariable int year){
-        return ResponseEntity.ok().body(eventService.listEvents(year));
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(eventService.listEvents(member, year));
     }
 
     // 일정 상세 조회
@@ -66,7 +63,7 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/reservation")
-    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PostReservationReq request){
+    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PatchReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createReservation(member, request));
     }
