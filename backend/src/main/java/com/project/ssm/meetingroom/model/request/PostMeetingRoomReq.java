@@ -8,5 +8,5 @@ import lombok.Data;
 public class PostMeetingRoomReq {
     private String meetingRoomName;
     private Integer meetingRoomCapacity;
-    // private Boolean isOccupied;
+    // private Boolean isAvailable;
 }
