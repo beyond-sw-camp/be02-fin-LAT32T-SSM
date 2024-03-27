@@ -4,13 +4,14 @@ import axios from "axios";
 
 // const backend = 'http://192.168.0.41/api'
 const backend = 'http://localhost:8080';
-// const storedToken = localStorage.getItem("accessToken");
+const storedToken = localStorage.getItem("accessToken");
 export const useMemberStore = defineStore("member", {
     state: () => ({
         member:{
             memberId:"",
             memberPw:"",
-            memberPwChecked:"",    
+            memberPwChecked:"",
+            memberOldPw:"", 
             name: "",
             department: "",
             position: "",
@@ -64,6 +65,7 @@ export const useMemberStore = defineStore("member", {
                     let response = await axios.post(backend + "/member/signup", formData, {
                         headers:{
                             "Content-Type": "multipart/form-data",
+                            
                         }
                     });
                     console.log(response.data);
@@ -76,6 +78,52 @@ export const useMemberStore = defineStore("member", {
                 }catch(e){
                     alert(
                         "회원가입에 실패했습니다."
+                      );
+                }
+            }else{
+                alert("비밀번호를 확인해주세요")
+            }
+        },
+        async changeInfo(){
+            if(this.member.memberPw === this.member.memberPwChecked){
+                let changeInfoMember = {
+                    password: this.member.memberOldPw, 
+                    newPassword: this.member.memberPw,
+                }
+
+                let formData = new FormData();
+                let json = JSON.stringify(changeInfoMember);
+                console.log(json)
+                formData.append(
+                    "member",
+                    new Blob([json], { type: "application/json" })
+                );
+                
+                formData.append("profileImage", this.member.profileImage);
+                console.log(this.member.profileImage);
+
+                try{
+                    let response = await axios.patch(backend + "/member/update", formData, {
+                        headers:{
+                            "Content-Type": "multipart/form-data",
+                            "Authorization": storedToken
+                        }
+                    });
+                    console.log(response.data);
+
+                    if(response.data.code === "MEMBER_36" || response.data.code === "MEMBER_37"){
+                        alert(
+                            response.data.message
+                          );
+                    }else if(response.data.code === "MEMBER_35"){
+                        alert(
+                            response.data.message
+                          );
+                          window.location.href = "/login";
+                    }                  
+                }catch(e){
+                    alert(
+                        "회원정보 변경에 실패했습니다."
                       );
                 }
             }else{

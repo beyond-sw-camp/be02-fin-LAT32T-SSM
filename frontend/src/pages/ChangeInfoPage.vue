@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+    <div class="container">
     <div class="card o-hidden border-0 shadow-lg my-5">
       <div class="card-body p-0">
         <!-- Nested Row within Card Body -->
@@ -7,33 +7,22 @@
           <div class="col-lg-7">
             <div class="p-5">
               <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">회원 가입</h1>
+                <h1 class="h4 text-gray-900 mb-4">회원 정보 변경</h1>
               </div>
               <form class="user" enctype="multipart/form-data">
                 <div class="form-group">
-                  <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
-                    placeholder="아이디를 입력해주세요">
-                </div>
-                <div class="form-group">
-                  <input v-model="memberStore.member.name" type="text" class="form-control form-control-user"
-                    placeholder="이름을 입력해주세요">
+                  <input v-model="memberStore.member.memberOldPw" type="password" class="form-control form-control-user"
+                    placeholder="기존 비밀번호를 입력해주세요">
                 </div>
                 <div class="form-group">
                   <input v-model="memberStore.member.memberPw" type="password" class="form-control form-control-user"
-                    placeholder="비밀번호를 입력해주세요">
+                    placeholder="새로운 비밀번호를 입력해주세요">
                 </div>
                 <div class="form-group">
                   <input v-model="memberStore.member.memberPwChecked" type="password"
-                    class="form-control form-control-user" placeholder="비밀번호를 한번더 입력해주세요">
-                </div>
-                <div class="form-group">
-                  <input v-model="memberStore.member.department" type="text" class="form-control form-control-user"
-                    placeholder="부서명을 입력해주세요">
-                </div>
-                <div class="form-group">
-                  <input v-model="memberStore.member.position" type="text" class="form-control form-control-user"
-                    placeholder="직책을 입력해주세요">
-                </div>
+                    class="form-control form-control-user" placeholder="새로운 비밀번호를 한번더 입력해주세요">
+                </div>               
+                
                 <div class="form-group">
                   <input type="file" id="fileUpload" @change="handleFileUpload" accept="image/*" style="display: none;">
                   <label for="fileUpload" class="btn btn-primary btn-user btn-block">프로필 이미지 선택</label>
@@ -45,13 +34,9 @@
                 </div>
                 <hr>
               </form>
-              <button @click="memberStore.signup()" class="btn btn-primary btn-user btn-block">
-                회원 가입
+              <button @click="memberStore.changeInfo()" class="btn btn-primary btn-user btn-block">
+                회원 정보 변경
               </button>
-              <hr>
-              <div class="text-center">
-                <a class="small" href="/login">이미 계정이 있으신가요? 로그인!</a>
-              </div>
             </div>
           </div>
         </div>
@@ -59,19 +44,23 @@
     </div>
   </div>
 </template>
-
 <script>
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
 
 export default {
-  name: 'SignUpPage',
+  name: 'ChangeInfoPage',
+  components: {
+    
+  },
   data() {
     return {
-
+      
+      
     }
-  }, computed: {
-    ...mapStores(useMemberStore),
+  },
+  computed: {
+    ...mapStores(useMemberStore,),
   },
   methods: {
     handleFileUpload(event) {
@@ -79,20 +68,19 @@ export default {
       this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
 
       document.getElementById('fileName').textContent = file ? file.name : '선택된 파일 없음';
-      // 이미지 미리보기
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
+    // 이미지 미리보기
+    if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
 
-        reader.onload = (e) => {
-          const imagePreview = document.getElementById('imagePreview');
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = 'block';
-            imagePreview.style.width = '200px'; // 너비를 200px로 설정
-            imagePreview.style.height = '200px'; // 높이를 200px으로 조정
-        };
+            reader.onload = (e) => {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                imagePreview.style.width = '200px'; // 너비를 200px로 설정
+                imagePreview.style.height = '200px'; // 높이를 자동으로 조정
+            };
 
-        reader.readAsDataURL(file);
-      }
+            reader.readAsDataURL(file);
+        }
     }
   }
 }
@@ -105,7 +93,6 @@ export default {
     align-items: center; /* 세로 방향 가운데 정렬 */
     height: auto; /* 컨테이너의 높이 설정, 필요에 따라 조정 */
 }
-
 * {
   box-sizing: border-box;
 }
@@ -256,11 +243,9 @@ export default {
 
 .card-body {
   flex: 1 1 auto;
-  min-height: 1px;
-  /* 기존 설정 */
+  min-height: 1px; /* 기존 설정 */
   padding: 1.25rem;
-  overflow-y: auto;
-  /* 세로 스크롤 활성화 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
 
 .p-0 {
