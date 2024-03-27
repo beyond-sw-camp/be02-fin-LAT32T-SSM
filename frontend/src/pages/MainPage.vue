@@ -42,7 +42,7 @@
       </section>
       <section class="right-sidebar">
             <section class="right-sidebar-about">
-              <article class="about-header">z
+              <article class="about-header">
                 <h4>About Me</h4>
                 <i class="fas fa-chevron-down" @click="aboutmeDetails" ></i>
               </article>
