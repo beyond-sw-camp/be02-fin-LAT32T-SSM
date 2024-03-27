@@ -57,13 +57,7 @@ public class MeetingRoomService {
             reservationList.add(reservationDetail);
         }
 
-        MeetingSelectResMeetingRoomSelectResult result = MeetingSelectResMeetingRoomSelectResult.builder() // 회의실 정보 저장
-                .roomIdx(meetingRoom.getMeetingRoomIdx())
-                .roomName(meetingRoom.getMeetingRoomName())
-                .roomCapacity(meetingRoom.getMeetingRoomCapacity())
-                .reservations(reservationList)                // 예약 정보
-                .build();
-
+        GetMeetingRoomSelectRes result = GetMeetingRoomSelectRes.buildRoomSelectRes(meetingRoom, reservationList);
 
         return MeetingSelectRes.builder()
                 .result(result)

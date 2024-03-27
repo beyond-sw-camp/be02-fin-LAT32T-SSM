@@ -23,11 +23,14 @@
   </template>
   
   <script>
-  import { mapStores } from "pinia";
-import { useMainStore } from "@/stores/useMainStore";  
-  export default {
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
+import axios from "axios";
+
+export default {
     data() {
       return {
+        meetingRoom: {}
       };
     },
     computed: {
@@ -51,6 +54,8 @@ import { useMainStore } from "@/stores/useMainStore";
         console.log(roomIdx);
         const response = await axios.get('http://localhost:8080/meetingroom/select/' + roomIdx);
         console.log(response);
+        this.meetingRoom = response.data.result;
+        console.log(this.meetingRoom);
       },
     },
   };
