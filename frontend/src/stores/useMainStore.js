@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
+const backend = 'http://localhost:8080'
 const storedToken = localStorage.getItem("accessToken");
 export const useMainStore = defineStore("main", {
     state: () => ({
@@ -8,7 +10,10 @@ export const useMainStore = defineStore("main", {
             name: "",
             department: "",
             position: "",
+            profileImage: "",
         },
+        meetingRooms:[],
+        members:[],
     }),
     actions: {
         base64UrlDecode(input) {
@@ -53,7 +58,7 @@ export const useMainStore = defineStore("main", {
           },
           notificaiton() {
             this.requestNotificationPermission();  
-            const evtSource = new EventSource("http://localhost:8080/notification");
+            const evtSource = new EventSource(backend+ "/notification/"+this.member.memberId);
             evtSource.addEventListener("notification", function (event) {
               // 사용자에게 알림 표시
               if (Notification.permission === "granted") {
@@ -63,9 +68,33 @@ export const useMainStore = defineStore("main", {
                 });
               }
             }, false);
-          }        
-    },
-    getters: {
+          },
+          
+          // 회의실 정보를 불러온다.
+        async readMeetingRooms() {
+            try {
+                const response = await axios.get(backend + '/meetingroom/list');
+                this.meetingRooms = response.data.result;
+            } catch (error) {
+                console.error('회의실 정보를 가져오지 못했습니다:', error);
+            }
+        },
 
-    }
+          // 멤버 정보를 불러온다.
+        async readMember() {
+            try {
+                const response = await axios.get(backend + '/member/read');
+                this.members = response.data.result;
+                } catch (error) {
+                  console.error('멤버 정보를 가져오지 못했습니다:', error);
+                }
+            },
+        async getProfileImage() {
+            const response = await axios.post(backend + '/member/profile', {
+                memberId: this.member.memberId
+            })
+            console.log(response.data[0].imageAddr);
+            this.member.profileImage = response.data[0].imageAddr;
+        }
+    },
 })

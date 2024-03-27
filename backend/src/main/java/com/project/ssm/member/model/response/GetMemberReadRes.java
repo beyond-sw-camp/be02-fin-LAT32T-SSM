@@ -13,10 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostMemberSignupRes {
-
-    @NotBlank
-    private Long memberIdx;
+public class GetMemberReadRes {
 
     @NotBlank
     @Size(max = 45)
@@ -26,11 +23,20 @@ public class PostMemberSignupRes {
     @Size(max = 20)
     private String memberName;
 
-    public static PostMemberSignupRes buildSignUpRes(Member member) {
-        return PostMemberSignupRes.builder()
-                .memberIdx(member.getMemberIdx())
-                .memberName(member.getMemberName())
+    @NotBlank
+    @Size(max = 45)
+    private String department;
+
+    @NotBlank
+    @Size(max = 45)
+    private String position;
+
+    public static GetMemberReadRes buildReadRes(Member member) {
+        return GetMemberReadRes.builder()
                 .memberId(member.getMemberId())
+                .memberName(member.getMemberName())
+                .department(member.getDepartment())
+                .position(member.getPosition())
                 .build();
     }
 }

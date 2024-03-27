@@ -83,11 +83,11 @@ public class EventService {
     public List<GetEventRes> listEvents(Member member, int year) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-        List<Event> events = eventRepository.findEventsByYear(verifiedMember.getMemberIdx(), year);
+        List<EventParticipants> events = eventRepository.findEventParticipantsByYear(verifiedMember.getMemberIdx(), year);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
-            for (Event event : events) {
-                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
+            for (EventParticipants event : events) {
+                eventsList.add(GetEventRes.buildEventRes(event));
             }
             return eventsList;
         } else {
@@ -107,7 +107,7 @@ public class EventService {
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
             for (Event event : events) {
-                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
+//                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
             return BaseResponse.successRes("CALENDAR_002", true, "일정이 상세 조회되었습니다.", eventsList);
         } else {

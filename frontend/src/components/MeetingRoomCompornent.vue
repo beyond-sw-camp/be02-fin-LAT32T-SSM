@@ -23,16 +23,15 @@
   </template>
   
   <script>
-  import axios from 'axios';
-  
+  import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";  
   export default {
     data() {
       return {
-        meetingRooms: [],
       };
     },
-    created() {
-      this.fetchMeetingRooms(); 
+    computed: {
+        ...mapStores(useMainStore)
     },
     methods: {
       async fetchMeetingRooms() {
