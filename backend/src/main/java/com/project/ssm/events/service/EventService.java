@@ -81,13 +81,18 @@ public class EventService {
     }
 
     public List<GetEventRes> listEvents(Member member, int year) {
-//        Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
-//                MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-//        List<Event> events = eventRepository.findEventsByYear(verifiedMember.getMemberIdx(), year);
-//        List<GetEventRes> eventsList = new ArrayList<>();
-//        if (!events.isEmpty()) {
-//            for (Event event : events) {
-//                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
+        Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
+                MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
+        List<EventParticipants> events = eventRepository.findEventParticipantsByYear(verifiedMember.getMemberIdx(), year);
+        List<GetEventRes> eventsList = new ArrayList<>();
+        if (!events.isEmpty()) {
+            for (EventParticipants event : events) {
+                eventsList.add(GetEventRes.buildEventRes(event));
+            }
+            return eventsList;
+        } else {
+            // 찾는 데이터가 없을 경우 예외 처리
+//            for (Event event: events) {
 //            }
 //            Long eventIdx = null;
 //            throw EventNotFoundException.forEventId(eventIdx);
