@@ -12,6 +12,7 @@ import com.project.ssm.member.model.response.GetProfileImageRes;
 import com.project.ssm.member.model.response.PostMemberLoginRes;
 import com.project.ssm.member.model.response.PostMemberSignupRes;
 import com.project.ssm.member.repository.MemberRepository;
+import com.project.ssm.member.repository.ProfileImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,7 @@ public class MemberService {
     private Long expiredTimeMs;
 
     private final MemberRepository memberRepository;
+    private final ProfileImageRepository profileImageRepository;
     private final ProfileImageService profileImageService;
     private final PasswordEncoder passwordEncoder;
 
@@ -80,7 +82,7 @@ public class MemberService {
     }
 
     @Transactional
-    public BaseResponse<String> updatePassword(Member m, PatchMemberUpdatePasswordReq req) {
+    public BaseResponse<String> updatePassword(Member m, PatchMemberUpdatePasswordReq req, MultipartFile profileImage) {
         Optional<Member> byId = memberRepository.findById(m.getMemberIdx());
 
         if (byId.isPresent()) {
@@ -97,8 +99,15 @@ public class MemberService {
                 member.setMemberPw(passwordEncoder.encode(req.getNewPassword()));
                 member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
                 memberRepository.save(member);
-            }
 
+                if (profileImage != null) {
+                    // 기존 프로필 이미지 DB에서 삭제
+                    List<ProfileImage> profileImagesByMemberIdx = memberRepository.findByMemberIdx(m.getMemberIdx());
+                    profileImageRepository.deleteAll(profileImagesByMemberIdx);
+                    // 새로운 프로필 등록
+                    profileImageService.registerProfileImage(member, profileImage);
+                }
+            }
         }
         return BaseResponse.successRes("MEMBER_35", true, "비밀번호 변경이 완료되었습니다.", "ok");
     }

@@ -13,6 +13,8 @@ import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +36,26 @@ public class MeetingRoomService {
         return BaseResponse.successRes("MEETING_000",true, "회의실이 생성되었습니다.",response);
     }
 
-    // 회의실 조회
-//    public BaseResponse<GetMeetingRoomRes> getMeetingRooms(GetMeetingRoomsReq request) {}
+    // 현재 회의실 조회
+    public BaseResponse<GetCurrentMeetingRoomRes>GetCurrentMeetingRoom(){
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Event> events = eventRepository.findEventsByCurrentTime(formatedNow);
+        List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
+        List<GetCurrentMeetingRoomRes> meetingRoomsList = new ArrayList<>();
+        for (MeetingRoom meetingRoom : meetingRooms) {
+
+        }
+        if(!events.isEmpty()) {
+        } else {
+            // 당일 예약 내역이 하나도 없는 경우
+
+        }
+
+        return null;
+    }
 
     // 회의실 단일 조회
     public MeetingSelectRes getMeetingRoom(Long meetingRoomIdx) {
@@ -57,13 +77,7 @@ public class MeetingRoomService {
             reservationList.add(reservationDetail);
         }
 
-        MeetingSelectResMeetingRoomSelectResult result = MeetingSelectResMeetingRoomSelectResult.builder() // 회의실 정보 저장
-                .roomIdx(meetingRoom.getMeetingRoomIdx())
-                .roomName(meetingRoom.getMeetingRoomName())
-                .roomCapacity(meetingRoom.getMeetingRoomCapacity())
-                .reservations(reservationList)                // 예약 정보
-                .build();
-
+        GetMeetingRoomSelectRes result = GetMeetingRoomSelectRes.buildRoomSelectRes(meetingRoom, reservationList);
 
         return MeetingSelectRes.builder()
                 .result(result)
@@ -86,6 +100,8 @@ public class MeetingRoomService {
         }
         return meetingRoomListResList;
     }
+
+    //
 
 
 

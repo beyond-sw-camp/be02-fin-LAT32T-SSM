@@ -5,10 +5,7 @@ import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.PostEventRes;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
 import com.project.ssm.meetingroom.model.request.PostReservationReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
-import com.project.ssm.meetingroom.model.response.PostMeetingRoomRes;
-import com.project.ssm.meetingroom.model.response.PostReservationRes;
+import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
 import com.project.ssm.member.model.Member;
 import lombok.AllArgsConstructor;
@@ -31,6 +28,12 @@ public class MeetingRoomController {
     public ResponseEntity<BaseResponse<PostMeetingRoomRes>> createMeetingRoom(@RequestBody PostMeetingRoomReq request){
 //        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(meetingRoomService.createMeetingRoom(request));
+    }
+
+    // 현재 회의실 조회
+    @RequestMapping(method = RequestMethod.GET, value = "/current")
+    public ResponseEntity<BaseResponse<GetCurrentMeetingRoomRes>> getCurrentMeetingRoom(){
+        return ResponseEntity.ok().body(meetingRoomService.GetCurrentMeetingRoom());
     }
 
     // 회의실 조회
