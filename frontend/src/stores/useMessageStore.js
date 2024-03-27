@@ -17,17 +17,17 @@ export const useMessageStore = defineStore("message", {
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {
-            let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-                headers: {
-                    Authorization: token
-                },
-            });
-            console.log(response.data);
-            response.data.forEach((message) => {
-                this.addMessage(message);
-            })
+             if (chatRoomId !== undefined) {
+                 let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+                     headers: {
+                         Authorization: token
+                     },
+                 });
+                 response.data.result.forEach((message) => {
+                     this.addMessage(message);
+                 })
+             }
         },
-
     },
     getters: {
         getAllMessage(state) {

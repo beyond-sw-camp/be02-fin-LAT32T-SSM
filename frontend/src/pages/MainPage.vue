@@ -21,14 +21,15 @@
 
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
-            <div @click="fullCalendarDetails"> 달력 </div>
+            <div @click="showChatting" v-show="isFullcalendarVisible"> 채팅 </div>
+            <div @click="fullCalendarDetails" v-show="!isFullcalendarVisible"> 달력 </div>
           </button>
         </section>
         <section class="feeds">
           <div v-show="isFullcalendarVisible">
             <FullCalendarComponent></FullCalendarComponent>
           </div>
-          <div>
+          <div v-show="!isFullcalendarVisible">
             <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
           </div>
         </section>
@@ -46,7 +47,7 @@
             <h4>About Me</h4>
             <i class="fas fa-chevron-down" @click="aboutmeDetails"></i>
           </article>
-          <article class="about-details" v-show="isAboutmeVisible">
+          <article class="chat-room-list-detail" v-show="isAboutmeVisible">
             <div class="user-details">
               <div class="about-detail">
                 <h5>이름</h5>
@@ -150,7 +151,7 @@ export default {
   },
   computed: {
     ...mapState(useMessageStore, ['getAllMessage']),
-    ...mapStores(useMainStore)
+    ...mapStores(useMainStore, useMessageStore)
   },
   methods: {
     ...mapActions(useStompStore, ['basicConnect']),
@@ -182,6 +183,12 @@ export default {
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
       }
     },
+    showChatting() {
+      if (localStorage.getItem("chatRoomId") !== null) {
+        this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 10);
+      }
+      this.isFullcalendarVisible = !this.isFullcalendarVisible;
+    },
     setMember(token) {
       token = token.split(" ")[1];
       const payload = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
@@ -201,6 +208,7 @@ export default {
       this.isMeetingroomVisible = !this.isMeetingroomVisible;
     },
     fullCalendarDetails() {
+      this.messageStore.recvList = [];
       this.isFullcalendarVisible = !this.isFullcalendarVisible;
     },
     filterDetails() {
@@ -1433,7 +1441,7 @@ body::-webkit-scrollbar-thumb {
   font-size: 0.8rem;
 }
 
-.about-details {
+.chat-room-list-detail {
   padding: 0.3rem 0.5rem;
   margin: 0.5rem 1rem;
   background-color: var(--slack-tag-background);

@@ -4,6 +4,8 @@ import MainPage from "@/pages/MainPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
 import SignUpPage from "@/pages/SignUpPage.vue";
 import ChangeInfoPage from "@/pages/ChangeInfoPage.vue";
+import ErrorPage from "@/pages/ErrorPage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +15,7 @@ const router = createRouter({
     { path: '/signup', component: SignUpPage },
     { path: '/:roomId', component: MainPage },
     { path: '/update', component: ChangeInfoPage },
+    { path: '/error', component: ErrorPage },
   ]
 })
 
