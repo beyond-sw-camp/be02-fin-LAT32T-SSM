@@ -57,7 +57,8 @@ var newEvent = function (start, end, eventType) {
             username: editMember.val(),
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
-            allDay: false
+            allDay: false,
+            meetingRoomIdx: editRoom.val()
         };
 
         if (eventData.start > eventData.end) {
@@ -111,6 +112,7 @@ var newEvent = function (start, end, eventType) {
                 "backgroundColor":eventData.backgroundColor,
                 "textColor":eventData.textColor,
                 "allDay":eventData.allDay,
+                "meetingRoomIdx":eventData.meetingRoomIdx
             }),
             success: function (response) {
                 console.log(response)
