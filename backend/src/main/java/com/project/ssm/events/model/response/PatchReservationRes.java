@@ -1,4 +1,4 @@
-package com.project.ssm.meetingroom.model.response;
+package com.project.ssm.events.model.response;
 
 import com.project.ssm.events.model.entity.Event;
 import lombok.Builder;
@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PostReservationRes {
+public class PatchReservationRes {
     private String eventTitle;
     private Long meetingRoomIdx;
 
-    public static PostReservationRes buildReservationRes (Event event) {
-       return PostReservationRes.builder()
+    public static PatchReservationRes buildReservationRes (Event event) {
+       return PatchReservationRes.builder()
                .eventTitle(event.getTitle())
                .meetingRoomIdx(builder().meetingRoomIdx)
                .build();

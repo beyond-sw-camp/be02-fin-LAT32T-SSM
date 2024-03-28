@@ -7,7 +7,7 @@ import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.events.model.response.*;
 import com.project.ssm.events.service.EventService;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.meetingroom.model.response.PostReservationRes;
+import com.project.ssm.events.model.response.PatchReservationRes;
 import com.project.ssm.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/reservation")
-    public ResponseEntity<BaseResponse<PostReservationRes>> createReservation(@RequestBody PatchReservationReq request){
+    public ResponseEntity<BaseResponse<PatchReservationRes>> createReservation(@RequestBody PatchReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createReservation(member, request));
     }

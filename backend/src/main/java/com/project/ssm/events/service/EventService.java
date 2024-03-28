@@ -14,7 +14,7 @@ import com.project.ssm.events.repository.EventParticipantsRepository;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
-import com.project.ssm.meetingroom.model.response.PostReservationRes;
+import com.project.ssm.events.model.response.PatchReservationRes;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
@@ -41,7 +41,6 @@ public class EventService {
     private final MeetingRoomRepository meetingRoomRepository;
     private final ReservationFilter reservationFilter;
 
-    // 회의실 예약 없이
     @Transactional
     public BaseResponse<PostEventRes> createEvent(Member member, PostEventReq request) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
@@ -106,11 +105,7 @@ public class EventService {
             }
             return BaseResponse.successRes("CALENDAR_002", true, "일정이 상세 조회되었습니다.", eventsList);
         } else {
-            // 찾는 데이터가 없을 경우 예외 처리
-//            for (Event event: events) {
-//            }
-            Long eventIdx = null;
-            throw EventNotFoundException.forEventId(eventIdx);
+            return BaseResponse.successRes("CALENDAR_002", true, "아직 일정이 없습니다.", eventsList);
         }
     }
 
@@ -146,7 +141,7 @@ public class EventService {
 
     // 회의실 예약 생성
     @Transactional
-    public BaseResponse<PostReservationRes> createReservation(Member member, PatchReservationReq request) {
+    public BaseResponse<PatchReservationRes> createReservation(Member member, PatchReservationReq request) {
         memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
 
@@ -159,8 +154,8 @@ public class EventService {
         if(reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getReservationStart(), request.getReservationEnd())){
             Event reservation = Event.setReservation(request, meetingRoom, event);
             eventRepository.save(reservation);
-            PostReservationRes postReservationRes = PostReservationRes.buildReservationRes(reservation);
-            return BaseResponse.successRes("MEETING_000", true, "회의실 예약이 완료되었습니다.", postReservationRes);
+            PatchReservationRes patchReservationRes = PatchReservationRes.buildReservationRes(reservation);
+            return BaseResponse.successRes("MEETING_000", true, "회의실 예약이 완료되었습니다.", patchReservationRes);
         } else {
             throw ReservationAccessException.forReservationTime();
         }
@@ -179,13 +174,7 @@ public class EventService {
             }
             return BaseResponse.successRes("MEETING_000", true, "회의실 예약 내역이 조회되었습니다.", eventsList);
         } else {
-            // 찾는 데이터가 없을 경우 예외 처리
-//            for (Event event: events) {
-//            }
-//            Long eventIdx = null;
-//            throw EventNotFoundException.forEventId(eventIdx);
-
-            return null;
+            return BaseResponse.successRes("MEETING_000", true, "아직 예약 내역이 없습니다.", null);
         }
     }
 

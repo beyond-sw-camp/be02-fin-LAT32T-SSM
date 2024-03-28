@@ -26,14 +26,37 @@ public class PostEventRes {
     private Boolean allDay;
     //private Long memberIdx;
     private String type;
-    //private Long meetingRoomIdx;
+    private Long meetingRoomIdx;
 
     public static PostEventRes buildEventRes(Event event, Member member) {
 
-//        Long meetingRoomIdx;
-//        if (event.getMeetingRoom() != null) {
-//            meetingRoomIdx = event.getMeetingRoom().getMeetingRoomIdx();
-//        }
+        if (event.getMeetingRoom() != null) {
+            return PostEventRes.builder()
+                    .eventIdx(event.getEventIdx())
+//                .memberIdx(member.getMemberIdx())
+//                .memberId(memberIds)
+                    .title(event.getTitle())
+                    .eventContent(event.getEventContent())
+                    .startedAt(event.getStartedAt())
+                    .closedAt(event.getClosedAt())
+                    .allDay(event.getAllDay())
+                    .type(event.getType())
+                    .meetingRoomIdx(event.getMeetingRoom().getMeetingRoomIdx())
+                    .build();
+        } else {
+            return PostEventRes.builder()
+                    .eventIdx(event.getEventIdx())
+//                .memberIdx(member.getMemberIdx())
+//                .memberId(memberIds)
+                    .title(event.getTitle())
+                    .eventContent(event.getEventContent())
+                    .startedAt(event.getStartedAt())
+                    .closedAt(event.getClosedAt())
+                    .allDay(event.getAllDay())
+                    .type(event.getType())
+                    .meetingRoomIdx(null)
+                    .build();
+        }
 
 //        List<EventParticipants> members = event.getEventParticipantsList();
 //        List<String> memberIds = new ArrayList<>();
@@ -41,17 +64,6 @@ public class PostEventRes {
 //            String memberId = event.getEventParticipantsList().get(i).getMember().getMemberId();
 //            memberIds.add(memberId);
 //        }
-        return PostEventRes.builder()
-                .eventIdx(event.getEventIdx())
-//                .memberIdx(member.getMemberIdx())
-//                .memberId(memberIds)
-                .title(event.getTitle())
-                .eventContent(event.getEventContent())
-                .startedAt(event.getStartedAt())
-                .closedAt(event.getClosedAt())
-                .allDay(event.getAllDay())
-                .type(event.getType())
-                //.meetingRoomIdx(event.getMeetingRoom().getMeetingRoomIdx())
-                .build();
+
     }
 }

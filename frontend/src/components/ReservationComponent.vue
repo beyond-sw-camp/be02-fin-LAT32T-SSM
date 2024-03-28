@@ -7,7 +7,7 @@
                 <form @submit.prevent="reserveMeetingRoom">
                     <label for="room">회의실 선택:</label>
                     <select v-model="selectedRoom">
-                        <option v-for="room in rooms" :key="room.roomIdx" :value="room.roomIdx">{{ room.roomName }}
+                        <option v-for="room in rooms" :key="room.roomIdx" :value="room.roomIdx">{{ room.meetingRoomIdx }}
                         </option>
                     </select>
 
