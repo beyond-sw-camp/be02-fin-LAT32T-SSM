@@ -42,7 +42,9 @@
                   <hr>
                   <button @click="memberStore.login(memberStore.member)" class="btn btn-primary btn-user btn-block">
                     로그인
-                  </button>              
+                  </button>
+                <Toast/>
+                  <button label="Error" severity="danger" @click="showError">버튼</button>
                 </div>
               </div>
             </div>
@@ -55,11 +57,14 @@
 <script>
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
+import { useToast } from "primevue/usetoast";
+import Toast from "primevue/toast";
+const toast = useToast();
 
 export default {
   name: 'LoginPage',
   components: {
-    
+    Toast
   },
   data() {
     return {
@@ -71,7 +76,13 @@ export default {
     ...mapStores(useMemberStore,),
   },
   methods: {
-    
+    showError() {
+      // toast.add({severity: 'error', summary: 'Error Message', detail: 'Message Content', life: 3000});
+      // this.$toast.add({ severity: 'error', summary: 'Error Message', detail: 'Message Content', life: 3000 });
+    },
+  },
+  mounted() {
+    console.log(toast);
   }
 }
 </script>

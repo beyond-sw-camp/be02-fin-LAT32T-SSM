@@ -6,6 +6,9 @@
           <!--BEGIN CONTENT-->
           <div class="inner-circle"><i class="fa fa-cogs"></i><span>{{ errorStatus }}</span></div>
           <span class="inner-status">{{ message }}</span>
+          <router-link to="/login">
+            로그인 페이지로 돌아가기
+          </router-link>
           <!--END CONTENT-->
         </div>
       </div>

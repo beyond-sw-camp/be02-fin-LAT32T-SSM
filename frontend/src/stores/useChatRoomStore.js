@@ -25,10 +25,29 @@ export const useChatRoomStore = defineStore("chatRoom", {
                     console.log(response.data.message);
                 }
             } catch (error) {
-                console.log(error.response.status);
-                console.log(error.response.data.message);
-                router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
+                if (error.response.data.code === "COMMON-001") {
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'COMMON-002') {
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'COMMON_003') {
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'CHATTING_009') {
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'CHATTING_010') {
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'CHATTING_011') {
+                    alert(error.response.data.message);
+                } else if (error.response.data.code === 'CHATTING_012') {
+                    alert(error.response.data.message);
+                } else if (error.response.data.code === 'CHATTING_013') {
+                    alert(error.response.data.message);
+                } else if (error.response.data.code === 'CHATTING_014') {
+                    this.sendErrorMessage(router, error);
+                }
             }
+        },
+        sendErrorMessage(router, error) {
+            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
         },
     }
 })
