@@ -24,46 +24,46 @@ public class EventController {
     private final EventService eventService;
     // 일정 등록
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<BaseResponse<PostEventRes>> createEvent(@RequestBody PostEventReq request){
+    public ResponseEntity<Object> createEvent(@RequestBody PostEventReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createEvent(member, request));
     }
 
     // 연간 일정 조회
     @RequestMapping(method = RequestMethod.GET, value = "/{year}")
-    public ResponseEntity listEvents(@PathVariable int year){
+    public ResponseEntity<Object> listEvents(@PathVariable int year){
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(eventService.listEvents(member, year));
     }
 
     // 일정 상세 조회
     @RequestMapping(method = RequestMethod.GET, value = "/date/{date}")
-    public ResponseEntity getEvent(@PathVariable String date) {
+    public ResponseEntity<Object> getEvent(@PathVariable String date) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.readEvent(member, date));
     }
 
     // 일정 수정
     @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-    public ResponseEntity<BaseResponse<PatchEventRes>> updateEvent(@RequestBody PatchEventReq request) {
+    public ResponseEntity<Object> updateEvent(@RequestBody PatchEventReq request) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.updateEvent(member, request));
     }
 
     // 일정 삭제
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{eventIdx}")
-    public ResponseEntity<BaseResponse<DeleteEventRes>> deleteEvent(@PathVariable Long eventIdx) {
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventIdx) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.deleteEvent(member, eventIdx));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/healthcheck")
-    public ResponseEntity<String> deleteEvent() {
+    public ResponseEntity<Object> deleteEvent() {
         return ResponseEntity.ok().body("ok");
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/reservation")
-    public ResponseEntity<BaseResponse<PatchReservationRes>> createReservation(@RequestBody PatchReservationReq request){
+    public ResponseEntity<Object> createReservation(@RequestBody PatchReservationReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(eventService.createReservation(member, request));
     }

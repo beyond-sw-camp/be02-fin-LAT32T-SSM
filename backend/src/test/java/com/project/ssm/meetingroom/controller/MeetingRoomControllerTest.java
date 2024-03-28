@@ -1,5 +1,6 @@
 package com.project.ssm.meetingroom.controller;
 
+import com.project.ssm.common.BaseResponse;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.model.response.GetMeetingRoomSelectRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
@@ -92,11 +93,8 @@ class MeetingRoomControllerTest {
                 .roomCapacity(10)
                 .reservations(Collections.singletonList(reservation))
                 .build();
-        MeetingSelectRes response = MeetingSelectRes.builder()
-                .result(roomSelectResult)
-                .build();
 
-        given(meetingRoomService.getMeetingRoom(any())).willReturn(response);
+        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
 
 
         mvc.perform(get("/meetingroom/select/{meetingRoomIdx}", 1)

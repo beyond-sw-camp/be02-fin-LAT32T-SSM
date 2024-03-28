@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -12,11 +13,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeetingRoomReservationReq {
+
+    @NotBlank
     private Long meetingRoomIdx;
 
     private List<String> memberNames;
     private List<MeetingRoomReqMemberRequest> members;
 
+    @NotBlank
     private String startedAt;
+
+    @NotBlank
     private String closedAt;
 }
