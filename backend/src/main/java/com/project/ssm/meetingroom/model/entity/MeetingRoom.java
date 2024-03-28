@@ -21,14 +21,20 @@ public class MeetingRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long meetingRoomIdx;
 
+    @Column(nullable = false, length = 20, unique = true)
     private String meetingRoomName;
+
+    @Column(nullable = false)
     private Integer meetingRoomCapacity;
     private Boolean isAvailable;     // true(0)이면 공실, false(1)이면 사용중
 
     @OneToMany(mappedBy = "meetingRoom")
     private List<Event> events;
 
+    @Column(nullable = false)
     private String createdAt;
+
+    @Column(nullable = false)
     private String updatedAt;
 
     public static MeetingRoom buildMeetingRoom (PostMeetingRoomReq request){
