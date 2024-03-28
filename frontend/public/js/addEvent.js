@@ -34,7 +34,7 @@ var newEvent = function (start, end, eventType) {
     console.log(editMember.val(''));
     editRoom.val('');
 
-
+    
 
     addBtnContainer.show();
     modifyBtnContainer.hide();
@@ -58,7 +58,7 @@ var newEvent = function (start, end, eventType) {
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
             allDay: false,
-            meetingRoomIdx: editRoom.val()
+            roomIdx: editRoom.val()
         };
 
         if (eventData.start > eventData.end) {
@@ -112,7 +112,7 @@ var newEvent = function (start, end, eventType) {
                 "backgroundColor":eventData.backgroundColor,
                 "textColor":eventData.textColor,
                 "allDay":eventData.allDay,
-                "meetingRoomIdx":eventData.meetingRoomIdx
+                "meetingRoomIdx":eventData.roomIdx,
             }),
             success: function (response) {
                 console.log(response)

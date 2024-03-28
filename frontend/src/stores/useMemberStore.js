@@ -110,19 +110,20 @@ export const useMemberStore = defineStore("member", {
                             "Authorization": storedToken
                         }
                     });
-                    console.log(response.data);
-
-                    if(response.data.code === "MEMBER_36" || response.data.code === "MEMBER_37"){
-                        alert(
-                            response.data.message
-                          );
-                    }else if(response.data.code === "MEMBER_35"){
-                        alert(
-                            response.data.message
-                          );
-                          window.location.href = "/login";
-                    }                  
+                    console.log(response.data);    
+                    window.location.href = "/login";             
                 }catch(e){
+                    if(e.response.data.code === "MEMBER_36" || e.response.data.code === "MEMBER_37"){
+                        alert(
+                            e.response.data.message
+                          );
+                    }else if(e.response.data.code === "MEMBER_35"){
+                        alert(
+                            e.response.data.message
+                          );
+                          
+                    }     
+
                     alert(
                         "회원정보 변경에 실패했습니다."
                       );
