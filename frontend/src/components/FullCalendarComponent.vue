@@ -89,8 +89,8 @@
                                 <select class="inputModal" type="text" name="edit-room" id="edit-room">
                                     <option value="없음">없음</option>
                                     <option @click="temp" v-for="(room, index) in mainStore.meetingRooms" :key="index"
-                                        :value="room.roomIdx">
-                                        {{ room.roomName }}</option>
+                                        :value="room.meetingRoomIdx">
+                                        {{ room.meetingRoomName }}</option>
                                 </select>
                             </div>
                         </div>
