@@ -15,7 +15,7 @@ const router = createRouter({
     { path: '/signup', component: SignUpPage },
     { path: '/:roomId', component: MainPage },
     { path: '/update', component: ChangeInfoPage },
-    { path: '/error', component: ErrorPage },
+    { path: '/error/:errorStatus/:message', name: 'error', component: ErrorPage },
   ]
 })
 

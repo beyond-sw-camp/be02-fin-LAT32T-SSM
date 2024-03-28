@@ -1,16 +1,11 @@
 package com.project.ssm.meetingroom.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.events.model.request.PostEventReq;
-import com.project.ssm.events.model.response.PostEventRes;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
-import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
-import com.project.ssm.member.model.Member;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +27,7 @@ public class MeetingRoomController {
 
     // 현재 회의실 조회
     @RequestMapping(method = RequestMethod.GET, value = "/current")
-    public ResponseEntity<BaseResponse<GetCurrentMeetingRoomRes>> getCurrentMeetingRoom(){
+    public ResponseEntity<BaseResponse<List<GetNowMeetingRoomRes>>> getCurrentMeetingRoom(){
         return ResponseEntity.ok().body(meetingRoomService.GetCurrentMeetingRoom());
     }
 

@@ -43,10 +43,6 @@ public class Event {
     @OneToMany(mappedBy = "event")
     private List<EventParticipants> eventParticipantsList;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "memberIdx")
-//    private Member member;
-//
     @ManyToOne
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
@@ -85,27 +81,6 @@ public class Event {
         event.setStartedAt(request.getReservationStart());
         event.setClosedAt(request.getReservationEnd());
         return event;
-    }
-
-    // 회의실 예약하는 Entity
-    public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq request) {
-//        return Event.builder()
-//                .meetingRoom(meetingRoom)
-//                .title()
-//        return Event.builder()
-//                .meetingRoom(meetingRoom)
-////                .title()
-//                .startedAt(req.getStartedAt())
-//                .closedAt(req.getClosedAt())
-//                .eventContent()
-//                .type()
-//                .memberName()
-//                .backgroundColor()
-//                .textColor()
-//                .allDay()
-//                .build();
-
-        return null;
     }
 
 }
