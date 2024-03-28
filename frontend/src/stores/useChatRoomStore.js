@@ -17,11 +17,12 @@ export const useChatRoomStore = defineStore("chatRoom", {
                     Authorization: localStorage.getItem("accessToken")
                 },
             });
-            console.log(response.data.result);
-            response.data.result.forEach((chatRoom) => {
-                this.roomList.push(chatRoom);
-            })
-            return toRaw(this.roomList);
+            if (response.data.result !== null) {
+                response.data.result.forEach((chatRoom) => {
+                    this.roomList.push(chatRoom);
+                })
+                return toRaw(this.roomList);
+            }
         },
     }
 })

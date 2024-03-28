@@ -32,7 +32,8 @@ export const useMemberStore = defineStore("member", {
                 localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
 
                 window.location.href = "/";
-            }catch(e){
+            }catch(error){
+                console.log("에러 발생", error);
                 localStorage.removeItem("accessToken");
                 this.member.memberId="";
                 this.member.memberPw="";

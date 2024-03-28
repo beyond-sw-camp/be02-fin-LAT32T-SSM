@@ -41,13 +41,16 @@ export const useMainStore = defineStore("main", {
             let month = ('0' + (date.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1을 해주고, 두 자리로 표시하도록 포맷합니다.
             let day = ('0' + date.getDate()).slice(-2);
             const formattedDate = year + "-" + month + "-" + day;
-
-            const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
-                headers: {
-                    Authorization: localStorage.getItem('accessToken'),
-                }
-            })
-            console.log(response.data);
+            try {
+                const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
+                    headers: {
+                        Authorization: localStorage.getItem('accessToken'),
+                    }
+                })
+                console.log(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         },
         requestNotificationPermission() {
             // 알림 기능을 지원하는지 확인
@@ -85,7 +88,6 @@ export const useMainStore = defineStore("main", {
           console.log("메서드 진입")  
           try {
                 const response = await axios.get(backend + '/meetingroom/list');
-
                 this.meetingRooms = response.data.result;
             } catch (error) {
                 console.error('회의실 정보를 가져오지 못했습니다:', error);
