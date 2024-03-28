@@ -52,11 +52,10 @@
       </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomListDetails" v-show="isChatRoomListVisible"></i> 채널
-          <i class="fas fa-sort-down" @click="chatRoomListHide" v-show="!isChatRoomListVisible"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(); chatRoomListHide()"></i> 채널
         </h4>
         <ul>
-          <li v-for="(item, idx) in roomList" :key="idx" v-show="isChatRoomListVisible">
+          <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
               <a href="#" @click="stompStore.roomConnect(item.chatRoomId)">
               <span class="make-white">
@@ -98,7 +97,6 @@ export default {
       chatRoomName: "",
       memberList: [],
       visible: false,
-      roomList: [],
       recvList: [],
       isChatRoomListVisible: true,
     }
@@ -107,15 +105,7 @@ export default {
     ...mapStores(useChatRoomStore, useMainStore, useStompStore, useMessageStore)
   },
   methods: {
-    chatRoomListDetails() {
-      this.chatRoomStore.getRoomList()
-          .then(roomList => {
-            this.roomList = roomList;
-          });
-      this.isChatRoomListVisible = !this.isChatRoomListVisible;
-    },
     chatRoomListHide() {
-      this.chatRoomStore.roomList = [];
       this.isChatRoomListVisible = !this.isChatRoomListVisible;
     },
     toggle(event) {

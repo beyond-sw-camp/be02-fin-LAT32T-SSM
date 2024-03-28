@@ -9,13 +9,12 @@
 
             <div class="panel-body">
                 <div class="col-lg-6">
-                    <label for="calendar_view">구분별</label>
-                    <div class="input-group">
-                        <select class="filter" id="type_filter" multiple="multiple">
-                            <option value="카테고리1">카테고리1</option>
-                            <option value="카테고리2">카테고리2</option>
-                            <option value="카테고리3">카테고리3</option>
-                            <option value="카테고리4">카테고리4</option>
+                    <label for="calendar_view">채팅방List</label>
+                    <div class="input-group" @click="chatRoomStore.getRoomList()">
+                        <select class="filter" id="type_filter">
+                           
+                            <option v-for="(chatRoom, index) in chatRoomStore.roomList" 
+                            :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
                         </select>
                     </div>
                 </div>
@@ -37,6 +36,7 @@
 <script>
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
     data() {
@@ -45,7 +45,7 @@ export default {
         }
     },
     computed:{
-        ...mapStores(useMainStore)
+        ...mapStores(useMainStore, useChatRoomStore)
     },
     mounted() {
         const script = document.createElement('script');
