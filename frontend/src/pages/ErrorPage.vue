@@ -4,8 +4,8 @@
       <div class="middle">
         <div class="inner">
           <!--BEGIN CONTENT-->
-          <div class="inner-circle"><i class="fa fa-cogs"></i><span>404</span></div>
-          <span class="inner-status">페이지를 찾을 수 없습니다!</span>
+          <div class="inner-circle"><i class="fa fa-cogs"></i><span>번호</span></div>
+          <span class="inner-status">에러 내용</span>
           <!--END CONTENT-->
         </div>
       </div>
