@@ -4,8 +4,8 @@
       <div class="middle">
         <div class="inner">
           <!--BEGIN CONTENT-->
-          <div class="inner-circle"><i class="fa fa-cogs"></i><span>번호</span></div>
-          <span class="inner-status">에러 내용 추가할 부분</span>
+          <div class="inner-circle"><i class="fa fa-cogs"></i><span>{{ errorStatus }}</span></div>
+          <span class="inner-status">{{ message }}</span>
           <!--END CONTENT-->
         </div>
       </div>
@@ -15,7 +15,17 @@
 
 <script>
 export default {
-  name: 'ErrorPage'
+  name: 'ErrorPage',
+  data() {
+    return {
+      errorStatus: "",
+      message: ""
+    }
+  },
+  created() {
+    this.errorStatus = this.$route.params.errorStatus;
+    this.message = this.$route.params.message;
+  }
 }
 </script>
 
