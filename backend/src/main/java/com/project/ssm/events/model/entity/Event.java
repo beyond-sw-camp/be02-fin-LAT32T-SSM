@@ -25,19 +25,38 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventIdx;
+
+    @Column(nullable = false, length = 50)
     private String title;
 
+    @Column(nullable = false)
     private String startedAt;
+
+    @Column(nullable = false)
     private String closedAt;
 
+    @Column(nullable = false, length = 100)
     private String eventContent;
+
+    @Column(nullable = false)
     private String type;
+
+    @Column(nullable = false, length = 20)
     private String eventMaker;
+
+    @Column(nullable = false)
     private String backgroundColor;
+
+    @Column(nullable = false)
     private String textColor;
+
+    @Column(nullable = false)
     private Boolean allDay;
 
+    @Column(nullable = false)
     private String createdAt;
+
+    @Column(nullable = false)
     private String updatedAt;
 
     @OneToMany(mappedBy = "event")

@@ -5,19 +5,38 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 @Builder
 public class PatchEventRes {
 
+    @NotBlank
     private Long eventIdx;
 
+    @NotBlank
+    @Size(max = 50)
     private String title;
+
+    @NotBlank
     private String startedAt;
+
+    @NotBlank
     private String closedAt;
+
+    @NotBlank
+    @Size(max = 100)
     private String eventContent;
+
+    @NotBlank
     private String type;
+
+    @NotBlank
     private String backgroundColor;
+
+    @NotBlank
     private Boolean allDay;
 
 //    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

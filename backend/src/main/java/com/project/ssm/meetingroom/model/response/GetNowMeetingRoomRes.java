@@ -4,11 +4,16 @@ import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @Builder
 public class GetNowMeetingRoomRes {
 
+    @NotBlank
     private Boolean isAvailable;
+
+    @NotBlank
     private Long meetingRoomIdx;
 
     public static GetNowMeetingRoomRes buildMeetingRoomRes(MeetingRoom meetingRoom){
