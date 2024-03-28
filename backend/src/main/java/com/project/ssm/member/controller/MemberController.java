@@ -22,7 +22,7 @@ public class MemberController {
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
     public ResponseEntity signup(
             @RequestPart(value = "member") @Valid PostMemberSignupReq req,
-            @RequestPart(value = "profileImage") MultipartFile profileImage) {
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         return ResponseEntity.ok().body(memberService.signup(req, profileImage));
     }
 
@@ -31,7 +31,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.login(req));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/check/id")
+    @RequestMapping(method = RequestMethod.POST, value = "/check/id")
     public ResponseEntity checkId(@RequestBody @Valid GetMemberCheckIdReq req) {
         return ResponseEntity.ok().body(memberService.checkId(req));
     }
