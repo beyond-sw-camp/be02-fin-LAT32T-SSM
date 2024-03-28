@@ -3,8 +3,8 @@
     <div class="meeting-room-container">
       <div class="meeting-rooms">
         <div v-for="(room, index) in mainStore.meetingRooms" :key="index"
-          :class="{ 'room': true, 'available': room.status, 'unavailable': !room.status }">
-          <button @click="selectMeetingRoom(room.roomIdx)">{{ room.roomName }}</button>
+          :class="{ 'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable }">
+          <button @click="selectMeetingRoom(room.meetingRoomIdx)">{{ room.meetingRoomName }}</button>
         </div>
       </div>
       <div class="status-indicator">
@@ -24,6 +24,7 @@
 <script>
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import axios from "axios";
 export default {
   data() {
     return {

@@ -67,7 +67,7 @@ export default {
         },
         async fetchMeetingRooms() {
             try {
-                const response = await axios.get('http://localhost:8080/meetingroom/list');
+                const response = await axios.get('http://localhost:8080/meetingroom/current');
                 this.rooms = response.data.result;
             } catch (error) {
                 //
