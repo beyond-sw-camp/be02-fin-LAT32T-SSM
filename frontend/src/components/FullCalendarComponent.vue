@@ -5,10 +5,12 @@
         <div id="contextMenu" class="dropdown clearfix">
             <ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu"
                 style="display:block;position:static;margin-bottom:5px;">
-                <li><a tabindex="-1" href="#">카테고리1</a></li>
-                <li><a tabindex="-1" href="#">카테고리2</a></li>
-                <li><a tabindex="-1" href="#">카테고리3</a></li>
-                <li><a tabindex="-1" href="#">카테고리4</a></li>
+                <li><a tabindex="-1" href="#">일반일정</a></li>
+                <li class="divider"></li>
+                <div>그룹일정</div>
+                <li v-for="(chatRoom, index) in chatRoomStore.roomList" :key="index" :value="chatRoom.chatRoomName">
+                    <a tabindex="-1" href="#">{{ chatRoom.chatRoomName }}</a>
+                </li>
                 <li class="divider"></li>
                 <li><a tabindex="-1" href="#" data-role="close">Close</a></li>
             </ul>
@@ -61,10 +63,9 @@
                             <div class="col-xs-12">
                                 <label class="col-xs-4" for="edit-type">구분</label>
                                 <select class="inputModal" type="text" name="edit-type" id="edit-type">
-                                    <option value="카테고리1">카테고리1</option>
-                                    <option value="카테고리2">카테고리2</option>
-                                    <option value="카테고리3">카테고리3</option>
-                                    <option value="카테고리4">카테고리4</option>
+                                    <option value="일반일정">일반일정</option>
+                                    <option v-for="(chatRoom, index) in chatRoomStore.roomList" 
+                            :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
                                 </select>
                             </div>
                         </div>
@@ -135,6 +136,7 @@
 <script>
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
     data() {
@@ -143,7 +145,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useMainStore)
+        ...mapStores(useMainStore, useChatRoomStore)
     },
     created() {
 
