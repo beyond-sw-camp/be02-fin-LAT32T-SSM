@@ -2,7 +2,9 @@ package com.project.ssm.meetingroom.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
+import com.project.ssm.events.config.ReservationFilter;
 import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.events.model.response.GetReservationRes;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.exception.MeetingDuplicateException;
 import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
@@ -10,11 +12,10 @@ import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
 import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
+import com.project.ssm.meetingroom.utils.CurrentMeetingRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
     private final EventRepository eventRepository;
+    private final CurrentMeetingRoom currentMeetingRoom;
 
     // 회의실 생성
     public BaseResponse<PostMeetingRoomRes> createMeetingRoom(PostMeetingRoomReq request) {
@@ -37,24 +39,17 @@ public class MeetingRoomService {
     }
 
     // 현재 회의실 조회
-    public BaseResponse<GetCurrentMeetingRoomRes>GetCurrentMeetingRoom(){
-        // 현재 시간
-        LocalDateTime now = LocalDateTime.now();
-
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        List<Event> events = eventRepository.findEventsByCurrentTime(formatedNow);
-        List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
-        List<GetCurrentMeetingRoomRes> meetingRoomsList = new ArrayList<>();
-        for (MeetingRoom meetingRoom : meetingRooms) {
-
+    public BaseResponse<List<GetNowMeetingRoomRes>>GetCurrentMeetingRoom(){
+        // 전제 미팅룸의 idx를 반복문으로 돌려
+        List<MeetingRoom> allMeetingRooms = meetingRoomRepository.findAll();
+        List<GetNowMeetingRoomRes> meetingRoomList = new ArrayList<>();
+        for (MeetingRoom meetingRoom : allMeetingRooms) {
+            Long meetingRoomIdx = meetingRoom.getMeetingRoomIdx();
+            meetingRoom = currentMeetingRoom.meetingRoomNow(meetingRoomIdx);
+            GetNowMeetingRoomRes response = GetNowMeetingRoomRes.buildMeetingRoomRes(meetingRoom);
+            meetingRoomList.add(response);
         }
-        if(!events.isEmpty()) {
-        } else {
-            // 당일 예약 내역이 하나도 없는 경우
-
-        }
-
-        return null;
+        return BaseResponse.successRes("MEETING_000",true, "회의실 현황 조회.",meetingRoomList);
     }
 
     // 회의실 단일 조회
@@ -100,10 +95,6 @@ public class MeetingRoomService {
         }
         return meetingRoomListResList;
     }
-
-    //
-
-
 
     public void deleteMeetingRoom(Long meetingRoomIdx) {
         Optional<MeetingRoom> meetingRoomOptional = meetingRoomRepository.findById(meetingRoomIdx);
