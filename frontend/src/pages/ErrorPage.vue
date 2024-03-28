@@ -5,7 +5,7 @@
         <div class="inner">
           <!--BEGIN CONTENT-->
           <div class="inner-circle"><i class="fa fa-cogs"></i><span>번호</span></div>
-          <span class="inner-status">에러 내용</span>
+          <span class="inner-status">에러 내용 추가할 부분</span>
           <!--END CONTENT-->
         </div>
       </div>
