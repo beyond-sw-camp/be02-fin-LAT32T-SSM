@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+  <div class="container">
     <div class="card o-hidden border-0 shadow-lg my-5">
       <div class="card-body p-0">
         <!-- Nested Row within Card Body -->
@@ -21,15 +21,15 @@
                 <div class="form-group">
                   <input v-model="memberStore.member.memberPwChecked" type="password"
                     class="form-control form-control-user" placeholder="새로운 비밀번호를 한번더 입력해주세요">
-                </div>               
-                
+                </div>
+
                 <div class="form-group">
                   <input type="file" id="fileUpload" @change="handleFileUpload" accept="image/*" style="display: none;">
                   <label for="fileUpload" class="btn btn-primary btn-user btn-block">프로필 이미지 선택</label>
                   <span id="fileName">선택된 파일 없음</span>
                 </div>
                 <!-- 이미지 미리보기 -->
-                <div id="imageContainer" >
+                <div id="imageContainer">
                   <img id="imagePreview" src="" alt="이미지 미리보기" style="max-width: 100%; height: auto; display: none;">
                 </div>
                 <hr>
@@ -48,16 +48,16 @@
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
 
+
 export default {
   name: 'ChangeInfoPage',
-  components: {
-    
-  },
   data() {
     return {
-      
-      
+
+
     }
+  },
+  components: {
   },
   computed: {
     ...mapStores(useMemberStore,),
@@ -68,31 +68,37 @@ export default {
       this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
 
       document.getElementById('fileName').textContent = file ? file.name : '선택된 파일 없음';
-    // 이미지 미리보기
-    if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
+      // 이미지 미리보기
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
 
-            reader.onload = (e) => {
-                document.getElementById('imagePreview').src = e.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-                imagePreview.style.width = '200px'; // 너비를 200px로 설정
-                imagePreview.style.height = '200px'; // 높이를 자동으로 조정
-            };
+        reader.onload = (e) => {
+          document.getElementById('imagePreview').src = e.target.result;
+          document.getElementById('imagePreview').style.display = 'block';
+          imagePreview.style.width = '200px'; // 너비를 200px로 설정
+          imagePreview.style.height = '200px'; // 높이를 자동으로 조정
+        };
 
-            reader.readAsDataURL(file);
-        }
-    }
+        reader.readAsDataURL(file);
+      }
+    },
+
   }
 }
 </script>
 
 <style scoped>
 #imageContainer {
-    display: flex; /* Flexbox 레이아웃 사용 */
-    justify-content: center; /* 가로 방향 가운데 정렬 */
-    align-items: center; /* 세로 방향 가운데 정렬 */
-    height: auto; /* 컨테이너의 높이 설정, 필요에 따라 조정 */
+  display: flex;
+  /* Flexbox 레이아웃 사용 */
+  justify-content: center;
+  /* 가로 방향 가운데 정렬 */
+  align-items: center;
+  /* 세로 방향 가운데 정렬 */
+  height: auto;
+  /* 컨테이너의 높이 설정, 필요에 따라 조정 */
 }
+
 * {
   box-sizing: border-box;
 }
@@ -243,9 +249,11 @@ export default {
 
 .card-body {
   flex: 1 1 auto;
-  min-height: 1px; /* 기존 설정 */
+  min-height: 1px;
+  /* 기존 설정 */
   padding: 1.25rem;
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto;
+  /* 세로 스크롤 활성화 */
 }
 
 .p-0 {
