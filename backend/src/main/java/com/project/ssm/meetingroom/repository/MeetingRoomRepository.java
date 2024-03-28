@@ -9,6 +9,4 @@ import java.util.Optional;
 @Repository
 public interface MeetingRoomRepository extends JpaRepository<MeetingRoom, Long> {
     Optional<MeetingRoom> findByMeetingRoomName(String meetingRoomName);
-
-    Optional<MeetingRoom> findByMeetingRoomIdx(Long meetingRoomIdx);
 }

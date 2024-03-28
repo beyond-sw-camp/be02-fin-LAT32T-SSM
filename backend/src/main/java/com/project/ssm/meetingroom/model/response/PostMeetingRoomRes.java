@@ -21,7 +21,7 @@ public class PostMeetingRoomRes {
                 .meetingRoomIdx(meetingRoom.getMeetingRoomIdx())
                 .meetingRoomName(meetingRoom.getMeetingRoomName())
                 .meetingRoomCapacity(meetingRoom.getMeetingRoomCapacity())
-                //.isAvailable(meetingRoom.getisAvailable())
+                .isAvailable(meetingRoom.getIsAvailable())
                 .createdAt(meetingRoom.getCreatedAt())
                 .updatedAt(meetingRoom.getUpdatedAt())
                 .build();

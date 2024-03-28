@@ -5,6 +5,8 @@ import com.project.ssm.events.model.entity.EventParticipants;
 import com.project.ssm.events.model.entity.QEvent;
 
 import com.project.ssm.events.model.entity.QEventParticipants;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.entity.QMeetingRoom;
 import com.project.ssm.member.model.Member;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.dsl.DateTimeExpression;
@@ -35,18 +37,6 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .where(
                         event.startedAt.substring(0, 4).eq(String.valueOf(year))
                                 .or(event.closedAt.substring(0, 4).eq(String.valueOf(year)))
-                )
-                .fetch();
-    }
-
-
-    @Override
-    public List<Event> findByYear(int year) {
-        QEvent event = QEvent.event;
-        return queryFactory
-                .selectFrom(event)
-                .where(
-                        event.startedAt.substring(0, 4).eq(String.valueOf(year)).or(event.closedAt.substring(0, 4).eq(String.valueOf(year)))
                 )
                 .fetch();
     }
@@ -86,18 +76,6 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .fetch();
     }
 
-
-    // 이벤트 끝 시간이 지금 시간보다 앞에 있으면 다 지워
-    @Override
-    public List<Event> findEventsByCurrentTime(String now) {
-        QEvent event = QEvent.event;
-        long execute = queryFactory.update(event)
-                .set(event.startedAt, Expressions.stringTemplate("STR_TO_DATE({0}, {1})", event.startedAt, "%Y-%m-%d %H:%i:%s"))
-                .execute();
-        return null;
-    }
-
-
     /**
      * 일정 알람을 위한 메소드
      * String 타입의 startedAt을 Date 타입으로 바꾸고
@@ -129,5 +107,14 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 )
                 .fetch();
         return eventParticipantsList;
+    }
+
+    @Override
+    public List<Event> findAllByMeetingRoomIdx(Long meetingRoomIdx) {
+        QEvent event = QEvent.event;
+
+        return queryFactory.selectFrom(event)
+                .where(event.meetingRoom.meetingRoomIdx.eq(meetingRoomIdx))
+                .fetch();
     }
 }
