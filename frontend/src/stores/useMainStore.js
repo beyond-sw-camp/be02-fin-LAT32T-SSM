@@ -87,7 +87,7 @@ export const useMainStore = defineStore("main", {
         async readMeetingRooms() {
           console.log("메서드 진입")  
           try {
-                const response = await axios.get(backend + '/meetingroom/list');
+                const response = await axios.get(backend + '/meetingroom/current');
                 console.log(response.data);
                 this.meetingRooms = response.data.result;
 
