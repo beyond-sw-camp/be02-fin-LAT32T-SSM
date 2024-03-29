@@ -1,6 +1,8 @@
 var draggedEventIsAllDay;
 var activeInactiveWeekends = true;
 
+const backend = 'http://192.168.0.41/api'
+
 var calendar = $('#calendar').fullCalendar({
 
  /** ******************
@@ -108,7 +110,7 @@ var calendar = $('#calendar').fullCalendar({
     var currentYear = new Date().getFullYear();
   $.ajax({
     type: "get",
-    url: "http://localhost:8080/calendar/event/" + currentYear,
+    url: `${backend}/calendar/event/` + currentYear,
       headers: {
           'Content-Type': 'application/json',
           'Authorization': localStorage.getItem('accessToken')

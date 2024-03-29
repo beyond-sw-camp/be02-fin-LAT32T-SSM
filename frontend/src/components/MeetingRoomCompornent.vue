@@ -25,6 +25,7 @@
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import axios from "axios";
+const backend = 'http://192.168.0.41/api'
 export default {
   data() {
     return {
@@ -36,7 +37,7 @@ export default {
   methods: {
     async selectMeetingRoom(roomIdx) {
       console.log(roomIdx);
-      const response = await axios.get('http://localhost:8080/meetingroom/select/' + roomIdx);
+      const response = await axios.get(`${backend}/meetingroom/select/` + roomIdx);
       console.log(response);
     },
   },

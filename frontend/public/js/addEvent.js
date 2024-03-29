@@ -97,7 +97,7 @@ var newEvent = function (start, end, eventType) {
         //새로운 일정 저장
         $.ajax({
             type: "post",
-            url: "http://localhost:8080/calendar/event/create",
+            url: `${backend}/calendar/event/create`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('accessToken')
