@@ -3,8 +3,8 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 
-// const backend = 'http://192.168.0.41/api'
-const backend = 'http://localhost:8080';
+const backend = 'http://192.168.0.41/api'
+// const backend = 'http://localhost:8080';
 
 export const useStompStore = defineStore("stomp", {
     actions: {
@@ -25,13 +25,13 @@ export const useStompStore = defineStore("stomp", {
                     },
                     error => {
                         console.log('소켓 연결 실패', error);
+                        console.log(stompClient);
                         this.connected = false;
                     }
                 )
             }
         },
         roomConnect(chatRoomId, token) {
-            console.log(chatRoomId);
             console.log(token);
             const server = `${backend}/chat`
             let socket = new SockJS(server);
@@ -44,6 +44,7 @@ export const useStompStore = defineStore("stomp", {
                 frame => {
                     this.connected = true;
                     console.log('소켓 연결 성공', frame);
+                    socket.close(4000, '소켓 연결 종료');
                     this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
                         console.log("연결 후 채팅방 아이디", chatRoomId);
                         console.log(res);
@@ -54,8 +55,15 @@ export const useStompStore = defineStore("stomp", {
                 error => {
                     console.log('소켓 연결 실패', error);
                     this.connected = false;
-                }
-            )
+                },
+            );
+            socket.onclose = function () {
+                console.log("소켓 연결이 끊어졌을 경우");
+            }
+
+            socket.onerror = function (error) {
+                console.log("소켓 연결 중 에러가 발생한 경우:", error);
+            }
         },
     },
     getters: {
