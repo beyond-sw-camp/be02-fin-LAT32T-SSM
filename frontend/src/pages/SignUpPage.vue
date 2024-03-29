@@ -14,13 +14,16 @@
                   <!-- input group을 사용하여 인풋과 버튼을 하나의 그룹으로 묶습니다 -->
                   <div class="input-group">
                     <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
-                      placeholder="아이디를 입력해주세요">
+                      placeholder="아이디를 입력해주세요" :disabled="memberStore.checkId" >
                     <div class="input-group-append">
                       <!-- 버튼의 타입을 'button'으로 설정하여 폼 제출을 방지합니다 -->
                       <button type="button" class="btn btn-primary btn-user btn-block" @click="memberStore.checkIdDuplicate">중복
                         검사</button>
                     </div>
                   </div>
+                  <span class="red-text" v-show="memberStore.checkId">
+                    아이디 확인이 완료 됐습니다.
+                  </span>
                 </div>
                 <div class="form-group">
                   <input v-model="memberStore.member.name" type="text" class="form-control form-control-user"
@@ -107,6 +110,15 @@ export default {
 </script>
 
 <style scoped>
+.red-text {
+    color: red;
+  }
+  
+.disabled-input {
+  background-color: #e0e0e0; /* 회색 */
+  color: #a0a0a0; /* 입력된 텍스트의 색깔도 변경하고 싶다면 추가 */
+}
+
 .input-group {
   display: flex;
 }
