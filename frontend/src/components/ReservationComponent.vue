@@ -70,7 +70,6 @@ export default {
                 const response = await axios.get('http://localhost:8080/meetingroom/current');
                 this.rooms = response.data.result;
             } catch (error) {
-                //
             }
         },
         reservationOpenModal() {

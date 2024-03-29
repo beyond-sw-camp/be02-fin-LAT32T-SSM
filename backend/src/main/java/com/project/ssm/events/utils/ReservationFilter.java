@@ -1,4 +1,4 @@
-package com.project.ssm.events.config;
+package com.project.ssm.events.utils;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;

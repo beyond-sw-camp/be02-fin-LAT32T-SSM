@@ -2,7 +2,7 @@ package com.project.ssm.events.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
-import com.project.ssm.events.config.ReservationFilter;
+import com.project.ssm.events.utils.ReservationFilter;
 import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
@@ -101,7 +101,7 @@ public class EventService {
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
             for (Event event : events) {
-//                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
+                eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
             return BaseResponse.successRes("CALENDAR_002", true, "일정이 상세 조회되었습니다.", eventsList);
         } else {

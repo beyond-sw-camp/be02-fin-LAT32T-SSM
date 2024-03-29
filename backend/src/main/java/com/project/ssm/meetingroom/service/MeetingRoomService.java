@@ -2,9 +2,7 @@ package com.project.ssm.meetingroom.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
-import com.project.ssm.events.config.ReservationFilter;
 import com.project.ssm.events.model.entity.Event;
-import com.project.ssm.events.model.response.GetReservationRes;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.exception.MeetingDuplicateException;
 import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
