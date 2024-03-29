@@ -45,16 +45,15 @@ public class MemberService {
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq req, MultipartFile profileImage) {
         Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
-
         if (byMemberId.isPresent()) {
             throw MemberDuplicateException.forMemberId(req.getMemberId());
         }
-
         Member member = memberRepository.save(
                 Member.createMember(req.getMemberId(), passwordEncoder.encode(req.getPassword()),
                 req.getMemberName(), req.getDepartment(), req.getPosition()));
-
-        profileImageService.registerProfileImage(member, profileImage);
+        if (profileImage != null) {
+            profileImageService.registerProfileImage(member, profileImage);
+        }
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", PostMemberSignupRes.buildSignUpRes(member));
     }
 
@@ -68,14 +67,14 @@ public class MemberService {
         if (passwordEncoder.matches(req.getPassword(), member.getPassword()) && member.getStatus().equals(true)) {
             return BaseResponse.successRes("MEMBER_011", true, "로그인에 성공하였습니다.", PostMemberLoginRes.buildLoginRes(member, secretKey, expiredTimeMs));
         } else {
-            throw MemberAccountException.forInvalidPassword(req.getPassword());
+            throw MemberAccountException.forInvalidPassword();
         }
     }
 
     public BaseResponse<String> checkId(GetMemberCheckIdReq req) {
         Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
         if (byMemberId.isPresent()) {
-            return BaseResponse.successRes("MEMBER_025", true, "중복된 ID가 존재합니다.", "fail");
+            throw MemberDuplicateException.forMemberId(req.getMemberId());
         } else {
             return BaseResponse.successRes("MEMBER_024", true, "아이디 검사를 완료하였습니다.", "ok");
         }
@@ -89,12 +88,12 @@ public class MemberService {
             Member member = byId.get();
             // 기존 비밀번호가 일치하지 않았을 때
             if (!passwordEncoder.matches(req.getPassword(), member.getPassword())) {
-                return BaseResponse.successRes("MEMBER_36", true, "기존 비밀번호가 일치하지 않습니다.", "fail");
+                throw MemberAccountException.forInvalidPassword();
             }
             // 기존 비밀번호를 제대로 입력했지만 새로운 비밀번호가 기존의 비밀번호와 같을 때
             else if (passwordEncoder.matches(req.getPassword(), member.getPassword())
                     && passwordEncoder.matches(req.getNewPassword(), member.getPassword())) {
-                return BaseResponse.successRes("MEMBER_37", true, "새로운 비밀번호는 기존의 비밀번호와 달라야 합니다.", "fail");
+                throw MemberAccountException.forDifferentPassword();
             } else {
                 member.setMemberPw(passwordEncoder.encode(req.getNewPassword()));
                 member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));

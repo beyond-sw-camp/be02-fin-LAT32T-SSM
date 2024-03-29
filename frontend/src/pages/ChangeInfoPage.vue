@@ -37,6 +37,9 @@
               <button @click="memberStore.changeInfo()" class="btn btn-primary btn-user btn-block">
                 회원 정보 변경
               </button>
+              <div>
+                <button @click="notify">Notify !</button>
+              </div>
             </div>
           </div>
         </div>
@@ -47,13 +50,14 @@
 <script>
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 
 export default {
   name: 'ChangeInfoPage',
   data() {
     return {
-
 
     }
   },
@@ -82,6 +86,13 @@ export default {
         reader.readAsDataURL(file);
       }
     },
+    notify() {
+      toast.error("Wow so easy!", {
+        timeout: 100000,
+        // 여기에 추가 옵션을 넣을 수 있습니다.
+      });
+    },
+
 
   }
 }
