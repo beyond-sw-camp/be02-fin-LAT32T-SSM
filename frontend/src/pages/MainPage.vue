@@ -119,7 +119,7 @@ import { useMainStore } from "@/stores/useMainStore";
 
 import { mapActions, mapState } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
-
+const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
   name: 'MainPage',
   components: {
@@ -159,7 +159,7 @@ export default {
     ...mapActions(useChatRoomStore, ['getRoomList']),
 
     initSock() {
-      const server = "http://localhost:8080/chat"
+      const server = `${backend}/chat`
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
       let socket = new SockJS(server);
       this.stompClient = Stomp.over(socket);

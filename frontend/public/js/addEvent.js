@@ -34,8 +34,6 @@ var newEvent = function (start, end, eventType) {
     console.log(editMember.val(''));
     editRoom.val('');
 
-    
-
     addBtnContainer.show();
     modifyBtnContainer.hide();
     eventModal.modal('show');
@@ -68,6 +66,7 @@ var newEvent = function (start, end, eventType) {
 
         if (eventData.title === '') {
             alert('일정명은 필수입니다.');
+        
             return false;
         }
 
@@ -113,6 +112,7 @@ var newEvent = function (start, end, eventType) {
                 "textColor":eventData.textColor,
                 "allDay":eventData.allDay,
                 "meetingRoomIdx":eventData.roomIdx,
+                "type":eventData.type,
             }),
             success: function (response) {
                 console.log(response)

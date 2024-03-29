@@ -1,3 +1,4 @@
+
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   token:
@@ -11,7 +12,7 @@ spring:
     password: ${PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
