@@ -39,6 +39,5 @@ public class PostEventReq {
     @NotBlank
     private Boolean allDay;
 
-    @NotBlank
     private Long meetingRoomIdx;
 }
