@@ -151,21 +151,21 @@ export default {
 
     },
     mounted() {
-        const script = document.createElement('script');
-        script.src = "/js/main.js";
-        document.body.appendChild(script);
-
-        const script2 = document.createElement('script');
-        script2.src = "/js/addEvent.js";
-        document.body.appendChild(script2);
-
-        const script3 = document.createElement('script');
-        script3.src = "/js/editEvent.js";
-        document.body.appendChild(script3);
-
-        const script4 = document.createElement('script');
-        script4.src = "/js/etcSetting.js";
-        document.body.appendChild(script4);
+        // const script = document.createElement('script');
+        // script.src = "/js/main.js";
+        // document.body.appendChild(script);
+        //
+        // const script2 = document.createElement('script');
+        // script2.src = "/js/addEvent.js";
+        // document.body.appendChild(script2);
+        //
+        // const script3 = document.createElement('script');
+        // script3.src = "/js/editEvent.js";
+        // document.body.appendChild(script3);
+        //
+        // const script4 = document.createElement('script');
+        // script4.src = "/js/etcSetting.js";
+        // document.body.appendChild(script4);
 
 
     },
