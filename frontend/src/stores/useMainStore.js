@@ -36,22 +36,24 @@ export const useMainStore = defineStore("main", {
             }
         },
         async onDateClick(date) {
-            date = new Date(date);
-            let year = date.getFullYear();
-            let month = ('0' + (date.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1을 해주고, 두 자리로 표시하도록 포맷합니다.
-            let day = ('0' + date.getDate()).slice(-2);
-            const formattedDate = year + "-" + month + "-" + day;
-            try {
-                const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
-                    headers: {
-                        Authorization: localStorage.getItem('accessToken'),
-                    }
-                })
-                console.log(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        },
+          date = new Date(date);
+          let year = date.getFullYear();
+          let month = ('0' + (date.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1을 해주고, 두 자리로 표시하도록 포맷합니다.
+          let day = ('0' + date.getDate()).slice(-2);
+          const formattedDate = year + "-" + month + "-" + day;
+          try {
+              const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
+                  headers: {
+                      Authorization: localStorage.getItem('accessToken'),
+                  }
+              })
+              console.log(response.data);
+              return response.data;
+          } catch (error) {
+              console.log(error);
+              return null;
+          }
+      },
         requestNotificationPermission() {
             // 알림 기능을 지원하는지 확인
             if (!("Notification" in window)) {
