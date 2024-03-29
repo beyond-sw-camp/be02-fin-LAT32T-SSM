@@ -1,3 +1,5 @@
+var backend = window.apiEndpoint;
+
 var eventModal = $('#eventModal');
 
 var modalTitle = $('.modal-title');
@@ -10,8 +12,6 @@ var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
 var editMember = $('#edit-member');
 var editRoom = $('#edit-room');
-
-
 
 var addBtnContainer = $('.modalBtnContainer-addEvent');
 var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
@@ -97,7 +97,7 @@ var newEvent = function (start, end, eventType) {
         //새로운 일정 저장
         $.ajax({
             type: "post",
-            url: `${backend}/calendar/event/create`,
+            url: backend + "/calendar/event/create",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('accessToken')
