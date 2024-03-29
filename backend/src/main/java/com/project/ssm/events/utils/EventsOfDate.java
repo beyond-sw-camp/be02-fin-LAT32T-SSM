@@ -22,6 +22,7 @@ public class EventsOfDate {
     private final EventRepository eventRepository;
     private final MemberRepository memberRepository;
 
+    // 일정 중간 조회 추가 (수정 필요)
     public List<Event> findEventsOfDate(String date, Long memberIdx) {
         // date = "2024-03-28"
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
