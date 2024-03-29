@@ -72,7 +72,6 @@ export default {
                 const response = await axios.get(backend + "/meetingroom/current");
                 this.rooms = response.data.result;
             } catch (error) {
-                //
             }
         },
         reservationOpenModal() {

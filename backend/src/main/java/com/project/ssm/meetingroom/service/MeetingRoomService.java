@@ -1,6 +1,7 @@
 package com.project.ssm.meetingroom.service;
 
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
 import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;

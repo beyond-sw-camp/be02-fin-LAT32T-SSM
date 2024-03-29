@@ -20,10 +20,6 @@ public class CurrentMeetingRoom {
     private final EventRepository eventRepository;
     private final MeetingRoomRepository meetingRoomRepository;
 
-    // 미팅룸 갖고 와
-    // 미팅룸에 저장된 이벤트
-    // 전체 미팅룸 보려면 저장된 미팅룸 전부 반복문 돌려
-    // return은 미팅룸으로 해
     public MeetingRoom meetingRoomNow(Long meetingRoomIdx) {
         LocalDateTime now = LocalDateTime.now().withNano(0).withSecond(0);
         List<Event> events = eventRepository.findAllByMeetingRoomIdx(meetingRoomIdx);
