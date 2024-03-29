@@ -9,7 +9,7 @@
                 <li class="divider"></li>
                 <div>그룹일정</div>
                 <li v-for="(chatRoom, index) in chatRoomStore.roomList" :key="index" :value="chatRoom.chatRoomName">
-                    <a tabindex="-1" href="#">{{ chatRoom.chatRoomName }}</a>
+                    <a tabindex="-1" href="#" >{{ chatRoom.chatRoomName }}</a>
                 </li>
                 <li class="divider"></li>
                 <li><a tabindex="-1" href="#" data-role="close">Close</a></li>
@@ -65,7 +65,7 @@
                                 <select class="inputModal" type="text" name="edit-type" id="edit-type">
                                     <option value="일반일정">일반일정</option>
                                     <option v-for="(chatRoom, index) in chatRoomStore.roomList" 
-                            :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
+                                    :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
                                 </select>
                             </div>
                         </div>

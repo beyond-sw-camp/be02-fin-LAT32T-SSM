@@ -83,7 +83,7 @@ export const useMainStore = defineStore("main", {
             }, false);
           },
           
-          // 회의실 정보를 불러온다.
+        // 회의실 정보를 불러온다.
         async readMeetingRooms() {
           console.log("메서드 진입")  
           try {

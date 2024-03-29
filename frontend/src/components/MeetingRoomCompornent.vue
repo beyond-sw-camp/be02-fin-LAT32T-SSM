@@ -25,7 +25,7 @@
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import axios from "axios";
-const backend = 'http://192.168.0.41/api'
+const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
   data() {
     return {

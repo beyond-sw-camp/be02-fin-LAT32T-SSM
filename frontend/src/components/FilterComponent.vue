@@ -12,7 +12,7 @@
                     <label for="calendar_view">채팅방List</label>
                     <div class="input-group" @click="chatRoomStore.getRoomList()">
                         <select class="filter" id="type_filter">
-                           
+                            <option value="일반일정">일반일정</option>
                             <option v-for="(chatRoom, index) in chatRoomStore.roomList" 
                             :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
                         </select>
