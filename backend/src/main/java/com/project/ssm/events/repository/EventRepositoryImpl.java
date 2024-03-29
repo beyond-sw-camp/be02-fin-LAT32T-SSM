@@ -62,6 +62,26 @@ public class EventRepositoryImpl implements EventCustomRepository {
     }
 
     @Override
+    public List<Event> findEventsByDateTime(String date) {
+        QEvent event = QEvent.event;
+
+        List<Event> eventsList = queryFactory
+                .select(event)
+                .from(event)
+                .where(
+                        event.startedAt.eq(date) // 시작일이 주어진 날짜와 같거나
+                                .or(event.closedAt.eq(date)) // 종료일이 주어진 날짜와 같거나
+//                                .or(
+//                                        event.startedAt.before(date) // 시작일이 주어진 날짜보다 이전이고
+//                                                .and(event.closedAt.after(date)) // 종료일이 주어진 날짜보다 이후인 경우
+//                                )
+                )
+                .fetch();
+        return eventsList;
+    }
+
+
+    @Override
     public List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date) {
         QEvent event = QEvent.event;
         return queryFactory

@@ -11,6 +11,8 @@ public interface EventCustomRepository {
 
     List<Event> findEventsByDate(Long memberIdx, String date);
 
+    List<Event> findEventsByDateTime(String date);
+
     List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date);
 
     /**

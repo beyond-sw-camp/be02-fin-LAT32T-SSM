@@ -15,11 +15,13 @@ public class GetNowMeetingRoomRes {
 
     @NotBlank
     private Long meetingRoomIdx;
+    private String meetingRoomName;
 
     public static GetNowMeetingRoomRes buildMeetingRoomRes(MeetingRoom meetingRoom){
         return GetNowMeetingRoomRes.builder()
                 .isAvailable(meetingRoom.getIsAvailable())
                 .meetingRoomIdx(meetingRoom.getMeetingRoomIdx())
+                .meetingRoomName(meetingRoom.getMeetingRoomName())
                 .build();
     }
 
