@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: front-container
-          image: hosin/lat32t:latest
+          image: hosin/lat32t:frontend1.VERSION
           readlinessProbe:
             httpGet:
               path: /login            # readlinessProbe 헬스체크를 위한 경로 설정

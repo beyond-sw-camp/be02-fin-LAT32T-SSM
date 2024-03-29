@@ -81,7 +81,8 @@ import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import axios from "axios";
 
-const backend = 'http://localhost:8080'
+// const backend = 'http://localhost:8080'
+const backend = 'http://192.168.0.41/api'
 
 export default {
   name: "SidebarComponent",

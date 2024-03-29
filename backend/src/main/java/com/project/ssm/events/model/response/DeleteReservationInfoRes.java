@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,10 +13,20 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Builder
 public class DeleteReservationInfoRes {
+
+    @NotBlank
     private Long eventIdx;
+
+    @NotBlank
     private String createdAt;
+
+    @NotBlank
     private String updatedAt;
+
+    @NotBlank
     private String startedAt;
+
+    @NotBlank
     private String closedAt;
 
     public static DeleteReservationInfoRes buildCancel(Event event) {
