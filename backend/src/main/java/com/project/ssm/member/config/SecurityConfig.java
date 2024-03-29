@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,7 +35,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         try {
-            http.csrf().disable()
+            http.headers().frameOptions().disable()
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "SAME_ORIGIN http://192.168.0.21"))
+                    .and()
+                    .csrf().disable()
                     .authorizeHttpRequests()
                     .antMatchers("/**").permitAll()
                     .anyRequest().authenticated()
