@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ssm-service-container
-          image: hosin/lat32t:latest
+          image: hosin/lat32t:backend1.VERSION
           envFrom:
             - configMapRef:
                 name: cm-ssm-backend
