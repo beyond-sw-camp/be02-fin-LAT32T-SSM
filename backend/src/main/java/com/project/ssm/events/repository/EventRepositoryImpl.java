@@ -26,6 +26,20 @@ public class EventRepositoryImpl implements EventCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public List<Event> findEventsByMemberIdx(Long memberIdx) {
+        QEvent event = QEvent.event;
+        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
+
+        return queryFactory
+                .select(event)
+                .from(event)
+                .leftJoin(eventParticipants)
+                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
+                .where(eventParticipants.member.memberIdx.eq(memberIdx))
+                .fetch();
+    }
+
+    @Override
     public List<EventParticipants> findEventParticipantsByYear(Long memberIdx, int year) {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
@@ -41,45 +55,25 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .fetch();
     }
 
-    @Override
-    public List<Event> findEventsByDate(Long memberIdx, String date) {
-        QEvent event = QEvent.event;
-        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
-
-        return queryFactory
-                .select(event)
-                .from(event)
-                .leftJoin(eventParticipants)
-                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
-                .where(
-                        eventParticipants.member.memberIdx.eq(memberIdx)
-                                .and(
-                                        event.startedAt.substring(0, 10).eq(date)
-                                                .or(event.closedAt.substring(0, 10).eq(date))
-                                )
-                )
-                .fetch();
-    }
-
-    @Override
-    public List<Event> findEventsByDateTime(String date) {
-        QEvent event = QEvent.event;
-
-        List<Event> eventsList = queryFactory
-                .select(event)
-                .from(event)
-                .where(
-                        event.startedAt.eq(date) // 시작일이 주어진 날짜와 같거나
-                                .or(event.closedAt.eq(date)) // 종료일이 주어진 날짜와 같거나
-//                                .or(
-//                                        event.startedAt.before(date) // 시작일이 주어진 날짜보다 이전이고
-//                                                .and(event.closedAt.after(date)) // 종료일이 주어진 날짜보다 이후인 경우
+//    @Override
+//    public List<Event> findEventsByDate(Long memberIdx, String date) {
+//        QEvent event = QEvent.event;
+//        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
+//
+//        return queryFactory
+//                .select(event)
+//                .from(event)
+//                .leftJoin(eventParticipants)
+//                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
+//                .where(
+//                        eventParticipants.member.memberIdx.eq(memberIdx)
+//                                .and(
+//                                        event.startedAt.substring(0, 10).eq(date)
+//                                                .or(event.closedAt.substring(0, 10).eq(date))
 //                                )
-                )
-                .fetch();
-        return eventsList;
-    }
-
+//                )
+//                .fetch();
+//    }
 
     @Override
     public List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date) {

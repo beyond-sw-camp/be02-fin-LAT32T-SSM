@@ -24,8 +24,8 @@ public class MeetingRoomService {
 
     // 회의실 생성
     public BaseResponse<PostMeetingRoomRes> createMeetingRoom(PostMeetingRoomReq request) {
-        meetingRoomRepository.findByMeetingRoomName(request.getMeetingRoomName()).orElseThrow(() ->
-                MeetingRoomNotFoundException.forMeetingRoomName(request.getMeetingRoomName()));
+//        meetingRoomRepository.findByMeetingRoomName(request.getMeetingRoomName()).orElseThrow(() ->
+//                MeetingRoomNotFoundException.forMeetingRoomName(request.getMeetingRoomName()));
         MeetingRoom meetingRoom = meetingRoomRepository.save(MeetingRoom.buildMeetingRoom(request));
         PostMeetingRoomRes response = PostMeetingRoomRes.buildMeetingRoomRes(meetingRoom);
         return BaseResponse.successRes("MEETING_000",true, "회의실이 생성되었습니다.",response);
@@ -33,7 +33,6 @@ public class MeetingRoomService {
 
     // 현재 회의실 조회
     public BaseResponse<List<GetNowMeetingRoomRes>>GetCurrentMeetingRoom(){
-        // 전제 미팅룸의 idx를 반복문으로 돌려
         List<MeetingRoom> allMeetingRooms = meetingRoomRepository.findAll();
         List<GetNowMeetingRoomRes> meetingRoomList = new ArrayList<>();
         for (MeetingRoom meetingRoom : allMeetingRooms) {

@@ -2,6 +2,7 @@ package com.project.ssm.meetingroom.utils;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
+import com.project.ssm.meetingroom.exception.MeetingRoomNotFoundException;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.exception.MemberNotFoundException;
@@ -50,7 +51,7 @@ public class CurrentMeetingRoom {
             }
 
         } else {
-            throw MemberNotFoundException.forMemberIdx(meetingRoomIdx);
+            throw MeetingRoomNotFoundException.forMeetingRoomIdx();
         }
         return meetingRoom;
     }
