@@ -26,7 +26,6 @@ public class PostEventReq {
     @Size(max = 100)
     private String eventContent;    // 일정 내용
 
-    @NotBlank
     private String type;    // 채팅방
 
     private List<String> memberId;  // 사용자 이름
