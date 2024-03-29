@@ -42,7 +42,8 @@
 
 <script>
 import axios from 'axios';
-const backend = 'http://192.168.0.41/api'
+
+const backend = process.env.VUE_APP_API_ENDPOINT
 
 export default {
     data() {
@@ -60,7 +61,7 @@ export default {
     methods: {
         async searchMembers() {
             try {
-                const response = await axios.get(`${backend}/search/member/${this.keyword}`);
+                const response = await axios.get(backend + "/search/member/" + this.keyword);
                 this.searchResults = response.data;
             } catch (error) {
                 console.error('검색 실패:', error);
@@ -68,7 +69,7 @@ export default {
         },
         async fetchMeetingRooms() {
             try {
-                const response = await axios.get(`${backend}/meetingroom/current`);
+                const response = await axios.get(backend + "/meetingroom/current");
                 this.rooms = response.data.result;
             } catch (error) {
                 //
@@ -94,7 +95,7 @@ export default {
                     closedAt: this.endDateTime
                 };
 
-                const response = await axios.post(`${backend}/meetingroom/reservation`, requestData);
+                const response = await axios.post(backend + "/meetingroom/reservation", requestData);
 
                 console.log('예약 성공:', response.data.result);
 

@@ -3,9 +3,7 @@ import axios from "axios";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
-
-const backend = 'http://192.168.0.41/api'
-// const backend = 'http://localhost:8080';
+const backend = process.env.VUE_APP_API_ENDPOINT;
 const storedToken = localStorage.getItem("accessToken");
 
 export const useMemberStore = defineStore("member", {
