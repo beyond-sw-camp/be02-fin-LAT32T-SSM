@@ -1,6 +1,6 @@
 var draggedEventIsAllDay;
 var activeInactiveWeekends = true;
-
+var backend = window.apiEndpoint;
 var calendar = $('#calendar').fullCalendar({
 
  /** ******************
@@ -105,10 +105,11 @@ var calendar = $('#calendar').fullCalendar({
    *  일정 받아옴
    * ************** */
   events: function (start, end, timezone, callback) {
+    
     var currentYear = new Date().getFullYear();
   $.ajax({
     type: "get",
-    url: "http://localhost:8080/calendar/event/" + currentYear,
+    url: backend + "/calendar/event/" + currentYear,
       headers: {
           'Content-Type': 'application/json',
           'Authorization': localStorage.getItem('accessToken')

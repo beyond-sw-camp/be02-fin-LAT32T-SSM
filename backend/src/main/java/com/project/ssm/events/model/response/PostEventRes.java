@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +19,34 @@ import java.util.List;
 @Builder
 public class PostEventRes {
 
+    @NotBlank
     private Long eventIdx;
+
+    @NotBlank
+    @Size(max = 50)
     private String title;
+
+    @NotBlank
     private String startedAt;
+
+    @NotBlank
     private String closedAt;
+
+    @NotBlank
+    @Size(max = 100)
     private String eventContent;
+
     //private List<String> memberId;
+
+    @NotBlank
     private Boolean allDay;
+
     //private Long memberIdx;
+
+    @NotBlank
     private String type;
+
+    @NotBlank
     private Long meetingRoomIdx;
 
     public static PostEventRes buildEventRes(Event event, Member member) {

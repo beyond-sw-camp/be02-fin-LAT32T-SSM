@@ -7,20 +7,45 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Setter
 @Getter
 @Builder
 public class GetEventRes {
 
+    @NotBlank
     private Long _id;
+
+    @NotBlank
+    @Size(max = 50)
     private String title;
+
+    @NotBlank
+    @Size(max = 100)
     private String description;
+
+    @NotBlank
     private String start;
+
+    @NotBlank
     private String end;
+
+    @NotBlank
     private String type;
+
+    @NotBlank
+    @Size(max = 20)
     private String username;
+
+    @NotBlank
     private String backgroundColor;
+
+    @NotBlank
     private String textColor;
+
+    @NotBlank
     private Boolean allDay;
 
     public static GetEventRes buildEventRes(EventParticipants eventParticipants) {

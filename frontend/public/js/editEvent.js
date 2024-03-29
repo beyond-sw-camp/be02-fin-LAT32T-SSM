@@ -1,6 +1,8 @@
 /* ****************
  *  일정 편집
  * ************** */
+var backend = window.apiEndpoint;
+
 var editEvent = function (event, element, view) {
 
     $('#deleteEvent').data('id', event._id); //클릭한 이벤트 ID
@@ -81,7 +83,7 @@ var editEvent = function (event, element, view) {
         //일정 업데이트
         $.ajax({
             type: "PATCH",
-            url: "http://localhost:8080/calendar/event/update",
+            url: backend + "/calendar/event/update",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('accessToken')
@@ -115,7 +117,7 @@ var editEvent = function (event, element, view) {
     //삭제시
     $.ajax({
         type: "DELETE",
-        url: "http://localhost:8080/calendar/event/delete/" + event._id,
+        url: backend + "/calendar/event/delete/" + event._id,
         headers: {
             'Authorization': localStorage.getItem('accessToken')
         },

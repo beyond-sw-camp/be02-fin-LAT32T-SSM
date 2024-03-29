@@ -81,6 +81,8 @@
 import '@/styles/common.css';
 import axios from 'axios';
 
+const backend = 'http://192.168.0.41/api'
+
 export default {
   data() {
       return {
@@ -99,7 +101,7 @@ export default {
       },
       async searchMembers() {
           try {
-              const response = await axios.get(`http://localhost:8080/search/member/${this.keyword}`);
+              const response = await axios.get(`${backend}/search/member/${this.keyword}`);
               this.result = response.data;
           } catch (error) {
               //
