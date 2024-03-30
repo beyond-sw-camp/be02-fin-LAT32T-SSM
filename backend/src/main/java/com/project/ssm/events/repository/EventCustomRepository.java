@@ -6,12 +6,9 @@ import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import java.util.List;
 
 public interface EventCustomRepository {
+    List<Event> findEventsByMemberIdx(Long memberIdx);
 
     List<EventParticipants> findEventParticipantsByYear(Long memberIdx, int year);
-
-    List<Event> findEventsByDate(Long memberIdx, String date);
-
-    List<Event> findEventsByDateTime(String date);
 
     List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date);
 

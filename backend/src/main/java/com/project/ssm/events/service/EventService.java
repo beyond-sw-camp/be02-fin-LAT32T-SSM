@@ -2,6 +2,7 @@ package com.project.ssm.events.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
+import com.project.ssm.events.utils.EventsOfDate;
 import com.project.ssm.events.utils.ReservationFilter;
 import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
@@ -40,6 +41,7 @@ public class EventService {
     private final EventParticipantsRepository eventParticipantsRepository;
     private final MeetingRoomRepository meetingRoomRepository;
     private final ReservationFilter reservationFilter;
+    private final EventsOfDate eventsOfDate;
 
     @Transactional
     public BaseResponse<PostEventRes> createEvent(Member member, PostEventReq request) {
@@ -96,7 +98,9 @@ public class EventService {
     public BaseResponse<List<GetEventRes>> readEvent(Member member, String date) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-        List<Event> events = eventRepository.findEventsByDate(verifiedMember.getMemberIdx(), date);
+        Long memberIdx = verifiedMember.getMemberIdx();
+        List<Event> events = eventsOfDate.findEventsOfDate(date, memberIdx);
+//        List<Event> events = eventRepository.findEventsByDate(verifiedMember.getMemberIdx(), date);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
             for (Event event : events) {
