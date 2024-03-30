@@ -3,10 +3,10 @@
     <v-date-picker v-model="date" :event-color="date => date[9] % 2 ? 'red' : 'yellow'" :events="functionEvents"
       @click="onDateClick"></v-date-picker>
 
-    <div class="event-details">
-      <h4>일정 현황</h4>
-      <ul>
-        <!-- selectedDateDetails로 전달받아 뿌려줌 -->
+    <!-- result가 null인경우 랜더링 안함 null값을 반환중이므로 내용 확인 불가 -->
+    <div class="event-details" v-if="selectedDateDetails">
+      <h4 id="status-board">일정 현황</h4>
+      <ul class="status-board-details">
         <li v-for="(detail, index) in selectedDateDetails" :key="index">
           {{ detail }}
         </li>
@@ -47,14 +47,58 @@ export default {
     },
     async onDateClick() {
       try {
-        // 메소드에서 mainStore의 onDateClick사용.
-        const response = await this.mainStore.onDateClick(this.date);
-        this.selectedDateDetails = response.data.result;
-        console.log(this.selectedDateDetails);
+        // 스토어 응답 데이터 가져옴
+        const responseData = await this.mainStore.onDateClick(this.date);
+        console.log(responseData)
+        if (!responseData) {
+          console.error('반환된 데이터 없음.');
+          this.selectedDateDetails = [];
+          return;
+        }
+        console.log(responseData);
+        if (responseData.result && responseData.result) {
+          // title만 추출
+          this.selectedDateDetails = responseData.result.map(event => event.title);
+        } else {
+          console.error('반환된 데이터 없음.');
+          this.selectedDateDetails = [];
+        }
       } catch (error) {
-        console.error(error);
+        console.error('HTTP 요청 실패:', error);
+        this.selectedDateDetails = [];
       }
     },
   },
 }
 </script>
+
+<style scoped>
+.calendar-layout {
+  display: flex;
+  /* margin-left: 20px; */
+}
+
+.event-details {
+  width: 370px;
+}
+
+#status-board {
+  text-align: center;
+}
+
+.status-board-details li {
+  background-color: #FF6464;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  margin: 10px 0;
+  list-style-type: none;
+  text-align: center;
+  cursor: default;
+}
+
+
+.status-board-details li:hover {
+  background-color: #FF8585;
+}
+</style>
