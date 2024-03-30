@@ -113,6 +113,13 @@ export const useMainStore = defineStore("main", {
             })
             console.log(response.data[0].imageAddr);
             this.member.profileImage = response.data[0].imageAddr;
+        },
+        async getChatProfile(memberId) {
+            const response = await axios.post(backend + '/member/profile', {
+                memberId: memberId
+            })
+            console.log(response.data[0].imageAddr);
+            return response.data[0].imageAddr;
         }
     },
 })

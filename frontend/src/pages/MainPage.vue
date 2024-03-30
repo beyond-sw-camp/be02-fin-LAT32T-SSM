@@ -2,20 +2,19 @@
   <HeaderComponent></HeaderComponent>
   <main class="main">
     <SidebarComponent></SidebarComponent>
-
     <section class="body">
       <section class="content">
         <section class="content-header">
           <article class="channel-content-header-details">
             <h4 class="channel-content-header-name">
-              프로젝트 채팅방 <i class="fas fa-star"></i>
+              {{ chatRoomName }} 채팅방 <i class="fas fa-star"></i>
             </h4>
             <section class="content-header-icons">
               <div>
                 <i class="far fa-user"></i><span class="content-header-counter">5</span>
               </div>
               <p class="content-header-text">
-                프로젝트 채팅방 입니다.
+                {{ chatRoomName }} 채팅방 입니다.
               </p>
             </section>
 
@@ -30,16 +29,14 @@
             <FullCalendarComponent></FullCalendarComponent>
           </div>
           <div v-show="!isFullcalendarVisible">
-            <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
+            <div ref="getAllMessage">
+              <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
+            </div>
           </div>
         </section>
         <div @keyup="sendMessage" v-show="!isFullcalendarVisible">
           <textarea id="summernote" v-model="message"></textarea>
         </div>
-        <section class="feeds2">
-
-        </section>
-
       </section>
       <section class="right-sidebar">
         <section class="right-sidebar-about">
@@ -64,7 +61,7 @@
             </div>
             <div class="profile-container">
               <h5 id="profile-image">프로필 사진</h5>
-              <img :src="mainStore.member.profileImage" alt="Profile Image" class="profile-img">
+              <img :src="mainStore.member.profileImage" @error="getDefaultImage" alt="Profile Image" class="profile-img">
             </div>
           </article>
         </section>
@@ -74,7 +71,9 @@
             <i class="fas fa-chevron-down" @click="filterDetails"></i>
           </article>
           <span v-show="isFilterVisible">
-            <FilterComponent></FilterComponent>
+            <div class="chat-block-list">
+              <FilterComponent></FilterComponent>
+            </div>
           </span>
         </section>
         <section class="other-section">
@@ -92,7 +91,7 @@
             <i class="fas fa-chevron-down" @click="meetingRoomDetails"></i>
           </article>
           <span v-show="isMeetingroomVisible">
-            <MeetingRoomCompornent></MeetingRoomCompornent>
+            <MeetingRoomComponent></MeetingRoomComponent>
           </span>
         </section>
       </section>
@@ -104,27 +103,29 @@
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
-import MeetingRoomCompornent from '@/components/MeetingRoomCompornent.vue';
 import CalendarComponent from '@/components/CalendarComponent.vue';
 import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
 import FilterComponent from '@/components/FilterComponent.vue';
+import MeetingRoomComponent from "@/components/MeetingRoomComponent.vue";
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-// import axios from "axios";
+import defaultImage from "../assets/basic_profile.jpg";
+
 import { mapStores } from "pinia";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
-
 import { mapActions, mapState } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
+
+
 const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
   name: 'MainPage',
   components: {
     HeaderComponent, SidebarComponent, ChatBlockComponent,
-    MeetingRoomCompornent, CalendarComponent, FullCalendarComponent,
+    MeetingRoomComponent, CalendarComponent, FullCalendarComponent,
     FilterComponent,
   },
   data() {
@@ -157,7 +158,9 @@ export default {
     ...mapActions(useStompStore, ['basicConnect']),
     ...mapActions(useStompStore, ['roomConnect']),
     ...mapActions(useChatRoomStore, ['getRoomList']),
-
+    getDefaultImage(e) {
+      e.target.src = defaultImage;
+    },
     initSock() {
       const server = `${backend}/chat`
       console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
@@ -181,12 +184,17 @@ export default {
           message: message
         };
         this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+        this.$nextTick(() => {
+          let message = this.$refs.getAllMessage;
+          message.scrollTo(0, message.scrollHeight);
+        });
       }
     },
     showChatting() {
       if (localStorage.getItem("chatRoomId") !== null) {
         this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 10);
       }
+
       this.isFullcalendarVisible = !this.isFullcalendarVisible;
     },
     setMember(token) {
@@ -1783,6 +1791,7 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 800px) {
   .feeds {
     display: grid;
+    align-items: end;
   }
 }
 
@@ -1953,4 +1962,9 @@ body::-webkit-scrollbar-thumb {
     flex-wrap: wrap;
   }
 }
+
+.chat-block-list {
+  align-items: end;
+}
+
 </style>

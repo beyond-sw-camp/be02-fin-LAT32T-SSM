@@ -21,12 +21,16 @@ public class GetChatListRes {
     @Size(max = 45)
     private String memberName;
 
+    @NotBlank
+    private String memberId;
 
-    public static GetChatListRes buildChatList(String message, String createdAt, String memberName) {
+
+    public static GetChatListRes buildChatList(String message, String createdAt, String memberName, String memberId) {
         return GetChatListRes.builder()
                 .message(message)
                 .createdAt(createdAt)
                 .memberName(memberName)
+                .memberId(memberId)
                 .build();
     }
 }
