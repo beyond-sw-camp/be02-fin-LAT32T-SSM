@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useMainStore } from "@/stores/useMainStore";
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
 export const useMessageStore = defineStore("message", {
@@ -13,7 +14,9 @@ export const useMessageStore = defineStore("message", {
              const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
              const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
              message.createdAt = amOrPm + formatHour + ':' + minutes;
-             console.log(message);
+             useMainStore().getChatProfile(message.memberId).then(result => {
+                 message.profileImage = result;
+             })
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {

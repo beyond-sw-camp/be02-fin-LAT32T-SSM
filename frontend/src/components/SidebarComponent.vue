@@ -57,7 +57,7 @@
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click="stompStore.roomConnect(item.chatRoomId)">
+              <a href="#" @click.once="stompStore.roomConnect(item.chatRoomId)">
               <span class="make-white">
               <i class="fas fa-hashtag"></i>
                 {{ item.chatRoomName }}
