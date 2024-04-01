@@ -74,7 +74,7 @@ public class Event {
                 .closedAt(request.getClosedAt())
                 .eventContent(request.getEventContent())
                 .type(request.getType())
-                .eventMaker(member.getMemberName())
+                .eventMaker(member.getMemberId())
                 .backgroundColor(request.getBackgroundColor())
                 .textColor(request.getTextColor())
                 .allDay(request.getAllDay())
