@@ -41,8 +41,8 @@ public class Event {
     @Column(nullable = true)
     private String type;
 
-    @Column(nullable = false, length = 20)
-    private String eventMaker;
+    @Column(nullable = false)
+    private Long eventMaker;
 
     @Column(nullable = false)
     private String backgroundColor;
@@ -74,7 +74,7 @@ public class Event {
                 .closedAt(request.getClosedAt())
                 .eventContent(request.getEventContent())
                 .type(request.getType())
-                .eventMaker(member.getMemberId())
+                .eventMaker(member.getMemberIdx())
                 .backgroundColor(request.getBackgroundColor())
                 .textColor(request.getTextColor())
                 .allDay(request.getAllDay())

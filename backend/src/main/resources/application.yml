@@ -1,4 +1,3 @@
-
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   token:
@@ -6,21 +5,18 @@ jwt:
 
 spring:
   datasource:
+    driver-class-name: ${DB_DRIVER}
     url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: ${DB_DRIVER_CLASS_NAME}
-
+    username: ${USERNAME}
+    password: ${PASSWORD}
   jpa:
-    open-in-view: false
-    database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     show-sql: true
+#    database-platform: ${DB_PLATFORM}
 
 cloud:
   aws:
