@@ -72,6 +72,8 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <label class="col-xs-4" for="edit-member">인물</label>
+                                <button @click="mainStore.openComponent"><i class="fa fa-plus"></i></button>
+                    <MemberSearchComponent></MemberSearchComponent>
                                 <select class="inputModal" type="text" name="edit-member" id="edit-member"
                                     multiple="multiple" required="required">
                                     <option @click="temp" v-for="(member, index) in mainStore.members" :key="index"
@@ -79,10 +81,14 @@
                                         {{ member.memberId }} /
                                         {{ member.memberName }} /
                                         {{ member.department }} /
-                                        {{ member.position }}</option>
+                                        {{ member.position }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
+                        
+
+
                         <div class="row">
                             <div class="col-xs-12">
                                 <label class="col-xs-4" for="edit-member">회의실</label>
@@ -137,12 +143,16 @@
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import MemberSearchComponent from "./MemberSearchComponent.vue";
 
 export default {
     data() {
         return {
             selectedMembers: [],
         }
+    },
+    components:{
+        MemberSearchComponent
     },
     computed: {
         ...mapStores(useMainStore, useChatRoomStore)

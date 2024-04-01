@@ -1,29 +1,27 @@
 <template>
-    <div class="container1">   
+    <div class="container1">
 
         <div class="panel panel-default">
-
-            <!-- <div class="panel-heading">
-                <h3 class="panel-title">필터</h3>
-            </div> -->
-
             <div class="panel-body">
                 <div class="col-lg-6">
                     <label for="calendar_view">채팅방List</label>
                     <div class="input-group" @click="chatRoomStore.getRoomList()">
                         <select class="filter" id="type_filter">
                             <option value="일반일정">일반일정</option>
-                            <option v-for="(chatRoom, index) in chatRoomStore.roomList" 
-                            :key="index" :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
+                            <option v-for="(chatRoom, index) in chatRoomStore.roomList" :key="index"
+                                :value="chatRoom.chatRoomName"> {{ chatRoom.chatRoomName }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <label for="calendar_view">등록자별</label>
-                    <div class="input-group">
-                        <label v-for="(member, index) in mainStore.members" :key="index" :value="member.memberName" class="checkbox-inline"><input class='filter' type="checkbox" :value="member.memberName"
-                                checked>{{ member.memberName }}</label>
-                       
+                    <button @click="mainStore.openComponent"><i class="fa fa-plus"></i></button>
+                    <MemberSearchComponent></MemberSearchComponent>
+                    <div class="input-group filter">
+                        <label v-for="(member, index) in mainStore.filteredMemberNames" :key="index" :value="member"
+                            class="filter checkbox-inline">
+                            <input class='filter' type="checkbox" :value="member" :checked="index === 0">
+                            {{ member }}</label>
                     </div>
                 </div>
 
@@ -37,6 +35,7 @@
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import MemberSearchComponent from "./MemberSearchComponent.vue";
 
 export default {
     data() {
@@ -44,7 +43,10 @@ export default {
 
         }
     },
-    computed:{
+    components:{
+        MemberSearchComponent
+    },
+    computed: {
         ...mapStores(useMainStore, useChatRoomStore)
     },
     mounted() {
@@ -65,7 +67,7 @@ export default {
         document.body.appendChild(script4);
     },
     methods: {
-
+        
     },
 }
 </script>
