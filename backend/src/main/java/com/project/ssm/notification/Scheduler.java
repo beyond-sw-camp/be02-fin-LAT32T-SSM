@@ -14,7 +14,7 @@ public class Scheduler {
 
 
 //     10초에 한번씩 메서드 실행
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 300000)
     public void schedule(){
         notificationService.memberEventRead();
     }
