@@ -11,12 +11,12 @@ spring:
     password: ${PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
     show-sql: true
-#    database-platform: ${DB_PLATFORM}
+    database-platform: ${DB_PLATFORM}
 
 cloud:
   aws:
