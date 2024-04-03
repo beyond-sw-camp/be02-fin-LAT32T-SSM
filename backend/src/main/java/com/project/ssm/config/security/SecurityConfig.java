@@ -1,13 +1,12 @@
-package com.project.ssm.member.config;
+package com.project.ssm.config.security;
 
-import com.project.ssm.member.config.filter.JwtFilter;
+import com.project.ssm.config.filter.JwtFilter;
 import com.project.ssm.member.exception.security.CustomAccessDeniedHandler;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

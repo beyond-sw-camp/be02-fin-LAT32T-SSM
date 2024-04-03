@@ -1,4 +1,4 @@
-package com.project.ssm.member.config.utils;
+package com.project.ssm.utils;
 
 
 import com.project.ssm.member.exception.MemberAccountException;

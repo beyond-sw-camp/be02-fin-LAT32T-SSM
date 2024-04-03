@@ -1,4 +1,4 @@
-package com.project.ssm.events.utils;
+package com.project.ssm.utils;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
@@ -8,6 +8,7 @@ import com.project.ssm.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
 public class ReservationFilter {
 

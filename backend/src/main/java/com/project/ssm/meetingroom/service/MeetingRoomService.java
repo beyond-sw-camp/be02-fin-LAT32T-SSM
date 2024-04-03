@@ -8,7 +8,7 @@ import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
 import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
-import com.project.ssm.meetingroom.utils.CurrentMeetingRoom;
+import com.project.ssm.utils.CurrentMeetingRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

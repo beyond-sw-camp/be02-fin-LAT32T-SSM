@@ -12,7 +12,7 @@ import com.project.ssm.chat.model.request.UpdateMessageReq;
 import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
-import com.project.ssm.member.config.utils.JwtUtils;
+import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
@@ -37,7 +37,7 @@ public class MessageService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final RoomParticipantsRepository roomParticipantsRepository;
-    private final KafkaTemplate<String, SendMessageReq> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -45,6 +45,7 @@ public class MessageService {
     @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, SendMessageReq> record) {
         log.info("consume-message : {}", record.value().getMessage());
+        log.info("key : {}", record.key());
         messagingTemplate.convertAndSend("/sub/room/" + record.value().getChatRoomId(), record.value());
     }
 
@@ -59,7 +60,7 @@ public class MessageService {
 
             messageRepository.save(Message.createMessage(sendMessageDto.getMessage(), member, chatRoom));
             String topic = "chat-room-" + chatRoomId;
-            kafkaTemplate.send(topic, sendMessageDto);
+            kafkaTemplate.send(topic, "" + member.getMemberId(), sendMessageDto);
         } else {
             throw MessageAccessException.forNotContent();
         }

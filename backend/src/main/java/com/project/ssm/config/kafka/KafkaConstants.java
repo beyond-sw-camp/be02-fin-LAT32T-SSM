@@ -1,7 +1,8 @@
-package com.project.ssm.chat.config;
+package com.project.ssm.config.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.internals.Topic;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,4 @@ import java.util.UUID;
 
 public class KafkaConstants {
     public static final String GROUP_ID = UUID.randomUUID().toString();
-    public static final String KAFKA_BROKER = "15.15.15.100:9092";
-    public static List<Integer> partitionList;
 }

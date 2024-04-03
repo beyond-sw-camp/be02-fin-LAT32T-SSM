@@ -15,7 +15,7 @@ import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.member.config.utils.JwtUtils;
+import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;

@@ -1,4 +1,4 @@
-package com.project.ssm.chat.config;
+package com.project.ssm.config.kafka;
 
 import com.google.common.collect.ImmutableMap;
 import com.project.ssm.chat.model.request.SendMessageReq;
@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -27,25 +28,26 @@ import java.util.List;
 @Slf4j
 public class KafkaConsumerConfig {
 
+    @Value("${spring.kafka.producer.bootstrap-servers}")
+    private String kafkaBroker;
+
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SendMessageReq> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, SendMessageReq> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        ContainerProperties properties = factory.getContainerProperties();
-        properties.setConsumerRebalanceListener(rebalanceListener());
         return factory;
     }
 
 
     @Bean
-    public ConsumerFactory<String, SendMessageReq> consumerFactory() {
-        JsonDeserializer<SendMessageReq> deserializer = new JsonDeserializer<>(SendMessageReq.class);
+    public ConsumerFactory<String, Object> consumerFactory() {
+        JsonDeserializer<Object> deserializer = new JsonDeserializer<>(Object.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
 
         ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
-                .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER)
+                .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker)
                 .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                 .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
                 .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
@@ -56,17 +58,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerRebalanceListener rebalanceListener() {
-        return new ConsumerAwareRebalanceListener() {
-            @Override
-            public void onPartitionsAssigned(Consumer<?, ?> consumer, Collection<TopicPartition> partitions) {
-                List<Integer> partList = new ArrayList<>();
-                for (TopicPartition partition : partitions) {
-                    int partition1 = partition.partition();
-                    partList.add(partition1);
-                }
-                KafkaConstants.partitionList = partList;
-            }
-        };
+    public String kafkaListenerGroupId() {
+        return KafkaConstants.GROUP_ID;
     }
 }
