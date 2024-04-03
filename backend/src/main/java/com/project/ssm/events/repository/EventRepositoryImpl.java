@@ -93,6 +93,8 @@ public class EventRepositoryImpl implements EventCustomRepository {
     /**
      * 일정 알람을 위한 메소드
      * String 타입의 startedAt을 Date 타입으로 바꾸고
+     * 이벤트참가 테이블과 이벤트 테이블 조인을 해서 현재 시간 기준 10분 이후 데이터를 뽑는다.
+     * 나오는 멤버를 찾아서 emitter로 메세지를 보낸다.
      */
     @Override
     public List<EventParticipants> findMemberByEventTime() {

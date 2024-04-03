@@ -49,7 +49,7 @@ public class NotificationController {
 //            }
 //        }
 //    }
-    @KafkaListener(topics = "ssetest", groupId = "ssetest-group-00")
+    @KafkaListener(topics = "#{@makingTopic}ssetest", groupId = "#{@kafkaListenerGroupId}")
     public void sendAlarmToClients(ConsumerRecord<String, String> record) {
         SseEmitter emitter = emitters.get(record.key());
         if (emitter != null) {
