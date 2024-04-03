@@ -29,7 +29,7 @@ public class NotificationService {
         List<EventParticipants> memberByEventTime = eventRepository.findMemberByEventTime();
         for (EventParticipants eventParticipants : memberByEventTime) {
             ProducerRecord<String, String> record =
-                    new ProducerRecord<>("ssetest",
+                    new ProducerRecord<>("SseMessage",
                             ""+eventParticipants.getMember().getMemberId(),
                             eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");
             kafkaTemplate.send(record);
