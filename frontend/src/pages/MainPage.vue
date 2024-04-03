@@ -177,8 +177,10 @@ export default {
       }
     },
     send(message) {
+      console.log(this.$route.params.roomId)
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
+          chatRoomId: this.$route.params.roomId,
           memberId: this.memberId,
           memberName: this.memberName,
           message: message

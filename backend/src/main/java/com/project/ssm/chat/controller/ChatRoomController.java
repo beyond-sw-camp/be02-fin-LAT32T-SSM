@@ -38,7 +38,6 @@ public class ChatRoomController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/room/create")
     public ResponseEntity<Object> createRoom(@RequestBody @Valid PostCreateRoomReq postCreateRoomReq) {
-        log.info("test = {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(roomService.createRoom(postCreateRoomReq, member));
     }

@@ -1,5 +1,6 @@
 package com.project.ssm.chat.service;
 
+import com.project.ssm.chat.config.KafkaConstants;
 import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
@@ -17,14 +18,20 @@ import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.session.InMemoryWebSessionStore;
+import org.springframework.web.server.session.WebSessionStore;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MessageService {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -32,9 +39,22 @@ public class MessageService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final RoomParticipantsRepository roomParticipantsRepository;
+    private final KafkaTemplate<String, SendMessageReq> kafkaTemplate;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
+
+    public void sendTestMessage(String chatRoomId, SendMessageReq sendMessageReq) {
+        log.info("message : {}", sendMessageReq.getMessage());
+        kafkaTemplate.send(chatRoomId, sendMessageReq);
+    }
+
+//    @KafkaListener(topics = KafkaConstants.KAFKA_TOPIC)
+//    public void consumeMessage(SendMessageReq sendMessageReq) {
+//        log.info("consume-message : {}", sendMessageReq.getMessage());
+//        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
+//    }
+
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
         if (!sendMessageDto.getMessage().isEmpty()) {
