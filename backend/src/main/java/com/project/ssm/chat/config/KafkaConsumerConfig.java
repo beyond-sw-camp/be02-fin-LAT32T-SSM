@@ -2,6 +2,7 @@ package com.project.ssm.chat.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.project.ssm.chat.model.request.SendMessageReq;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -18,7 +19,10 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConsumerAwareRebalanceListener;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,16 +55,10 @@ public class KafkaConsumerConfig {
                 .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                 .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
                 .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
-                .put("group.id", KafkaConstants.GROUP_ID)
+                .put(ConsumerConfig.GROUP_ID_CONFIG, "test-id")
                 .build();
 
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
-
-    }
-
-    @Bean
-    public KafkaListenerEndpointRegistry kafkaListenerEndpoint() {
-        return new KafkaListenerEndpointRegistry();
     }
 
     @Bean
@@ -77,6 +75,4 @@ public class KafkaConsumerConfig {
             }
         };
     }
-
-
 }

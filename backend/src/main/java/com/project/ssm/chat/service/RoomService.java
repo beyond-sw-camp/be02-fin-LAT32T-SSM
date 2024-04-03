@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class RoomService {
     private final MemberRepository memberRepository;
     private final RoomParticipantsRepository roomPartRepository;
     private final MessageRepository messageRepository;
-    private final KafkaService kafkaService;
+    private final KafkaAdmin kafkaAdmin;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -58,18 +59,17 @@ public class RoomService {
             roomPartRepository.save(RoomParticipants.buildRoomPart(memberInfo, room));
         }
 
-//        newTopic(room.getChatRoomId());
-
-        kafkaService.registerNewChatRoomListener(room.getChatRoomId());
+        newTopic(room.getChatRoomId());
 
         PostCreateRoomRes postCreateRoomRes = PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getChatRoomId());
         return BaseResponse.successRes("CHATTING_001", true, "채팅방이 생성되었습니다.", postCreateRoomRes);
     }
 
-//    private void newTopic(String chatRoomId) {
-//        NewTopic topic = TopicBuilder.name(chatRoomId).build();
-//        KafkaConstants.topicList.add(topic);
-//    }
+    private void newTopic(String chatRoomId) {
+        String topic = "chat-room-" + chatRoomId;
+        NewTopic newTopic = TopicBuilder.name(topic).build();
+        kafkaAdmin.createOrModifyTopics(newTopic);
+    }
 
     public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
         token = JwtUtils.checkJwtToken(token);

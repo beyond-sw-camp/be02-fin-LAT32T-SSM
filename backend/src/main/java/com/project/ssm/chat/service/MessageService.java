@@ -46,14 +46,16 @@ public class MessageService {
 
     public void sendTestMessage(String chatRoomId, SendMessageReq sendMessageReq) {
         log.info("message : {}", sendMessageReq.getMessage());
-        kafkaTemplate.send(chatRoomId, sendMessageReq);
+        String topic = "chat-room-" + chatRoomId;
+        kafkaTemplate.send(topic, sendMessageReq);
     }
 
-//    @KafkaListener(topics = KafkaConstants.KAFKA_TOPIC)
-//    public void consumeMessage(SendMessageReq sendMessageReq) {
-//        log.info("consume-message : {}", sendMessageReq.getMessage());
-//        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
-//    }
+    @KafkaListener(topicPattern = "chat-room-*", groupId = "test-id")
+    public void consumeMessage(SendMessageReq sendMessageReq) {
+        log.info("consume-message : {}", sendMessageReq.getMessage());
+        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
+    }
+
 
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
