@@ -2,11 +2,6 @@
     <div class="container1">
 
         <div class="panel panel-default">
-
-            <!-- <div class="panel-heading">
-                <h3 class="panel-title">필터</h3>
-            </div> -->
-
             <div class="panel-body">
                 <div class="col-lg-6">
                     <label for="calendar_view">채팅방List</label>
@@ -20,12 +15,13 @@
                 </div>
                 <div class="col-lg-6">
                     <label for="calendar_view">등록자별</label>
-                    <div class="input-group">
-                        <label v-for="(member, index) in mainStore.members" :key="index" :value="member.memberName"
+                    <button @click="mainStore.openComponent"><i class="fa fa-plus"></i></button>
+                    <MemberSearchComponent></MemberSearchComponent>
+                    <div class="input-group filter">
+                        <label v-for="(member, index) in mainStore.filteredMemberNames" :key="index" :value="member"
                             class="filter checkbox-inline">
-                            <input class='filter' type="checkbox" :value="member.memberName" checked>{{
-                        member.memberName }}</label>
-
+                            <input class='filter' type="checkbox" :value="member" :checked="index === 0">
+                            {{ member }}</label>
                     </div>
                 </div>
 
@@ -39,12 +35,16 @@
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import MemberSearchComponent from "./MemberSearchComponent.vue";
 
 export default {
     data() {
         return {
 
         }
+    },
+    components:{
+        MemberSearchComponent
     },
     computed: {
         ...mapStores(useMainStore, useChatRoomStore)
@@ -67,7 +67,7 @@ export default {
         document.body.appendChild(script4);
     },
     methods: {
-
+        
     },
 }
 </script>

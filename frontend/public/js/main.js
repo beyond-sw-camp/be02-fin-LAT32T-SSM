@@ -298,7 +298,6 @@ function filtering(event) {
       show_type = types.indexOf(event.type) >= 0;
     }
   }
-  console.log(username); // 체크된 체크박스의 값들
   return show_username && show_type;
 }
 

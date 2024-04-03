@@ -11,4 +11,6 @@ public class MemberSearchRes {
     private Long memberIdx;
     private String memberId;
     private String memberName;
+    private String position;
+    private String department;
 }

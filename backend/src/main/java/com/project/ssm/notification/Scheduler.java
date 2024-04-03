@@ -12,10 +12,9 @@ public class Scheduler {
 
     private final NotificationService notificationService;
 
-
 //     10초에 한번씩 메서드 실행
-//    @Scheduled(fixedRate = 10000)
-//    public void schedule(){
-//        notificationService.memberEventRead();
-//    }
+    @Scheduled(fixedRate = 20000)
+    public void schedule(){
+        notificationService.memberEventRead();
+    }
 }
