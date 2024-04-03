@@ -1,73 +1,73 @@
 var draggedEventIsAllDay;
 var activeInactiveWeekends = true;
-
+var backend = window.apiEndpoint;
 var calendar = $('#calendar').fullCalendar({
 
- /** ******************
-   *  OPTIONS
-   * *******************/
-  locale                    : 'ko',
-  timezone                  : "local",
-  nextDayThreshold          : "09:00:00",
-  allDaySlot                : true,
-  displayEventTime          : true,
-  displayEventEnd           : true,
-  firstDay                  : 0, //월요일이 먼저 오게 하려면 1
-  weekNumbers               : false,
-  selectable                : true,
-  weekNumberCalculation     : "ISO",
-  eventLimit                : true,
-  views                     : {
-                                month : { eventLimit : 12 } // 한 날짜에 최대 이벤트 12개, 나머지는 + 처리됨
-                              },
-  eventLimitClick           : 'week', //popover
-  navLinks                  : true,
-  defaultDate               : moment(), //실제 사용시 현재 날짜로 수정
-  timeFormat                : 'HH:mm',
-  defaultTimedEventDuration : '01:00:00',
-  editable                  : true,
-  minTime                   : '00:00:00',
-  maxTime                   : '24:00:00',
-  slotLabelFormat           : 'HH:mm',
-  weekends                  : true,
-  nowIndicator              : true,
-  dayPopoverFormat          : 'MM/DD dddd',
-  longPressDelay            : 0,
-  eventLongPressDelay       : 0,
-  selectLongPressDelay      : 0,
-  header                    : {
-                                left   : 'today, prevYear, nextYear, viewWeekends',
-                                center : 'prev, title, next',
-                                right  : 'month, agendaWeek, agendaDay, listWeek'
-                              },
-  views                     : {
-                                month : {
-                                  columnFormat : 'dddd'
-                                },
-                                agendaWeek : {
-                                  columnFormat : 'M/D ddd',
-                                  titleFormat  : 'YYYY년 M월 D일',
-                                  eventLimit   : false
-                                },
-                                agendaDay : {
-                                  columnFormat : 'dddd',
-                                  eventLimit   : false
-                                },
-                                listWeek : {
-                                  columnFormat : ''
-                                }
-                              },
-  customButtons             : { //주말 숨기기 & 보이기 버튼
-                                viewWeekends : {
-                                  text  : '주말',
-                                  click : function () {
-                                    activeInactiveWeekends ? activeInactiveWeekends = false : activeInactiveWeekends = true;
-                                    $('#calendar').fullCalendar('option', {
-                                      weekends: activeInactiveWeekends
-                                    });
-                                  }
-                                }
-                               },
+  /** ******************
+    *  OPTIONS
+    * *******************/
+  locale: 'ko',
+  timezone: "local",
+  nextDayThreshold: "09:00:00",
+  allDaySlot: true,
+  displayEventTime: true,
+  displayEventEnd: true,
+  firstDay: 0, //월요일이 먼저 오게 하려면 1
+  weekNumbers: false,
+  selectable: true,
+  weekNumberCalculation: "ISO",
+  eventLimit: true,
+  views: {
+    month: { eventLimit: 12 } // 한 날짜에 최대 이벤트 12개, 나머지는 + 처리됨
+  },
+  eventLimitClick: 'week', //popover
+  navLinks: true,
+  defaultDate: moment(), //실제 사용시 현재 날짜로 수정
+  timeFormat: 'HH:mm',
+  defaultTimedEventDuration: '01:00:00',
+  editable: true,
+  minTime: '00:00:00',
+  maxTime: '24:00:00',
+  slotLabelFormat: 'HH:mm',
+  weekends: true,
+  nowIndicator: true,
+  dayPopoverFormat: 'MM/DD dddd',
+  longPressDelay: 0,
+  eventLongPressDelay: 0,
+  selectLongPressDelay: 0,
+  header: {
+    left: 'today, prevYear, nextYear, viewWeekends',
+    center: 'prev, title, next',
+    right: 'month, agendaWeek, agendaDay, listWeek'
+  },
+  views: {
+    month: {
+      columnFormat: 'dddd'
+    },
+    agendaWeek: {
+      columnFormat: 'M/D ddd',
+      titleFormat: 'YYYY년 M월 D일',
+      eventLimit: false
+    },
+    agendaDay: {
+      columnFormat: 'dddd',
+      eventLimit: false
+    },
+    listWeek: {
+      columnFormat: ''
+    }
+  },
+  customButtons: { //주말 숨기기 & 보이기 버튼
+    viewWeekends: {
+      text: '주말',
+      click: function () {
+        activeInactiveWeekends ? activeInactiveWeekends = false : activeInactiveWeekends = true;
+        $('#calendar').fullCalendar('option', {
+          weekends: activeInactiveWeekends
+        });
+      }
+    }
+  },
 
 
   eventRender: function (event, element, view) {
@@ -82,8 +82,8 @@ var calendar = $('#calendar').fullCalendar({
         'color': event.textColor
       }),
       content: $('<div />', {
-          class: 'popoverInfoCalendar'
-        }).append('<p><strong>이름:</strong> ' + event.username + '</p>')
+        class: 'popoverInfoCalendar'
+      }).append('<p><strong>이름:</strong> ' + event.username + '</p>')
         .append('<p><strong>구분:</strong> ' + event.type + '</p>')
         .append('<p><strong>시간:</strong> ' + getDisplayEventDate(event) + '</p>')
         .append('<div class="popoverDescCalendar"><strong>설명:</strong> ' + event.description + '</div>'),
@@ -105,29 +105,35 @@ var calendar = $('#calendar').fullCalendar({
    *  일정 받아옴
    * ************** */
   events: function (start, end, timezone, callback) {
+
     var currentYear = new Date().getFullYear();
-  $.ajax({
-    type: "get",
-    url: "http://localhost:8080/calendar/event/" + currentYear,
+    $.ajax({
+      type: "get",
+      url: backend + "/calendar/event/" + currentYear,
       headers: {
-          'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('accessToken')
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('accessToken')
       },
       datatype: "JSON",
-    data: {
-      // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
-      // startDate : moment(start).format('YYYY-MM-DD'),
-      // endDate   : moment(end).format('YYYY-MM-DD')
-    },
+      data: {
+        // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
+        // startDate : moment(start).format('YYYY-MM-DD'),
+        // endDate   : moment(end).format('YYYY-MM-DD')
+      },
       success: function (response) {
-          console.log(response);
-        var fixedDate = response.map(function (array) {
-          if (array.allDay && array.start !== array.end) {
-            array.end = moment(array.end).add(1, 'days'); // 이틀 이상 AllDay 일정인 경우 달력에 표기시 하루를 더해야 정상출력
-          }
-          return array;
-        });
-        callback(fixedDate);
+        console.log(response)
+        if (response.result.length !== 0) {
+          var fixedDate = response.result.map(function (array) {
+            if (array.allDay && array.start !== array.end) {
+              array.end = moment(array.end).add(1, 'days'); // 이틀 이상 AllDay 일정인 경우 달력에 표기시 하루를 더해야 정상출력
+            }
+            return array;
+          });
+          callback(fixedDate);
+        } else {
+          // 콘솔 창이 아니라 다른 컴포넌트? 혹은 alert 사용하기
+          console.log(response.message);
+        }
       }
     });
   },
@@ -256,6 +262,9 @@ var calendar = $('#calendar').fullCalendar({
 
 });
 
+
+
+
 function getDisplayEventDate(event) {
 
   var displayEventDate;
@@ -289,9 +298,10 @@ function filtering(event) {
       show_type = types.indexOf(event.type) >= 0;
     }
   }
-
   return show_username && show_type;
 }
+
+
 
 function calDateWhenResize(event) {
 
@@ -319,7 +329,7 @@ function calDateWhenDragnDrop(event) {
   }
 
   // 날짜 & 시간이 모두 같은 경우
-  if(!event.end) {
+  if (!event.end) {
     event.end = event.start;
   }
 

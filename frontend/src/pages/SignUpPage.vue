@@ -11,8 +11,19 @@
               </div>
               <form class="user" enctype="multipart/form-data">
                 <div class="form-group">
-                  <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
-                    placeholder="아이디를 입력해주세요">
+                  <!-- input group을 사용하여 인풋과 버튼을 하나의 그룹으로 묶습니다 -->
+                  <div class="input-group">
+                    <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
+                      placeholder="아이디를 입력해주세요" :disabled="memberStore.checkId" >
+                    <div class="input-group-append">
+                      <!-- 버튼의 타입을 'button'으로 설정하여 폼 제출을 방지합니다 -->
+                      <button type="button" class="btn btn-primary btn-user btn-block" @click="memberStore.checkIdDuplicate">중복
+                        검사</button>
+                    </div>
+                  </div>
+                  <span class="red-text" v-show="memberStore.checkId">
+                    아이디 확인이 완료 됐습니다.
+                  </span>
                 </div>
                 <div class="form-group">
                   <input v-model="memberStore.member.name" type="text" class="form-control form-control-user"
@@ -40,7 +51,7 @@
                   <span id="fileName">선택된 파일 없음</span>
                 </div>
                 <!-- 이미지 미리보기 -->
-                <div class="form-group">
+                <div id="imageContainer">
                   <img id="imagePreview" src="" alt="이미지 미리보기" style="max-width: 100%; height: auto; display: none;">
                 </div>
                 <hr>
@@ -79,23 +90,69 @@ export default {
       this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
 
       document.getElementById('fileName').textContent = file ? file.name : '선택된 파일 없음';
-    // 이미지 미리보기
-    if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
+      // 이미지 미리보기
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
 
-            reader.onload = (e) => {
-                document.getElementById('imagePreview').src = e.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-            };
+        reader.onload = (e) => {
+          const imagePreview = document.getElementById('imagePreview');
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+          imagePreview.style.width = '200px'; // 너비를 200px로 설정
+          imagePreview.style.height = '200px'; // 높이를 200px으로 조정
+        };
 
-            reader.readAsDataURL(file);
-        }
-    }
+        reader.readAsDataURL(file);
+      }
+    },
   }
 }
 </script>
 
 <style scoped>
+.red-text {
+    color: red;
+  }
+  
+.disabled-input {
+  background-color: #e0e0e0; /* 회색 */
+  color: #a0a0a0; /* 입력된 텍스트의 색깔도 변경하고 싶다면 추가 */
+}
+
+.input-group {
+  display: flex;
+}
+
+.input-group-append {
+  margin-left: 8px;
+  /* 버튼과 인풋 필드 사이의 간격 조정 */
+}
+
+.control-label {
+  display: block;
+  margin-bottom: 5px;
+  /* 라벨과 인풋 필드 사이의 간격 조정 */
+}
+
+/* 버튼 크기가 인풋 필드와 다를 경우 */
+.btn-secondary {
+  height: calc(1.5em + .75rem + 2px);
+  /* 인풋 필드와 높이를 맞추기 */
+  margin-bottom: 0;
+  /* 인풋 필드와 버튼의 하단 정렬을 위해 */
+}
+
+#imageContainer {
+  display: flex;
+  /* Flexbox 레이아웃 사용 */
+  justify-content: center;
+  /* 가로 방향 가운데 정렬 */
+  align-items: center;
+  /* 세로 방향 가운데 정렬 */
+  height: auto;
+  /* 컨테이너의 높이 설정, 필요에 따라 조정 */
+}
+
 * {
   box-sizing: border-box;
 }
@@ -246,9 +303,11 @@ export default {
 
 .card-body {
   flex: 1 1 auto;
-  min-height: 1px; /* 기존 설정 */
+  min-height: 1px;
+  /* 기존 설정 */
   padding: 1.25rem;
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto;
+  /* 세로 스크롤 활성화 */
 }
 
 .p-0 {

@@ -2,8 +2,10 @@ package com.project.ssm.events.model.entity;
 
 import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
+import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -23,40 +25,56 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventIdx;
+
+    @Column(nullable = false, length = 50)
     private String title;
 
+    @Column(nullable = false)
     private String startedAt;
+
+    @Column(nullable = false)
     private String closedAt;
 
+    @Column(nullable = false, length = 100)
     private String eventContent;
+
+    @Column(nullable = true)
     private String type;
-    private String eventMaker;
+
+    @Column(nullable = false)
+    private Long eventMaker;
+
+    @Column(nullable = false)
     private String backgroundColor;
+
+    @Column(nullable = false)
     private String textColor;
+
+    @Column(nullable = false)
     private Boolean allDay;
 
+    @Column(nullable = false)
     private String createdAt;
+
+    @Column(nullable = false)
     private String updatedAt;
 
     @OneToMany(mappedBy = "event")
     private List<EventParticipants> eventParticipantsList;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "memberIdx")
-//    private Member member;
-//
     @ManyToOne
     @JoinColumn(name = "meetingRoomIdx")
     private MeetingRoom meetingRoom;
 
-    public static Event buildEvent(Member member, PostEventReq request) {
+    public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
         return Event.builder()
+                .meetingRoom(meetingRoom)
                 .title(request.getTitle())
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
                 .eventContent(request.getEventContent())
-                .eventMaker(member.getMemberId())
                 .type(request.getType())
+                .eventMaker(member.getMemberIdx())
                 .backgroundColor(request.getBackgroundColor())
                 .textColor(request.getTextColor())
                 .allDay(request.getAllDay())
@@ -77,30 +95,11 @@ public class Event {
         return event;
     }
 
-    public static Event setReservation (MeetingRoom meetingRoom, Event event) {
+    public static Event setReservation (PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
         event.setMeetingRoom(meetingRoom);
+        event.setStartedAt(request.getReservationStart());
+        event.setClosedAt(request.getReservationEnd());
         return event;
-    }
-
-    // 회의실 예약하는 Entity
-    public static Event buildRoomEvent(MeetingRoom meetingRoom, MeetingRoomReservationReq request) {
-//        return Event.builder()
-//                .meetingRoom(meetingRoom)
-//                .title()
-//        return Event.builder()
-//                .meetingRoom(meetingRoom)
-////                .title()
-//                .startedAt(req.getStartedAt())
-//                .closedAt(req.getClosedAt())
-//                .eventContent()
-//                .type()
-//                .memberName()
-//                .backgroundColor()
-//                .textColor()
-//                .allDay()
-//                .build();
-
-        return null;
     }
 
 }

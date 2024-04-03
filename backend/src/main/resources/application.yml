@@ -1,14 +1,19 @@
 jwt:
-  secret-key: abcdefghijklmnopqrstuvwxyz0123456789
+  secret-key: ${JWT_SECRET_KEY}
   token:
-    expired-time-ms: 30000000
+    expired-time-ms: ${JWT_EXP_TIME_MS}
 
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_PRODUCER}
+    consumer:
+      bootstrap-servers: ${KAFKA_CONSUMER}
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.10.10.101/test
-    username: latest
-    password: qwer1234
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +21,7 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+#    database-platform: ${DB_PLATFORM}
 
 cloud:
   aws:

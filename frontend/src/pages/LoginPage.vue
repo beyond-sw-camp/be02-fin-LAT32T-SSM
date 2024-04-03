@@ -56,6 +56,7 @@
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
 
+
 export default {
   name: 'LoginPage',
   components: {
@@ -72,6 +73,9 @@ export default {
   },
   methods: {
     
+  },
+  mounted() {
+    this.memberStore.checkForToastMessage();
   }
 }
 </script>

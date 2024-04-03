@@ -2,24 +2,50 @@ package com.project.ssm.events.model.response;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
+import com.project.ssm.member.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Setter
 @Getter
 @Builder
 public class GetEventRes {
 
+    @NotBlank
     private Long _id;
+
+    @NotBlank
+    @Size(max = 50)
     private String title;
+
+    @NotBlank
+    @Size(max = 100)
     private String description;
+
+    @NotBlank
     private String start;
+
+    @NotBlank
     private String end;
+
+    @NotBlank
     private String type;
+
+    @NotBlank
+    @Size(max = 20)
     private String username;
+
+    @NotBlank
     private String backgroundColor;
+
+    @NotBlank
     private String textColor;
+
+    @NotBlank
     private Boolean allDay;
 
     public static GetEventRes buildEventRes(EventParticipants eventParticipants) {
@@ -36,6 +62,22 @@ public class GetEventRes {
                 .allDay(eventParticipants.getEvent().getAllDay())
                 .build();
     }
+
+    public static GetEventRes buildEventRes(Member member, Event event) {
+        return GetEventRes.builder()
+                ._id(event.getEventIdx())
+                .title(event.getTitle())
+                .description(event.getEventContent())
+                .start(event.getStartedAt())
+                .end(event.getClosedAt())
+                .type(event.getType())
+                .username(member.getMemberName())
+                .backgroundColor(event.getBackgroundColor())
+                .textColor(event.getTextColor())
+                .allDay(event.getAllDay())
+                .build();
+    }
+
 
 
 //    [{\n" +

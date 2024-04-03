@@ -1,7 +1,8 @@
 package com.project.ssm.meetingroom.controller;
 
+import com.project.ssm.common.BaseResponse;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectResMeetingRoomSelectResult;
+import com.project.ssm.meetingroom.model.response.GetMeetingRoomSelectRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
 import org.junit.jupiter.api.Test;
@@ -86,17 +87,14 @@ class MeetingRoomControllerTest {
                 .startedAt(startedAt)
                 .closedAt(closedAt)
                 .build();
-        MeetingSelectResMeetingRoomSelectResult roomSelectResult = MeetingSelectResMeetingRoomSelectResult.builder()
+        GetMeetingRoomSelectRes roomSelectResult = GetMeetingRoomSelectRes.builder()
                 .roomIdx(1L)
                 .roomName("제 1 회의실")
                 .roomCapacity(10)
                 .reservations(Collections.singletonList(reservation))
                 .build();
-        MeetingSelectRes response = MeetingSelectRes.builder()
-                .result(roomSelectResult)
-                .build();
 
-        given(meetingRoomService.getMeetingRoom(any())).willReturn(response);
+        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
 
 
         mvc.perform(get("/meetingroom/select/{meetingRoomIdx}", 1)

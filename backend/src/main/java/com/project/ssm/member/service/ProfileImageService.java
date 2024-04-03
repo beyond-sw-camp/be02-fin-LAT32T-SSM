@@ -59,7 +59,6 @@ public class ProfileImageService {
     }
 
     public List<String> registerProfileImage(Member member, MultipartFile uploadFile) {
-
         List<String> profileImageList = new ArrayList<>();
         String saveFileName = saveFile(uploadFile);
         profileImageRepository.save(ProfileImage.createProfileImage(member, saveFileName));
@@ -67,5 +66,4 @@ public class ProfileImageService {
 
         return profileImageList;
     }
-
 }

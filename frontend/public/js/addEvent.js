@@ -1,3 +1,5 @@
+var backend = window.apiEndpoint;
+
 var eventModal = $('#eventModal');
 
 var modalTitle = $('.modal-title');
@@ -10,8 +12,6 @@ var editColor = $('#edit-color');
 var editDesc = $('#edit-desc');
 var editMember = $('#edit-member');
 var editRoom = $('#edit-room');
-
-
 
 var addBtnContainer = $('.modalBtnContainer-addEvent');
 var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
@@ -34,8 +34,6 @@ var newEvent = function (start, end, eventType) {
     console.log(editMember.val(''));
     editRoom.val('');
 
-
-
     addBtnContainer.show();
     modifyBtnContainer.hide();
     eventModal.modal('show');
@@ -57,7 +55,8 @@ var newEvent = function (start, end, eventType) {
             username: editMember.val(),
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
-            allDay: false
+            allDay: false,
+            roomIdx: editRoom.val()
         };
 
         if (eventData.start > eventData.end) {
@@ -67,6 +66,7 @@ var newEvent = function (start, end, eventType) {
 
         if (eventData.title === '') {
             alert('일정명은 필수입니다.');
+        
             return false;
         }
 
@@ -96,7 +96,7 @@ var newEvent = function (start, end, eventType) {
         //새로운 일정 저장
         $.ajax({
             type: "post",
-            url: "http://localhost:8080/calendar/event/create",
+            url: backend + "/calendar/event/create",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('accessToken')
@@ -111,6 +111,8 @@ var newEvent = function (start, end, eventType) {
                 "backgroundColor":eventData.backgroundColor,
                 "textColor":eventData.textColor,
                 "allDay":eventData.allDay,
+                "meetingRoomIdx":eventData.roomIdx,
+                "type":eventData.type,
             }),
             success: function (response) {
                 console.log(response)

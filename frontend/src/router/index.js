@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/pages/MainPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
 import SignUpPage from "@/pages/SignUpPage.vue";
+import ChangeInfoPage from "@/pages/ChangeInfoPage.vue";
+import ErrorPage from "@/pages/ErrorPage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -11,6 +14,8 @@ const router = createRouter({
     { path: '/login', component: LoginPage },
     { path: '/signup', component: SignUpPage },
     { path: '/:roomId', component: MainPage },
+    { path: '/update', component: ChangeInfoPage },
+    { path: '/error/:errorStatus/:message', name: 'error', component: ErrorPage },
   ]
 })
 
@@ -21,6 +26,7 @@ router.beforeEach((to, from, next) => {
   const authPages = [
     "/",
     "/:roomId",
+    "/update",
   ];
 
   if (authPages.includes(to.fullPath)) {

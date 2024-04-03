@@ -60,7 +60,11 @@ public class RoomService {
     public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
-        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
+        // QueryDsl 적용 전
+//        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
+
+        // QueryDsl 적용 후
+        List<RoomParticipants> roomParticipants = memberRepository.findChatRoomByMemberId(memberId);
         List<GetRoomListRes> roomListRes = new ArrayList<>();
 
         if (roomParticipants.isEmpty()) {
@@ -165,7 +169,12 @@ public class RoomService {
                 Pageable pageable = PageRequest.of(page - 1, size);
                 Page<Message> list = messageRepository.findList(pageable, chatRoomId);
                 for (Message message : list) {
-                    chatList.add(GetChatListRes.buildChatList(message.getMessage(), message.getCreatedAt(), message.getMember().getMemberName()));
+                    chatList.add(GetChatListRes.buildChatList(
+                            message.getMessage(),
+                            message.getCreatedAt(),
+                            message.getMember().getMemberName(),
+                            message.getMember().getMemberId()
+                    ));
                 }
                 return BaseResponse.successRes("CHATTING_008", true, "메시지 조회를 성공하였습니다.", chatList);
             }

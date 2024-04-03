@@ -29,12 +29,17 @@ public class SearchService {
                     .memberIdx(member.getMemberIdx())
                     .memberId(member.getMemberId())
                     .memberName(member.getMemberName())
+                    .position(member.getPosition())
+                    .department(member.getDepartment())
                     .build();
             searchResults.add(searchRes);
         }
 
         return searchResults;
     }
+
+
+
 
 //    public List<ChatSearchRes> searchMessage(ChatSearchReq chatSearchReq) {
 //        Optional<ChatRoom> chatRoom = chatRoomRepository.findByChatRoomId(chatSearchReq.getChatRoomId());
