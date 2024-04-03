@@ -16,7 +16,7 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-    database-platform: ${DB_PLATFORM}
+#    database-platform: ${DB_PLATFORM}
 
 cloud:
   aws:
