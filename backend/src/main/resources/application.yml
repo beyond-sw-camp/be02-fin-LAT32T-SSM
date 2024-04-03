@@ -4,6 +4,11 @@ jwt:
     expired-time-ms: ${JWT_EXP_TIME_MS}
 
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_PRODUCER}
+    consumer:
+      bootstrap-servers: ${KAFKA_CONSUMER}
   datasource:
     driver-class-name: ${DB_DRIVER}
     url: ${DB_URL}
@@ -16,7 +21,7 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-    database-platform: ${DB_PLATFORM}
+#    database-platform: ${DB_PLATFORM}
 
 cloud:
   aws:
