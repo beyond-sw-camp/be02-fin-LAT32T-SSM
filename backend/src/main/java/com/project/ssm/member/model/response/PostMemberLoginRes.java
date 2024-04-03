@@ -1,6 +1,6 @@
 package com.project.ssm.member.model.response;
 
-import com.project.ssm.member.config.utils.JwtUtils;
+import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

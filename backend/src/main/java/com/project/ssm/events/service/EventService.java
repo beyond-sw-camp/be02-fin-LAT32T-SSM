@@ -2,8 +2,8 @@ package com.project.ssm.events.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
-import com.project.ssm.events.utils.EventsOfDate;
-import com.project.ssm.events.utils.ReservationFilter;
+import com.project.ssm.utils.EventsOfDate;
+import com.project.ssm.utils.ReservationFilter;
 import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
