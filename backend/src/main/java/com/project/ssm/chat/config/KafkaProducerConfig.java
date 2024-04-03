@@ -2,6 +2,7 @@ package com.project.ssm.chat.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.project.ssm.chat.model.request.SendMessageReq;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ public class KafkaProducerConfig {
                 .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER)
                 .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
                 .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
-                .put("group.id", KafkaConstants.GROUP_ID)
+                .put(ConsumerConfig.GROUP_ID_CONFIG, KafkaConstants.GROUP_ID)
                 .build();
     }
 

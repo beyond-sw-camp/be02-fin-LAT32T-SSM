@@ -1,6 +1,6 @@
 package com.project.ssm.chat.service;
 
-import com.project.ssm.chat.config.KafkaConstants;
+
 import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
@@ -21,7 +21,6 @@ import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.internals.Topic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,7 +59,6 @@ public class RoomService {
         }
 
         newTopic(room.getChatRoomId());
-
         PostCreateRoomRes postCreateRoomRes = PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getChatRoomId());
         return BaseResponse.successRes("CHATTING_001", true, "채팅방이 생성되었습니다.", postCreateRoomRes);
     }

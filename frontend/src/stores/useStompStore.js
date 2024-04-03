@@ -85,7 +85,7 @@ export const useStompStore = defineStore("stomp", {
                     this.connected = true;
                     console.log('소켓 연결 성공', frame);
                     // socket.close(4000, '소켓 끊김');
-                    this.stompClient.subscribe("/sub/room/enter/" + chatRoomId, res => {
+                    this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
                         console.log("연결 후 채팅방 아이디", chatRoomId);
                         console.log(res);
                         console.log("구독으로 받은 메시지입니다.", res.body);

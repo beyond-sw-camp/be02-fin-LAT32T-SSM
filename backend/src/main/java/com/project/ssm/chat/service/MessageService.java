@@ -1,6 +1,5 @@
 package com.project.ssm.chat.service;
 
-import com.project.ssm.chat.config.KafkaConstants;
 import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
@@ -19,13 +18,12 @@ import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.session.InMemoryWebSessionStore;
-import org.springframework.web.server.session.WebSessionStore;
 
 import java.util.List;
 
@@ -44,19 +42,11 @@ public class MessageService {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    public void sendTestMessage(String chatRoomId, SendMessageReq sendMessageReq) {
-        log.info("message : {}", sendMessageReq.getMessage());
-        String topic = "chat-room-" + chatRoomId;
-        kafkaTemplate.send(topic, sendMessageReq);
+    @KafkaListener(topicPattern = "chat-room-.*")
+    public void consumeMessage(ConsumerRecord<String, SendMessageReq> record) {
+        log.info("consume-message : {}", record.value().getMessage());
+        messagingTemplate.convertAndSend("/sub/room/" + record.value().getChatRoomId(), record.value());
     }
-
-    @KafkaListener(topicPattern = "chat-room-*", groupId = "test-id")
-    public void consumeMessage(SendMessageReq sendMessageReq) {
-        log.info("consume-message : {}", sendMessageReq.getMessage());
-        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
-    }
-
-
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
         if (!sendMessageDto.getMessage().isEmpty()) {
@@ -68,7 +58,8 @@ public class MessageService {
                     ChatRoomNotFoundException.forNotFoundChatRoom());
 
             messageRepository.save(Message.createMessage(sendMessageDto.getMessage(), member, chatRoom));
-            messagingTemplate.convertAndSend("/sub/room/" + chatRoomId, sendMessageDto);
+            String topic = "chat-room-" + chatRoomId;
+            kafkaTemplate.send(topic, sendMessageDto);
         } else {
             throw MessageAccessException.forNotContent();
         }

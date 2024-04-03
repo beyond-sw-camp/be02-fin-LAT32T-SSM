@@ -1,6 +1,5 @@
 package com.project.ssm.chat.controller;
 
-import com.project.ssm.chat.config.KafkaConstants;
 import com.project.ssm.chat.model.request.SendMessageReq;
 import com.project.ssm.chat.model.request.UpdateMessageReq;
 import com.project.ssm.chat.service.MessageService;
@@ -22,18 +21,9 @@ public class ChatController {
         messageService.enterRoom(token);
     }
 
-    @MessageMapping("/room/enter/{roomId}")
-    public void enterChatRoom(@DestinationVariable(value = "roomId") String roomId) {
-        log.info("채팅방 연결");
-        log.info("roomId : {}", roomId);
-
-    }
-
     @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
-//        messageService.sendMessage(roomId, sendMessageReq);
-        log.info("message : {}", sendMessageReq.getMessage());
-        messageService.sendTestMessage(roomId, sendMessageReq);
+        messageService.sendMessage(roomId, sendMessageReq);
     }
 
     @MessageMapping("/room/{roomId}/update")
