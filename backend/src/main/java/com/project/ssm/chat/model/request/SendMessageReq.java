@@ -12,4 +12,6 @@ public class SendMessageReq {
     private String memberName;
     @NotBlank
     private String message;
+
+    private String chatRoomId;
 }

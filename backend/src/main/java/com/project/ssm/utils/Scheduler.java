@@ -1,9 +1,8 @@
-package com.project.ssm.notification;
+package com.project.ssm.utils;
 
-import com.project.ssm.member.model.Member;
+import com.project.ssm.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor

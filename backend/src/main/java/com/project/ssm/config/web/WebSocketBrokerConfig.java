@@ -1,4 +1,4 @@
-package com.project.ssm.chat.config;
+package com.project.ssm.config.web;
 
 import com.project.ssm.chat.interceptor.WebSocketBrokerInterceptor;
 import lombok.RequiredArgsConstructor;

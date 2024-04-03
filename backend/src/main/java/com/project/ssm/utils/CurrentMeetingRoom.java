@@ -1,4 +1,4 @@
-package com.project.ssm.meetingroom.utils;
+package com.project.ssm.utils;
 
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.repository.EventRepository;
@@ -8,13 +8,14 @@ import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
 public class CurrentMeetingRoom {
 
