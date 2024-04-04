@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT
 const storedToken = localStorage.getItem("accessToken");
@@ -96,7 +98,13 @@ export const useMainStore = defineStore("main", {
       this.requestNotificationPermission();
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
       evtSource.addEventListener("notification", function (event) {
-        // 사용자에게 알림 표시
+        // 토스트로 알람구현
+        toast.success(event.data, {
+          timeout: 10000,
+          // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
+        });
+        
+        // 사용자에게 알림 표시 웹브라우저 알람
         if (Notification.permission === "granted") {
           new Notification("알람 이벤트", {
             body: event.data,
