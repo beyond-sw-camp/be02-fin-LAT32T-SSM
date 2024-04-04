@@ -3,6 +3,7 @@ package com.project.ssm.notification.service;
 import com.project.ssm.events.model.entity.EventParticipants;
 import com.project.ssm.events.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
     private final EventRepository eventRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -27,6 +29,7 @@ public class NotificationService {
                             ""+eventParticipants.getMember().getMemberId(),
                             eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");
             kafkaTemplate.send(record);
+            log.info("아이디 :{}의 일정입니다.",eventParticipants.getMember().getMemberId());
 
 //            sendAlarmToClients(eventParticipants.getMember().getMemberId(),
 //                    eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");

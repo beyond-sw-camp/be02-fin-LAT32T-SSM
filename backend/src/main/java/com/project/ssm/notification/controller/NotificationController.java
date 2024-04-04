@@ -5,6 +5,7 @@ import com.project.ssm.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class NotificationController {
     private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final NotificationService notificationService;
 
-    @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {
         SseEmitter emitter = new SseEmitter(1800000L);
         log.info("Emitter for client {}: {}", memberId, emitter);
