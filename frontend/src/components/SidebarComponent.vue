@@ -115,8 +115,6 @@ export default {
       this.memberList.push(memberId);
     },
     async createChatRoom() {
-      console.log(this.memberList)
-      console.log(this.chatRoomName);
       const roomInfo = {
         chatRoomName: this.chatRoomName,
         memberId: this.memberList

@@ -19,21 +19,8 @@
                       <input v-model="memberStore.member.memberPw" type="password" class="form-control form-control-user"
                         placeholder="비밀번호를 입력해주세요">
                     </div>
-                    <!--                    <div class="form-group">-->
-                    <!--                      <div class="custom-control custom-checkbox small">-->
-                    <!--                        <input type="checkbox" class="custom-control-input" id="customCheck">-->
-                    <!--                        <label class="custom-control-label" for="customCheck">계정 기억</label>-->
-                    <!--                      </div>-->
-                    <!--                    </div>-->
-                    
-                    <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
-                      <i class="fab fa-google fa-fw"></i> 구글로 로그인
-                    </a> -->
                   </form>
                   <hr>
-                  <!-- <div class="text-center">
-                    <a class="small" href="forgot-password.html">비밀번호를 잊으셨나요?</a>
-                  </div> -->
                   <div class="text-center">
                     <router-link to="/signup">
                       <a class="small">계정을 만드세요!</a>

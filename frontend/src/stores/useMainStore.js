@@ -69,7 +69,6 @@ export const useMainStore = defineStore("main", {
             Authorization: localStorage.getItem('accessToken'),
           }
         })
-        console.log(response.data);
         return response.data;
       } catch (error) {
         console.log(error);
@@ -133,14 +132,12 @@ export const useMainStore = defineStore("main", {
       const response = await axios.post(backend + '/member/profile', {
         memberId: this.member.memberId
       })
-      console.log(response.data[0].imageAddr);
       this.member.profileImage = response.data[0].imageAddr;
     },
     async getChatProfile(memberId) {
       const response = await axios.post(backend + '/member/profile', {
         memberId: memberId
       })
-      console.log(response.data[0].imageAddr);
       return response.data[0].imageAddr;
     },
 

@@ -120,7 +120,7 @@ import { mapActions, mapState } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 
-const backend = process.env.VUE_APP_API_ENDPOINT;
+// const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
   name: 'MainPage',
   components: {
@@ -177,7 +177,6 @@ export default {
       }
     },
     send(message) {
-      console.log(this.$route.params.roomId)
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
           chatRoomId: this.$route.params.roomId,
@@ -224,8 +223,6 @@ export default {
     filterDetails() {
       this.isFilterVisible = !this.isFilterVisible;
     }
-
-
   },
   mounted() {
     this.$loadScript("https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js")
@@ -249,7 +246,6 @@ export default {
       .catch(() => {
         // Failed to fetch script
       });
-    // this.getRoomList();
     useChatRoomStore().getRoomList();
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));

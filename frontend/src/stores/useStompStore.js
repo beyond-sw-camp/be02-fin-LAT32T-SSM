@@ -71,20 +71,16 @@ export const useStompStore = defineStore("stomp", {
         },
         roomConnect(chatRoomId, token) {
             const router = useRouter();
-            console.log(chatRoomId);
-            console.log(token);
             const server = `${backend}/chat`
             let socket = new SockJS(server);
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
             window.localStorage.setItem("chatRoomId", chatRoomId);
-            // this.getChatList(chatRoomId, token, 1, 4);
             this.stompClient.connect(
                 {},
                 frame => {
                     this.connected = true;
                     console.log('소켓 연결 성공', frame);
-                    // socket.close(4000, '소켓 끊김');
                     this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
                         console.log("연결 후 채팅방 아이디", chatRoomId);
                         console.log(res);
