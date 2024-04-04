@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         try {
             http.headers().frameOptions().disable()
-                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "SAME_ORIGIN http://192.168.0.21"))
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "SAME_ORIGIN http://192.168.0.21/api"))
                     .and()
                     .csrf().disable()
                     .authorizeHttpRequests()
