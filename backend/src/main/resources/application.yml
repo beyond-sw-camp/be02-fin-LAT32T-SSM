@@ -9,7 +9,6 @@ spring:
       bootstrap-servers: ${KAFKA_SERVER}
     consumer:
       bootstrap-servers: ${KAFKA_SERVER}
-      auto-offset-reset: latest
   datasource:
     driver-class-name: ${DB_DRIVER}
     url: ${DB_URL}
