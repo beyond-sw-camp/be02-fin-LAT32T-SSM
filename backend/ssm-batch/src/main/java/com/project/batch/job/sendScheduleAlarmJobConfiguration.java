@@ -1,6 +1,8 @@
 package com.project.batch.job;
 
-import com.project.batch.notification.NotificationController;
+import com.project.batch.events.model.EventParticipants;
+import com.project.batch.events.repository.EventCustomRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -9,20 +11,12 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.kafka.core.KafkaTemplate;
 
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +24,10 @@ import java.util.List;
 public class sendScheduleAlarmJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final DataSource dataSource;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final EntityManager entityManager;
+
+    private EventParticipantsReader eventParticipantsReader;
 
     private static final int CHUNK_SIZE = 10000;
 
@@ -44,76 +41,39 @@ public class sendScheduleAlarmJobConfiguration {
     }
 
     @Bean
-    public Step sendEventAlarmStep(
-            ItemReader<sendScheduleAlarmReq> sendScheduleAlarmReader,
-            ItemWriter<sendScheduleAlarmReq> sendAlarmWriter
-    ) {
+    public Step sendEventAlarmStep(ItemReader<EventParticipants> sendScheduleAlarmReader,
+                                   ItemWriter<EventParticipants> sendAlarmWriter) {
         // Reader와 Writer를 사용하여 처리
         return stepBuilderFactory.get("sendEventAlarmStep")
-                .<sendScheduleAlarmReq, sendScheduleAlarmReq>chunk(CHUNK_SIZE)
+                .<EventParticipants, EventParticipants>chunk(CHUNK_SIZE)
                 .reader(sendScheduleAlarmReader)
                 .writer(sendAlarmWriter)
-                .allowStartIfComplete(true) // 이전 실행이 완료되었어도 시작 가능
+                .allowStartIfComplete(true) // 이전 실행이 완료되기 전이었어도 시작 가능
                 .build();
     }
 
-    @Bean
-    public JdbcCursorItemReader<sendScheduleAlarmReq> sendScheduleAlarmReader() {
-        // 일정 참여 요청이 수락된 사용자에 대한 정보를 읽어오는 Reader
-        return new JdbcCursorItemReaderBuilder<sendScheduleAlarmReq>()
-                .dataSource(dataSource)
-                .rowMapper(new RowMapper<sendScheduleAlarmReq>() {
-                    @Override
-                    public sendScheduleAlarmReq mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                        sendScheduleAlarmReq req = new sendScheduleAlarmReq();
-                        // started_at 컬럼의 문자열 값을 LocalDateTime으로 변환하여 설정
-                        String startedAtString = resultSet.getString("started_at");
-                        LocalDateTime startedAt = null;
-                        try {
-                            // 초까지 포함
-                            startedAt = LocalDateTime.parse(startedAtString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        } catch (DateTimeParseException e) {
-                            // 만약 초까지 파싱이 실패하면 다른 형식으로 다시 시도
-                            try {
-                                // 분까지만
-                                startedAt = LocalDateTime.parse(startedAtString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                            } catch (DateTimeParseException ex) {
-                                // 그래도 없으면
-                                startedAt = null;
-                            }
-                        }
-                        req.setStartedAt(startedAt);
-                        req.setMemberId(resultSet.getString("member_id"));
-                        // 멤버 받아오는지 확인
-                        // System.out.println(req.getMemberId());
-                        return req;
-                    }
-                })
-                // 참가 테이블을 통해 멤버 idx를 조회해온다.
-                .sql("SELECT event.*, member.member_id " +
-                        "FROM event " +
-                        "LEFT JOIN event_participants ON event.event_idx = event_participants.event_idx " +
-                        "LEFT JOIN member ON event_participants.member_idx = member.member_idx " +  // 작성자 정보 조인
-                        "WHERE event.started_at >= DATE_ADD(NOW(), INTERVAL 9 HOUR) + INTERVAL 1 MINUTE " + // 10분안에 시작하는 모든 일정 선택
-                        "AND event.started_at <= DATE_ADD(NOW(), INTERVAL 9 HOUR) + INTERVAL 10 MINUTE "
-                )
-                .name("jdbcCursorItemReader")
-                .build();
+    @Bean   // 만들어놓은 쿼리 dsl을 사용하여 reader
+    @Transactional
+    public ItemReader<EventParticipants> sendScheduleAlarmReader(EventCustomRepository eventRepositoryImpl) {
+        return new EventParticipantsReader(eventRepositoryImpl.findMemberByEventTime());
     }
 
-    // 스케줄러를 통해 알람전송
+    // 카프카를 통해 알람전송
     @Bean
-    public ItemWriter<sendScheduleAlarmReq> sendAlarmWriter() {
+    @Transactional
+    public ItemWriter<EventParticipants> sendAlarmWriter() {
         return list -> {
-            List<String> memberIds = new ArrayList<>();
-            String message = null;
-            for (sendScheduleAlarmReq req : list) {
-                message = "당신의 " + req.getTitle() +  " 일정이 시작전입니다.";
-                memberIds.add(req.getMemberId());
-                System.out.println(req.getMemberId());
+            for (EventParticipants eventParticipants : list) {
+                String message = "당신의 " + eventParticipants.getEvent().getTitle() + " 일정이 시작 전입니다.";
+                String memberId = eventParticipants.getMember().getMemberId();
+                kafkaTemplate.send("notificationTopic", memberId, message);
             }
-            NotificationController.sendAlarmToClients(memberIds, message);
         };
     }
-}
 
+    // 직접 빈을 생성하여 주입
+    @Bean
+    public JPAQueryFactory jpaQueryFactory() {
+        return new JPAQueryFactory(entityManager);
+    }
+}
