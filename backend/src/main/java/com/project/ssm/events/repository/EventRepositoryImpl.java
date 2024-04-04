@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +102,7 @@ public class EventRepositoryImpl implements EventCustomRepository {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime tenMinutesAfter = now.plusMinutes(10);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
