@@ -5,6 +5,7 @@ import com.project.ssm.chat.model.request.SendMessageReq;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -19,6 +20,9 @@ import java.util.Map;
 @EnableKafka
 public class KafkaProducerConfig {
 
+    @Value("${spring.kafka.producer.bootstrap-servers}")
+    private String kafkaBroker;
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
@@ -27,9 +31,10 @@ public class KafkaProducerConfig {
     @Bean
     public Map<String, Object> kafkaProducerConfiguration() {
         return ImmutableMap.<String, Object>builder()
+                .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker)
                 .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
                 .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
-                .put(ConsumerConfig.GROUP_ID_CONFIG, KafkaConstants.GROUP_ID)
+                .put(ProducerConfig.CONFIG_PROVIDERS_CONFIG, KafkaConstants.GROUP_ID)
                 .build();
     }
 

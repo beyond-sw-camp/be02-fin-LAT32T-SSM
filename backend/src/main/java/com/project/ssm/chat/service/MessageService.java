@@ -1,5 +1,7 @@
 package com.project.ssm.chat.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
@@ -38,15 +40,19 @@ public class MessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final RoomParticipantsRepository roomParticipantsRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+
+
     @KafkaListener(topicPattern = "chat-room-.*")
-    public void consumeMessage(ConsumerRecord<String, SendMessageReq> record) {
-        log.info("consume-message : {}", record.value().getMessage());
+    public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
+        log.info("consume-message : {}", record.value());
         log.info("key : {}", record.key());
-        messagingTemplate.convertAndSend("/sub/room/" + record.value().getChatRoomId(), record.value());
+        SendMessageReq message = objectMapper.readValue(record.value().toString(), SendMessageReq.class);
+        messagingTemplate.convertAndSend("/sub/room/" + message.getChatRoomId(), message);
     }
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
