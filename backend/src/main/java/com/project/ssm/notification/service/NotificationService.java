@@ -23,6 +23,7 @@ public class NotificationService {
     @Transactional
     public void memberEventRead() {
         List<EventParticipants> memberByEventTime = eventRepository.findMemberByEventTime();
+        log.info("조회가 되었다 {}", memberByEventTime.isEmpty());
         for (EventParticipants eventParticipants : memberByEventTime) {
             ProducerRecord<String, Object> record =
                     new ProducerRecord<>("SseMessage",
