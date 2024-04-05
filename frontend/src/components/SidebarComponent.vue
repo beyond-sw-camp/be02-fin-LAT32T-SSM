@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex justify-content-end gap-2">
                     <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button class="button-create" type="button" label="생성하기" @click="createChatRoom"></Button>
+                    <Button class="button-create" type="button" label="생성하기" @click="createNewChatRoom"></Button>
                 </div>
             </Dialog>
           </div>
@@ -79,9 +79,6 @@ import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
-import axios from "axios";
-
-const backend = process.env.VUE_APP_API_ENDPOINT
 
 export default {
   name: "SidebarComponent",
@@ -114,20 +111,8 @@ export default {
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    async createChatRoom() {
-      const roomInfo = {
-        chatRoomName: this.chatRoomName,
-        memberId: this.memberList
-      };
-      const token = localStorage.getItem('accessToken');
-      console.log(token);
-      let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
-        headers: {
-          Authorization: token,
-        }
-      });
-      console.log(response.data);
-
+    createNewChatRoom() {
+      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList);
       this.visible = false;
     },
   },
