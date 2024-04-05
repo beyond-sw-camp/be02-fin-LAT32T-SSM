@@ -5,6 +5,7 @@ import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT
 const storedToken = localStorage.getItem("accessToken");
+const timeout = 10000;
 export const useMainStore = defineStore("main", {
   state: () => ({
     // 토큰 데이터 들어가는 곳
@@ -71,9 +72,16 @@ export const useMainStore = defineStore("main", {
             Authorization: localStorage.getItem('accessToken'),
           }
         })
+        toast(response.data.message, {
+          timeout: timeout
+        });
         return response.data;
       } catch (error) {
         console.log(error);
+        toast.error(error.response.data.message, {
+          timeout: timeout,
+          // 여기에 추가 옵션을 넣을 수 있습니다.
+        })
         return null;
       }
     },
@@ -123,11 +131,16 @@ export const useMainStore = defineStore("main", {
       console.log("메서드 진입")
       try {
         const response = await axios.get(backend + '/meetingroom/current');
-        console.log(response.data);
         this.meetingRooms = response.data.result;
-
+        toast(response.data.message, {
+          timeout: timeout
+        });
       } catch (error) {
         console.error('회의실 정보를 가져오지 못했습니다:', error);
+        toast.error(error.response.data.message, {
+          timeout: timeout,
+          // 여기에 추가 옵션을 넣을 수 있습니다.
+        })
       }
     },
 
@@ -136,8 +149,15 @@ export const useMainStore = defineStore("main", {
       try {
         const response = await axios.get(backend + '/member/read');
         this.members = response.data.result;
+        toast(response.data.message, {
+          timeout: timeout
+        });
       } catch (error) {
         console.error('멤버 정보를 가져오지 못했습니다:', error);
+        toast.error(error.response.data.message, {
+          timeout: timeout,
+          // 여기에 추가 옵션을 넣을 수 있습니다.
+        })
       }
     },
     async getProfileImage() {
@@ -147,10 +167,20 @@ export const useMainStore = defineStore("main", {
       this.member.profileImage = response.data[0].imageAddr;
     },
     async getChatProfile(memberId) {
-      const response = await axios.post(backend + '/member/profile', {
-        memberId: memberId
-      })
-      return response.data[0].imageAddr;
+      try {
+        const response = await axios.post(backend + '/member/profile', {
+          memberId: memberId
+        })
+        toast(response.data.message, {
+          timeout: timeout
+        });
+        return response.data[0].imageAddr;
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          timeout: timeout,
+          // 여기에 추가 옵션을 넣을 수 있습니다.
+        })
+      }
     },
 
     // 멤버찾기 컴포넌트 open, close
@@ -164,8 +194,14 @@ export const useMainStore = defineStore("main", {
       try {
         const response = await axios.get(`${backend}/search/member/${this.searchMemberName}`);
         this.searchedMember = response.data;
+        toast(response.data.message, {
+          timeout: timeout
+        });
       } catch (error) {
-        alert("멤버를 찾을 수 없습니다.")
+        toast.error(error.response.data.message, {
+          timeout: timeout,
+          // 여기에 추가 옵션을 넣을 수 있습니다.
+        })
       }
     },
 

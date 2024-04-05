@@ -3,72 +3,17 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useRouter } from "vue-router";
+// import { toast } from 'vue3-toastify';
+// import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
+// const timeout = 10000;
 
 export const useStompStore = defineStore("stomp", {
+    state: () => ({
+        chatStomp: {}
+    }),
     actions: {
-        basicConnect(stompClient) {
-            const router = useRouter();
-            console.log("================store============")
-            console.log(stompClient);
-            if (stompClient.ws.readyState === 0) {
-                console.log("============기본 연결================");
-                stompClient.connect(
-                    {},
-                    frame => {
-                        this.connected = true;
-                        console.log('소켓 연결 성공', frame);
-                        stompClient.subscribe("/sub/room", res => {
-                            console.log("구독으로 받은 메시지입니다.", res.body);
-                            useMessageStore().addMessage(JSON.parse(res.body));
-                        });
-                    },
-                    error => {
-                        stompClient.ws.readyState = 0;
-                        this.connected = false;
-                        console.log('소켓 연결 실패', error);
-                        if (error.code === 1001) {
-                            console.log('=======재접속========');
-                            let retry = 0;
-                            if (retry < 3) {
-                                setTimeout(() => {
-                                    console.log('접속을 재시도 합니다.');
-                                    retry += 1;
-                                    this.basicConnect(stompClient);
-                                }, 1000 * retry);
-                            } else {
-                                router.push({name: 'error', params: {errorStatus: error.code, message: '서버가 예기치 못한 오류로 인해 종료되어 현재 채팅방에 접속할 수 없습니다.'}});
-                            }
-                        } else if (error.code === 1002) {
-                            console.log('=======재접속========');
-                            let retry = 0;
-                            if (retry < 3) {
-                                setTimeout(() => {
-                                    console.log('접속을 재시도 합니다.');
-                                    retry += 1;
-                                    this.basicConnect(stompClient);
-                                }, 1000 * retry);
-                            } else {
-                                router.push({name: 'error', params: {errorStatus: error.code, message: '서버가 예기치 못한 오류로 인해 종료되어 현재 채팅방에 접속할 수 없습니다.'}});
-                            }
-                        } else if (error.code === 1006) {
-                            console.log('=======재접속========');
-                            let retry = 0;
-                            if (retry < 3) {
-                                setTimeout(() => {
-                                    console.log('접속을 재시도 합니다.');
-                                    retry += 1;
-                                    this.basicConnect(stompClient);
-                                }, 1000 * retry);
-                            } else {
-                                router.push({name: 'error', params: {errorStatus: error.code, message: '서버가 예기치 못한 오류로 인해 종료되어 현재 채팅방에 접속할 수 없습니다.'}});
-                            }
-                        }
-                    }
-                )
-            }
-        },
         roomConnect(chatRoomId, token) {
             const router = useRouter();
             const server = `${backend}/chat`
@@ -110,14 +55,10 @@ export const useStompStore = defineStore("stomp", {
                     }
                 }
             )
+            this.chatStomp = this.stompClient;
             socket.onclose = function (event) {
                 console.log(event.wasClean);
                 console.log(event);
-                if (event.code === 4000) {
-                    alert("채팅방 연결이 끊어졌습니다. 다시 연결을 시도해주세요");
-                    window.location.href = '/';
-                }
-
                 if (event.code === 1001) {
                     console.log('=======재접속========');
                     let retry = 0;

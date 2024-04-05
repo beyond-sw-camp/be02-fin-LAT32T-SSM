@@ -46,13 +46,15 @@ public class MessageService {
     private String secretKey;
 
 
-
     @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         log.info("consume-message : {}", record.value());
         log.info("key : {}", record.key());
-        SendMessageReq message = objectMapper.readValue(record.value().toString(), SendMessageReq.class);
-        messagingTemplate.convertAndSend("/sub/room/" + message.getChatRoomId(), message);
+        String message = objectMapper.writeValueAsString(record.value());
+        SendMessageReq sendMessageReq = objectMapper.readValue(message, SendMessageReq.class);
+
+        log.info("convert message : {}", message);
+        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
     }
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {

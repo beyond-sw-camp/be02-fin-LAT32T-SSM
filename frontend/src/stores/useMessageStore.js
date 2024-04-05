@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useMainStore } from "@/stores/useMainStore";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
+const timeout = 10000;
 export const useMessageStore = defineStore("message", {
     state: () => ({
         recvList: [],
@@ -32,6 +35,10 @@ export const useMessageStore = defineStore("message", {
                      })
                  } catch (error) {
                     console.log(error);
+                     toast.error(error.response.data.message, {
+                         timeout: timeout,
+                         // 여기에 추가 옵션을 넣을 수 있습니다.
+                     })
                  }
              }
         },

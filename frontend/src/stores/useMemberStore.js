@@ -5,6 +5,7 @@ import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
 const storedToken = localStorage.getItem("accessToken");
+const timeout = 10000;
 
 export const useMemberStore = defineStore("member", {
     state: () => ({
@@ -29,10 +30,11 @@ export const useMemberStore = defineStore("member", {
                         "Content-Type": "application/json",
                     }
                 });
-                console.log(response.data);
                 localStorage.removeItem("accessToken")
                 localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
-
+                toast(response.data.result.message, {
+                    timeout: timeout
+                });
                 window.location.href = "/";
             }catch(error){
                 console.log("에러 발생", error);
@@ -40,7 +42,7 @@ export const useMemberStore = defineStore("member", {
                 this.member.memberId="";
                 this.member.memberPw="";
                 toast.error(error.response.data.message, {
-                    timeout: 10000,
+                    timeout: timeout,
                     // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }          
@@ -48,13 +50,13 @@ export const useMemberStore = defineStore("member", {
         async signup(){
             if(this.checkId === false){
                 toast.error("아이디 중복체크를 하세요", {
-                    timeout: 10000,
+                    timeout: timeout,
                     // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
             if(this.member.memberPw !== this.member.memberPwChecked){
                 toast.error("새롭게 입력하신 비밀번호가 서로 다릅니다.", {
-                    timeout: 10000,
+                    timeout: timeout,
                     // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
@@ -69,7 +71,6 @@ export const useMemberStore = defineStore("member", {
 
                 let formData = new FormData();
                 let json = JSON.stringify(signupMember);
-                console.log(json)
                 formData.append(
                     "member",
                     new Blob([json], { type: "application/json" })
@@ -89,7 +90,7 @@ export const useMemberStore = defineStore("member", {
 
                 }catch(error){
                     toast.error(error.response.data.message, {
-                        timeout: 10000,
+                        timeout: timeout,
                         // 여기에 추가 옵션을 넣을 수 있습니다.
                     })
                 }
@@ -104,15 +105,12 @@ export const useMemberStore = defineStore("member", {
 
                 let formData = new FormData();
                 let json = JSON.stringify(changeInfoMember);
-                console.log(json)
                 formData.append(
                     "member",
                     new Blob([json], { type: "application/json" })
                 );
                 
                 formData.append("profileImage", this.member.profileImage);
-                console.log(this.member.profileImage);
-
                 try{
                     let response = await axios.patch(backend + "/member/update", formData, {
                         headers:{
@@ -124,19 +122,17 @@ export const useMemberStore = defineStore("member", {
                     localStorage.setItem("toastMessage", response.data.message);                 
                     
                     window.location.href = "/login";
-
-                       
                 }catch(error){
                     if(error.response.data.code === "MEMBER_016" || error.response.data.code === "MEMBER_036"){
                         toast.error(error.response.data.message, {
-                            timeout: 10000,
+                            timeout: timeout,
                             // 여기에 추가 옵션을 넣을 수 있습니다.
                         })
                     }    
                 }
             }else{
                 toast.error("새롭게 입력하신 비밀번호가 서로 다릅니다.", {
-                    timeout: 10000,
+                    timeout: timeout,
                     // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
@@ -146,7 +142,7 @@ export const useMemberStore = defineStore("member", {
             const toastMessage = localStorage.getItem("toastMessage");
             if (toastMessage) {
               toast(toastMessage, {
-                timeout: 10000,
+                timeout: timeout,
                 // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
               });
               localStorage.removeItem("toastMessage"); // 메시지를 표시한 후에는 삭제
@@ -160,14 +156,14 @@ export const useMemberStore = defineStore("member", {
             try {
               const response = await axios.post(backend + '/member/check/id', req);
               toast(response.data.message, {
-                timeout: 10000,
+                timeout: timeout,
                 // 여기에 추가 옵션을 넣을 수 있습니다.
             })
                 this.checkId = true;
 
             } catch (error) {
                 toast.error(error.response.data.message, {
-                    timeout: 10000,
+                    timeout: timeout,
                     // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
                 this.checkId = false;
