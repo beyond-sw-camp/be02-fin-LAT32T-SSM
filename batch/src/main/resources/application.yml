@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    database-platform: ${DB_PLATFORM}
+
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    bootstrap-servers: ${KAFKA_SERVER}
+
+    open-in-view: true
