@@ -105,8 +105,18 @@ export const useMainStore = defineStore("main", {
     notificaiton() {
       this.requestNotificationPermission();
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
+      evtSource.addEventListener("test", function(event){
+        console.log(event.data)
+      })
       evtSource.addEventListener("notification", function (event) {
-        // 사용자에게 알림 표시
+        console.log(event.data)
+        // 토스트로 알람구현
+        toast.success(event.data, {
+          timeout: 10000,
+          // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
+        });
+        
+        // 사용자에게 알림 표시 웹브라우저 알람
         if (Notification.permission === "granted") {
           new Notification("알람 이벤트", {
             body: event.data,

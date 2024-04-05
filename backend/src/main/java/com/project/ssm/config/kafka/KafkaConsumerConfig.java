@@ -50,7 +50,6 @@ public class KafkaConsumerConfig {
                 .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker)
                 .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                 .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
-                .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
                 .put(ConsumerConfig.GROUP_ID_CONFIG, KafkaConstants.GROUP_ID)
                 .build();
 

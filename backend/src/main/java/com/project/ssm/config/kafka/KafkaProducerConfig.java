@@ -31,7 +31,7 @@ public class KafkaProducerConfig {
     @Bean
     public Map<String, Object> kafkaProducerConfiguration() {
         return ImmutableMap.<String, Object>builder()
-                .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker)
+                .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker)
                 .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
                 .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
                 .put(ProducerConfig.CONFIG_PROVIDERS_CONFIG, KafkaConstants.GROUP_ID)

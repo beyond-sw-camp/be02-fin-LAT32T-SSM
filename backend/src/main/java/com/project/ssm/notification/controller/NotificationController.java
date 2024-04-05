@@ -5,6 +5,7 @@ import com.project.ssm.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +25,31 @@ public class NotificationController {
     private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final NotificationService notificationService;
 
-    @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {
-        SseEmitter emitter = new SseEmitter(1800000L);
+        SseEmitter emitter = new SseEmitter();
         log.info("Emitter for client {}: {}", memberId, emitter);
 
         emitters.put(memberId, emitter);
 
-        emitter.onCompletion(() -> emitters.remove(memberId));
-        emitter.onTimeout(() -> emitters.remove(memberId));
+        emitter.onCompletion(() -> {
+            log.info("Emitter completed for client {}", memberId);
+            emitters.remove(memberId);
+        });
+
+        emitter.onTimeout(() -> {
+            log.info("Emitter timed out for client {}", memberId);
+            emitters.remove(memberId);
+        });
+
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("test")
+                    .data("반갑습니다."));
+        } catch (IOException e) {
+            log.info("처음 이미터 보낼때 발생");
+            throw new RuntimeException(e);
+        }
 
         return emitter;
     }
@@ -55,6 +72,7 @@ public class NotificationController {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(record.value()));
             } catch (IOException e) {
+                log.info("카프카 데이터 보낼때 에러 발생");
                 emitters.remove(record.key());
             }
         }

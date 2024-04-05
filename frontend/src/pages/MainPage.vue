@@ -61,7 +61,8 @@
             </div>
             <div class="profile-container">
               <h5 id="profile-image">프로필 사진</h5>
-              <img :src="mainStore.member.profileImage" @error="getDefaultImage" alt="Profile Image" class="profile-img">
+              <img :src="mainStore.member.profileImage" @error="getDefaultImage" alt="Profile Image"
+                class="profile-img">
             </div>
           </article>
         </section>
@@ -108,6 +109,8 @@ import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
 import FilterComponent from '@/components/FilterComponent.vue';
 import MeetingRoomComponent from "@/components/MeetingRoomComponent.vue";
 
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 import defaultImage from "../assets/basic_profile.jpg";
 
 import { mapStores } from "pinia";
@@ -143,15 +146,34 @@ export default {
       isFilterVisible: true,
     }
   },
+  created() {
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
+
+    // SSE 연결 함수
+    this.mainStore.notificaiton();
+
+    console.log("============기본 연결================");
+    const stompClient = this.initSock();
+    this.basicConnect(stompClient);
+  },
   computed: {
     ...mapState(useMessageStore, ['getAllMessage']),
-    ...mapStores(useMainStore, useMessageStore, useStompStore)
+    ...mapStores(useMainStore, useMessageStore)
   },
   methods: {
+    ...mapActions(useStompStore, ['basicConnect']),
     ...mapActions(useStompStore, ['roomConnect']),
     ...mapActions(useChatRoomStore, ['getRoomList']),
     getDefaultImage(e) {
       e.target.src = defaultImage;
+    },
+    initSock() {
+      const server = `${backend}/chat`
+      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
+      let socket = new SockJS(server);
+      this.stompClient = Stomp.over(socket);
+      return this.stompClient;
     },
     sendMessage(e) {
       this.message = $('#summernote').summernote('code')
@@ -162,17 +184,19 @@ export default {
       }
     },
     send(message) {
-      const msg = {
-        chatRoomId: this.$route.params.roomId,
-        memberId: this.memberId,
-        memberName: this.memberName,
-        message: message
-      };
-      this.stompStore.chatStomp.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      this.$nextTick(() => {
-        let message = this.$refs.getAllMessage;
-        message.scrollTo(0, message.scrollHeight);
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          chatRoomId: this.$route.params.roomId,
+          memberId: this.memberId,
+          memberName: this.memberName,
+          message: message
+        };
+        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+        this.$nextTick(() => {
+          let message = this.$refs.getAllMessage;
+          message.scrollTo(0, message.scrollHeight);
+        });
+      }
     },
     showChatting() {
       if (localStorage.getItem("chatRoomId") !== null) {
@@ -241,11 +265,6 @@ export default {
       // this.basicConnect();
     }
 
-    // 토큰 데이터 load
-    this.mainStore.loadMemberData();
-
-    // SSE 연결 함수
-    this.mainStore.notificaiton();
 
     // 멤버정보를 불러온다.
     this.mainStore.readMember();
@@ -1407,6 +1426,7 @@ body::-webkit-scrollbar-thumb {
 
   margin-left: 15px;
 }
+
 #profile-image {
   font-weight: bold;
 }
@@ -1468,14 +1488,16 @@ body::-webkit-scrollbar-thumb {
   height: 200px;
   margin-top: 10px;
 }
+
 .profile-container {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   padding-left: 1rem;
   margin-left: 100px;
   position: relative;
 }
+
 .about-detail {
   margin: 0.5rem;
   padding: 0.5rem;
@@ -1638,12 +1660,14 @@ body::-webkit-scrollbar-thumb {
 .user-detail {
   margin-bottom: 1rem;
 }
+
 .user-details {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 
 }
+
 .user-name {
   font-weight: bold;
   display: flex;
@@ -1947,5 +1971,4 @@ body::-webkit-scrollbar-thumb {
 .chat-block-list {
   align-items: end;
 }
-
 </style>
