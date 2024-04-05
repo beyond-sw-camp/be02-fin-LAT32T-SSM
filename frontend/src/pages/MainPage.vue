@@ -238,14 +238,6 @@ export default {
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
-    if (this.$route.params.chatRoomId !== undefined && localStorage.getItem("accessToken") !== undefined) {
-      this.chatRoomId = this.$route.params.chatRoomId;
-      // this.roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
-      useStompStore().roomConnect(this.chatRoomId, localStorage.getItem("accessToken"));
-    } else {
-      // this.basicConnect();
-    }
-
 
     // 멤버정보를 불러온다.
     this.mainStore.readMember();
