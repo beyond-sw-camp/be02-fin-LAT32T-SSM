@@ -7,7 +7,7 @@ import { useRouter } from "vue-router";
 
 // const backend = process.env.VUE_APP_API_ENDPOINT;
 // const timeout = 10000;
-const backend = '121.140.125.34:14147/api'
+const backend = '121.140.125.34:14147'
 
 export const useStompStore = defineStore("stomp", {
     state: () => ({
