@@ -147,6 +147,9 @@ export default {
     }
   },
   created() {
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
+
     // SSE 연결 함수
     this.mainStore.notificaiton();
 
@@ -261,10 +264,6 @@ export default {
     } else {
       // this.basicConnect();
     }
-
-    // 토큰 데이터 load
-    this.mainStore.loadMemberData();
-
 
 
     // 멤버정보를 불러온다.
