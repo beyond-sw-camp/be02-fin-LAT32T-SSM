@@ -27,10 +27,18 @@ public class NotificationController {
 
     @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {
-        SseEmitter emitter = new SseEmitter(1800000L);
+        SseEmitter emitter = new SseEmitter();
         log.info("Emitter for client {}: {}", memberId, emitter);
 
         emitters.put(memberId, emitter);
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("test")
+                    .data("반갑습니다."));
+        } catch (IOException e) {
+            log.info("처음 이미터 보낼때 발생");
+            throw new RuntimeException(e);
+        }
 
         emitter.onCompletion(() -> emitters.remove(memberId));
         emitter.onTimeout(() -> emitters.remove(memberId));
@@ -56,6 +64,7 @@ public class NotificationController {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(record.value()));
             } catch (IOException e) {
+                log.info("카프카 데이터 보낼때 에러 발생");
                 emitters.remove(record.key());
             }
         }

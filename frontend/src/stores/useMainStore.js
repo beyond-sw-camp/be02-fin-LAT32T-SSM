@@ -97,7 +97,11 @@ export const useMainStore = defineStore("main", {
     notificaiton() {
       this.requestNotificationPermission();
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
+      evtSource.addEventListener("test", function(event){
+        console.log(event.data)
+      })
       evtSource.addEventListener("notification", function (event) {
+        console.log(event.data)
         // 토스트로 알람구현
         toast.success(event.data, {
           timeout: 10000,
