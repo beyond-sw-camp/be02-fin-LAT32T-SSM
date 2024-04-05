@@ -5,8 +5,9 @@ import { useRouter } from "vue-router";
 // import { toast } from 'vue3-toastify';
 // import 'vue3-toastify/dist/index.css';
 
-const backend = process.env.VUE_APP_API_ENDPOINT;
+// const backend = process.env.VUE_APP_API_ENDPOINT;
 // const timeout = 10000;
+const backend = '121.140.125.34:14147/api'
 
 export const useStompStore = defineStore("stomp", {
     state: () => ({
