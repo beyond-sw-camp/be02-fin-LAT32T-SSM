@@ -108,9 +108,6 @@ import CalendarComponent from '@/components/CalendarComponent.vue';
 import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
 import FilterComponent from '@/components/FilterComponent.vue';
 import MeetingRoomComponent from "@/components/MeetingRoomComponent.vue";
-
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import defaultImage from "../assets/basic_profile.jpg";
 
 import { mapStores } from "pinia";
@@ -120,8 +117,6 @@ import { useMainStore } from "@/stores/useMainStore";
 import { mapActions, mapState } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
-
-// const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
   name: 'MainPage',
   components: {
@@ -152,28 +147,16 @@ export default {
 
     // SSE 연결 함수
     this.mainStore.notificaiton();
-
-    console.log("============기본 연결================");
-    const stompClient = this.initSock();
-    this.basicConnect(stompClient);
   },
   computed: {
     ...mapState(useMessageStore, ['getAllMessage']),
-    ...mapStores(useMainStore, useMessageStore)
+    ...mapStores(useMainStore, useMessageStore, useStompStore)
   },
   methods: {
-    ...mapActions(useStompStore, ['basicConnect']),
     ...mapActions(useStompStore, ['roomConnect']),
     ...mapActions(useChatRoomStore, ['getRoomList']),
     getDefaultImage(e) {
       e.target.src = defaultImage;
-    },
-    initSock() {
-      const server = `${backend}/chat`
-      console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-      let socket = new SockJS(server);
-      this.stompClient = Stomp.over(socket);
-      return this.stompClient;
     },
     sendMessage(e) {
       this.message = $('#summernote').summernote('code')
@@ -184,19 +167,17 @@ export default {
       }
     },
     send(message) {
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = {
-          chatRoomId: this.$route.params.roomId,
-          memberId: this.memberId,
-          memberName: this.memberName,
-          message: message
-        };
-        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-        this.$nextTick(() => {
-          let message = this.$refs.getAllMessage;
-          message.scrollTo(0, message.scrollHeight);
-        });
-      }
+      const msg = {
+        chatRoomId: this.$route.params.roomId,
+        memberId: this.memberId,
+        memberName: this.memberName,
+        message: message
+      };
+      this.stompStore.chatStomp.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
+      this.$nextTick(() => {
+        let message = this.$refs.getAllMessage;
+        message.scrollTo(0, message.scrollHeight);
+      });
     },
     showChatting() {
       if (localStorage.getItem("chatRoomId") !== null) {
