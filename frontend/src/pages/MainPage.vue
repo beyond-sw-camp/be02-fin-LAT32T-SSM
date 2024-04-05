@@ -61,7 +61,8 @@
             </div>
             <div class="profile-container">
               <h5 id="profile-image">프로필 사진</h5>
-              <img :src="mainStore.member.profileImage" @error="getDefaultImage" alt="Profile Image" class="profile-img">
+              <img :src="mainStore.member.profileImage" @error="getDefaultImage" alt="Profile Image"
+                class="profile-img">
             </div>
           </article>
         </section>
@@ -146,6 +147,9 @@ export default {
     }
   },
   created() {
+    // SSE 연결 함수
+    this.mainStore.notificaiton();
+
     console.log("============기본 연결================");
     const stompClient = this.initSock();
     this.basicConnect(stompClient);
@@ -261,8 +265,7 @@ export default {
     // 토큰 데이터 load
     this.mainStore.loadMemberData();
 
-    // SSE 연결 함수
-    this.mainStore.notificaiton();
+
 
     // 멤버정보를 불러온다.
     this.mainStore.readMember();
@@ -1424,6 +1427,7 @@ body::-webkit-scrollbar-thumb {
 
   margin-left: 15px;
 }
+
 #profile-image {
   font-weight: bold;
 }
@@ -1485,14 +1489,16 @@ body::-webkit-scrollbar-thumb {
   height: 200px;
   margin-top: 10px;
 }
+
 .profile-container {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   padding-left: 1rem;
   margin-left: 100px;
   position: relative;
 }
+
 .about-detail {
   margin: 0.5rem;
   padding: 0.5rem;
@@ -1655,12 +1661,14 @@ body::-webkit-scrollbar-thumb {
 .user-detail {
   margin-bottom: 1rem;
 }
+
 .user-details {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 
 }
+
 .user-name {
   font-weight: bold;
   display: flex;
@@ -1964,5 +1972,4 @@ body::-webkit-scrollbar-thumb {
 .chat-block-list {
   align-items: end;
 }
-
 </style>
