@@ -31,6 +31,17 @@ public class NotificationController {
         log.info("Emitter for client {}: {}", memberId, emitter);
 
         emitters.put(memberId, emitter);
+
+        emitter.onCompletion(() -> {
+            log.info("Emitter completed for client {}", memberId);
+            emitters.remove(memberId);
+        });
+
+        emitter.onTimeout(() -> {
+            log.info("Emitter timed out for client {}", memberId);
+            emitters.remove(memberId);
+        });
+
         try {
             emitter.send(SseEmitter.event()
                     .name("test")
@@ -39,8 +50,6 @@ public class NotificationController {
             log.info("처음 이미터 보낼때 발생");
             throw new RuntimeException(e);
         }
-//        emitter.onCompletion(() -> emitters.remove(memberId));
-//        emitter.onTimeout(() -> emitters.remove(memberId));
 
         return emitter;
     }
@@ -62,7 +71,6 @@ public class NotificationController {
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(record.value()));
-//                emitter.onCompletion(() -> emitters.remove(record.key()));
             } catch (IOException e) {
                 log.info("카프카 데이터 보낼때 에러 발생");
                 emitters.remove(record.key());
