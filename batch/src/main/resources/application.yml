@@ -19,5 +19,3 @@ spring:
     consumer:
       bootstrap-servers: ${KAFKA_SERVER}
     bootstrap-servers: ${KAFKA_SERVER}
-
-    open-in-view: true
