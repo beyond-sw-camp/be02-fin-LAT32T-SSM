@@ -62,7 +62,7 @@ public class NotificationController {
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(record.value()));
-                emitter.onCompletion(() -> emitters.remove(record.key()));
+//                emitter.onCompletion(() -> emitters.remove(record.key()));
             } catch (IOException e) {
                 log.info("카프카 데이터 보낼때 에러 발생");
                 emitters.remove(record.key());
