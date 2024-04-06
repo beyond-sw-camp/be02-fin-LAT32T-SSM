@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -27,7 +26,7 @@ public class NotificationController {
 
     @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {
-        SseEmitter emitter = new SseEmitter(10000L);
+        SseEmitter emitter = new SseEmitter(300000L);
         log.info("Emitter for client {}: {}", memberId, emitter);
 
         emitters.put(memberId, emitter);
@@ -45,7 +44,7 @@ public class NotificationController {
         try {
             emitter.send(SseEmitter.event()
                     .name("test")
-                    .data("반갑습니다."));
+                    .data("SseEmitter 생성"));
         } catch (IOException e) {
             log.info("처음 이미터 보낼때 발생");
             throw new RuntimeException(e);
@@ -53,18 +52,6 @@ public class NotificationController {
 
         return emitter;
     }
-
-//    // 알람 발생 시 모든 클라이언트에게 알람 전송
-//    public static void sendAlarmToClients(String memberId ,String message) {
-//        SseEmitter emitter = emitters.get(memberId);
-//        if (emitter != null) {
-//            try {
-//                emitter.send(SseEmitter.event().name("notification").data(message));
-//            } catch (IOException e) {
-//                emitters.remove(memberId);
-//            }
-//        }
-//    }
     @KafkaListener(topics = "SseMessage", groupId = "#{@kafkaListenerGroupId}")
     public void sendAlarmToClients(ConsumerRecord<String, String> record) {
         SseEmitter emitter = emitters.get(record.key());
@@ -77,11 +64,4 @@ public class NotificationController {
             }
         }
     }
-    // 테스트용 맵핑
-    @RequestMapping(value = "/notification/test", method = RequestMethod.GET)
-    public ResponseEntity test() {
-        notificationService.memberEventRead();
-        return ResponseEntity.ok().body("ok");
-    }
-
 }

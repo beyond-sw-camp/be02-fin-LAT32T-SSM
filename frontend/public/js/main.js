@@ -106,10 +106,9 @@ var calendar = $('#calendar').fullCalendar({
    * ************** */
   events: function (start, end, timezone, callback) {
 
-    var currentYear = new Date().getFullYear();
     $.ajax({
       type: "get",
-      url: backend + "/calendar/event/" + currentYear,
+      url: backend + "/calendar/event/list",
       headers: {
         'Content-Type': 'application/json',
         'Authorization': localStorage.getItem('accessToken')
@@ -117,8 +116,8 @@ var calendar = $('#calendar').fullCalendar({
       datatype: "JSON",
       data: {
         // 화면이 바뀌면 Date 객체인 start, end 가 들어옴
-        // startDate : moment(start).format('YYYY-MM-DD'),
-        // endDate   : moment(end).format('YYYY-MM-DD')
+        startDate : moment(start).format('YYYY-MM-DD'),
+        endDate   : moment(end).format('YYYY-MM-DD')
       },
       success: function (response) {
         console.log(response)

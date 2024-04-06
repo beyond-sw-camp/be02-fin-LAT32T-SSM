@@ -3,16 +3,28 @@ package com.project.ssm.common.error.exception;
 
 import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.common.error.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     // @Valid를 통한 입력값 검증 시 발생하는 에러 처리
@@ -62,5 +74,4 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(errorCode.getCode(), e.getMessage());
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
-
 }
