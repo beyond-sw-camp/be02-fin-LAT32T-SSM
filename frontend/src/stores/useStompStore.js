@@ -7,8 +7,7 @@ import { useRouter } from "vue-router";
 
 // const backend = process.env.VUE_APP_API_ENDPOINT;
 // const timeout = 10000;
-// const backend = 'localhost:8080'
-const backend = process.env.VUE_APP_WS_ENDPOINST
+const backend = process.env.VUE_APP_WS_ENDPOINT
 
 export const useStompStore = defineStore("stomp", {
     state: () => ({
@@ -20,6 +19,7 @@ export const useStompStore = defineStore("stomp", {
             const router = useRouter();
             window.localStorage.setItem("chatRoomId", chatRoomId);
             console.log(token);
+            console.log(backend);
             const stomp = Stomp.client(`${backend}/chat`);
             stomp.connect({}, frame => {
                 stomp.connected = true;
