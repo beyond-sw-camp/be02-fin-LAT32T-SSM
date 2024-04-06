@@ -11,9 +11,12 @@ public class Scheduler {
 
     private final NotificationService notificationService;
 
-//     10초에 한번씩 메서드 실행
-    @Scheduled(fixedRate = 20000)
-    public void schedule(){
-        notificationService.memberEventRead();
-    }
+/**
+ *  기존 스케줄링 기능을 SCDF 스켈쥴링으로 변경함에 따라 기능 삭제 예정 *
+ */
+
+//    @Scheduled(fixedRate = 60000)
+//    public void schedule(){
+//        notificationService.memberEventRead();
+//    }
 }

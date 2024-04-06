@@ -31,9 +31,6 @@ public class NotificationService {
                             eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");
             kafkaTemplate.send(record);
             log.info("아이디 :{}의 일정입니다.",eventParticipants.getMember().getMemberId());
-
-//            sendAlarmToClients(eventParticipants.getMember().getMemberId(),
-//                    eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");
         }
     }
 }
