@@ -104,6 +104,7 @@ export const useMainStore = defineStore("main", {
     },
     notificaiton() {
       this.requestNotificationPermission();
+      
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
       evtSource.addEventListener("test", function(event){
         console.log(event.data)

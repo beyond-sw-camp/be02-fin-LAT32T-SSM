@@ -30,8 +30,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem('accessToken');
-
-      this.$router.push("/login");
+      window.location.href = "/";
     },
 
     update() {      
