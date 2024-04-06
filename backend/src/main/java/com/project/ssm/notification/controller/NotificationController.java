@@ -26,7 +26,7 @@ public class NotificationController {
 
     @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {
-        SseEmitter emitter = new SseEmitter(300000L);
+        SseEmitter emitter = new SseEmitter(150000L);
         log.info("Emitter for client {}: {}", memberId, emitter);
 
         emitters.put(memberId, emitter);
