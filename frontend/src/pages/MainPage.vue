@@ -4,32 +4,36 @@
     <SidebarComponent></SidebarComponent>
     <section class="body">
       <section class="content">
-        <section class="content-header">
-          <article class="channel-content-header-details">
+        <section class="content-header" >
+          <article class="channel-content-header-details" v-show="isFullcalendarVisible">
+            <h4 class="channel-content-header-name">
+              {{ mainStore.member.name }} 님의 일정입니다. <i class="fas fa-star"></i>
+            </h4>            
+          </article>
+          <article class="channel-content-header-details" v-show="!isFullcalendarVisible">
             <h4 class="channel-content-header-name">
               {{ chatRoomName }} 채팅방 <i class="fas fa-star"></i>
             </h4>
-            <section class="content-header-icons">
+            <!-- <section class="content-header-icons">
               <div>
                 <i class="far fa-user"></i><span class="content-header-counter">5</span>
               </div>
               <p class="content-header-text">
                 {{ chatRoomName }} 채팅방 입니다.
               </p>
-            </section>
-
+            </section> -->
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
             <div @click="showChatting" v-show="isFullcalendarVisible"> 채팅 </div>
             <div @click="fullCalendarDetails" v-show="!isFullcalendarVisible"> 달력 </div>
           </button>
         </section>
-        <section class="feeds">
+        <section class="feeds" ref="getAllMessage">
           <div v-show="isFullcalendarVisible">
             <FullCalendarComponent></FullCalendarComponent>
           </div>
           <div v-show="!isFullcalendarVisible">
-            <div ref="getAllMessage">
+            <div>
               <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
             </div>
           </div>
@@ -210,6 +214,13 @@ export default {
     },
     filterDetails() {
       this.isFilterVisible = !this.isFilterVisible;
+    },
+    // 채팅 스크롤을 위한 메서드
+    scrollToBottom() {
+      this.$nextTick(() => { // DOM 업데이트 후 스크롤 조정을 보장
+        const container = this.$refs.getAllMessage;
+        container.scrollTop = container.scrollHeight; // 스크롤을 컨테이너의 가장 아래로 설정
+      });
     }
   },
   mounted() {
@@ -247,7 +258,15 @@ export default {
 
     // 프로필 이미지 불러오기
     this.mainStore.getProfileImage();
-  }
+  },
+  watch: {
+    getAllMessage() { // 메시지 목록이 변경될 때마다 스크롤 조정
+      this.scrollToBottom();
+    }
+  },
+  updated() {
+    this.scrollToBottom(); // 컴포넌트가 업데이트될 때마다 스크롤을 가장 아래로 이동
+  },
 }
 </script>
 
@@ -1045,9 +1064,10 @@ body::-webkit-scrollbar-thumb {
 /* feeds */
 
 .feeds {
-  grid-area: main;
+  display: grid;
   overflow: auto;
   padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem;
+  align-content: space-between;
 }
 
 .feeds2 {

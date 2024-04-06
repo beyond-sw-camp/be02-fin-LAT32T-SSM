@@ -68,6 +68,50 @@ export default {
 </script>
 
 <style scoped>
+/* 모바일 화면 크기에 대한 미디어 쿼리 */
+@media (max-width: 768px) {
+  /* 로그인 화면을 감싸고 있는 컨테이너에 대한 스타일 */
+  .container, .container-lg, .container-md, .container-xl {
+    height: 100vh; /* 뷰포트의 높이와 동일하게 설정 */
+    display: flex; /* Flexbox 레이아웃 사용 */
+    flex-direction: column; /* 아이템을 세로로 정렬 */
+    justify-content: center; /* 수직 방향으로 가운데 정렬 */
+    align-items: center; /* 수평 방향으로 가운데 정렬 */
+  }
+
+  .card {
+    width: 90%; /* 카드의 너비를 화면 너비의 90%로 설정 */
+    margin: auto; /* 수평 중앙 정렬 */
+  }
+
+  .p-5 {
+    padding: 2rem !important; /* 패딩을 줄임 */
+  }
+
+  form.user .form-control-user {
+    width: auto; /* 입력 필드의 너비를 자동으로 설정 */
+    padding: 1rem; /* 패딩 조정 */
+  }
+
+  .btn-user {
+    padding: 0.75rem; /* 버튼의 패딩 조정 */
+  }
+}
+
+/* 추가적으로, 다음과 같이 로그인 화면의 요소에 대해 모바일 화면에서 적합한 스타일을 적용할 수 있습니다. */
+.card {
+  overflow: hidden; /* 카드 내부의 오버플로를 숨김 */
+}
+
+.row {
+  margin: 0; /* row의 마진 제거 */
+}
+
+.col-lg-6 {
+  flex: 0 0 100%; /* 모바일에서는 너비를 100%로 설정 */
+  max-width: 100%; /* 최대 너비를 100%로 설정 */
+}
+
 .text-center a {
   color: #dd1010; /* 링크 색상 */
   text-decoration: none; /* 언더라인 제거 */
