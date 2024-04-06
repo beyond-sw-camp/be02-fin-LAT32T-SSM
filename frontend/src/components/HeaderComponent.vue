@@ -13,6 +13,7 @@
 
       <div class="move-left">
         <li class="nav-item">
+          <a id="update" @click.prevent="update">회원정보변경</a>
           <a id="logout" @click.prevent="logout">로그아웃</a>
         </li>
       </div>
@@ -31,14 +32,28 @@ export default {
       localStorage.removeItem('accessToken');
 
       this.$router.push("/login");
+    },
+
+    update() {      
+      this.$router.push("/update");
     }
   }
 };
 </script>
 
 <style>
+.move-left a {
+  margin-right: 10px;
+}
+
+#update {
+  color: white ;
+  cursor: pointer;
+}
+
 #logout {
   color: white ;
+  cursor: pointer;
 }
 /*!
  * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com

@@ -1,10 +1,5 @@
 <template>
   <section class="sidebar">
-    <article class="sidebar-1">
-      <div class="box-1"></div>
-      <div class="box-2"></div>
-      <div class="box-3">+</div>
-    </article>
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
@@ -36,23 +31,11 @@
           </div>
         </span>
       </section>
-      <section class="unread">
-        <h4 class="unread-header">
-          <span class="unread-icons">
-            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-            ><i class="fas fa-minus fa-xs"></i>
-          </span>
-          읽지 않은 메시지
-        </h4>
-        <ul>
-          <li>
-            <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
-          </li>
-        </ul>
-      </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(); chatRoomListHide()"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(); chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomStore.getRoomList(); chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          채널
         </h4>
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
@@ -96,6 +79,7 @@ export default {
       visible: false,
       recvList: [],
       isChatRoomListVisible: true,
+      isArrowVisible: true,
     }
   },
   computed: {
@@ -115,6 +99,9 @@ export default {
       this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList);
       this.visible = false;
     },
+    toggleArrow(){
+      this.isArrowVisible = !this.isArrowVisible;
+    }
   },
   mounted() {
     // 토큰 데이터 load
@@ -124,6 +111,13 @@ export default {
 </script>
 
 <style scoped>
+.fa-sort-down {
+  cursor: pointer;
+}
+.fa-caret-right{
+  cursor: pointer;
+}
+
 /* 기본 스타일링 */
 body {
     font-family: 'Arial', sans-serif; /* 기본 글꼴 */
@@ -611,18 +605,10 @@ body::-webkit-scrollbar-thumb {
 
 /* first left-sidebar */
 
-.sidebar-1 {
-  grid-column: 1 / 1;
-  border-right: 0.1rem solid var(--slack-border-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* second left-sidebar */
 
 .sidebar-2 {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
   overflow: auto;
 }
 

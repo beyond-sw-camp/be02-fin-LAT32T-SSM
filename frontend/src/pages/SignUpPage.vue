@@ -281,7 +281,6 @@ export default {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: .35rem;
-  overflow-y: auto;
 }
 
 .o-hidden {
@@ -306,8 +305,7 @@ export default {
   min-height: 1px;
   /* 기존 설정 */
   padding: 1.25rem;
-  overflow-y: auto;
-  /* 세로 스크롤 활성화 */
+  
 }
 
 .p-0 {
