@@ -23,7 +23,6 @@ export const useChatRoomStore = defineStore("chatRoom", {
         memberIds:[],
     }),
     actions: {
-        async createChatRoom(chatRoomName, memberList, router) {
         memberPush(){
             this.memberIds.push(this.memberId)
         },
@@ -75,6 +74,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
         },
         sendErrorMessage(router, error) {
             router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
+        },
         makeChatRoom(){
             this.createChatRoom().then(()=>{
                 this.getRoomList();
