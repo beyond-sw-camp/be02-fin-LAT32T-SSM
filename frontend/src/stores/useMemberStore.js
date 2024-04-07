@@ -22,10 +22,10 @@ export const useMemberStore = defineStore("member", {
         checkId: false,
     }),
     actions: {
-        async login(member) {
+        async login(member, router) {
             let loginMember = { memberId: member.memberId, password: member.memberPw }
             try{
-                let response = await axios.post(backend + "/member/login", loginMember, {
+                let response = await axios.post(`${backend}/member/login`, loginMember, {
                     headers:{
                         "Content-Type": "application/json",
                     }
@@ -37,27 +37,27 @@ export const useMemberStore = defineStore("member", {
                 });
                 window.location.href = "/";
             }catch(error){
-                console.log("에러 발생", error);
-                localStorage.removeItem("accessToken");
-                this.member.memberId="";
-                this.member.memberPw="";
-                toast.error(error.response.data.message, {
-                    timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
-                })
+                if (error.code === 'ERR_NETWORK') {
+                    localStorage.removeItem("accessToken");
+                    this.member.memberId="";
+                    this.member.memberPw="";
+                    this.sendErrorMessage(router);
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                }
             }          
           },
-        async signup(){
+        async signup(router){
             if(this.checkId === false){
                 toast.error("아이디 중복체크를 하세요", {
                     timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
             if(this.member.memberPw !== this.member.memberPwChecked){
                 toast.error("새롭게 입력하신 비밀번호가 서로 다릅니다.", {
                     timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
 
@@ -80,23 +80,25 @@ export const useMemberStore = defineStore("member", {
                 
                 console.log(this.member.profileImage)
                 try{
-                    let response = await axios.post(backend + "/member/signup", formData, {
+                    let response = await axios.post(`${backend}/member/signup`, formData, {
                         headers:{
                             "Content-Type": "multipart/form-data",    
                         }
                     });                
                     localStorage.setItem("toastMessage", response.data.message);                      
                     window.location.href = "/login";
-
-                }catch(error){
-                    toast.error(error.response.data.message, {
-                        timeout: timeout,
-                        // 여기에 추가 옵션을 넣을 수 있습니다.
-                    })
+                } catch(error){
+                    if (error.code === 'ERR_NETWORK') {
+                        this.sendErrorMessage(router);
+                    } else {
+                        toast.error(error.response.data.message, {
+                            timeout: timeout,
+                        })
+                    }
                 }
             }
         },
-        async changeInfo(){
+        async changeInfo(router){
             if(this.member.memberPw === this.member.memberPwChecked){
                 let changeInfoMember = {
                     password: this.member.memberOldPw, 
@@ -112,62 +114,66 @@ export const useMemberStore = defineStore("member", {
                 
                 formData.append("profileImage", this.member.profileImage);
                 try{
-                    let response = await axios.patch(backend + "/member/update", formData, {
+                    let response = await axios.patch(`${backend}/member/update`, formData, {
                         headers:{
                             "Content-Type": "multipart/form-data",
                             "Authorization": storedToken
                         }
                     });                 
                     localStorage.removeItem("accessToken")             
-                    localStorage.setItem("toastMessage", response.data.message);                 
-                    
+                    localStorage.setItem("toastMessage", response.data.message);
                     window.location.href = "/login";
                 }catch(error){
                     if(error.response.data.code === "MEMBER_016" || error.response.data.code === "MEMBER_036"){
-                        toast.error(error.response.data.message, {
-                            timeout: timeout,
-                            // 여기에 추가 옵션을 넣을 수 있습니다.
-                        })
+                        if (error.code === 'ERR_NETWORK') {
+                            this.sendErrorMessage(router);
+                        } else {
+                            toast.error(error.response.data.message, {
+                                timeout: timeout,
+                            });
+                        }
                     }    
                 }
             }else{
                 toast.error("새롭게 입력하신 비밀번호가 서로 다릅니다.", {
                     timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
             }
         },
-        // 비밀번호 변경 후 로그인 페이지에서 toast를 실행시키기 위한 메서드
         checkForToastMessage() {
             const toastMessage = localStorage.getItem("toastMessage");
             if (toastMessage) {
               toast(toastMessage, {
                 timeout: timeout,
-                // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
               });
               localStorage.removeItem("toastMessage"); // 메시지를 표시한 후에는 삭제
             }
         },
         // 아이디 중복 확인
-        async checkIdDuplicate() {
+        async checkIdDuplicate(router) {
             const req = {
                 memberId: this.member.memberId
             }
             try {
-              const response = await axios.post(backend + '/member/check/id', req);
+              const response = await axios.post(`${backend}/member/check/id`, req);
               toast(response.data.message, {
                 timeout: timeout,
-                // 여기에 추가 옵션을 넣을 수 있습니다.
             })
                 this.checkId = true;
 
             } catch (error) {
-                toast.error(error.response.data.message, {
-                    timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
-                })
                 this.checkId = false;
+                if (error.code === 'ERR_NETWORK') {
+                    this.sendErrorMessage(router);
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    });
+                }
             }
         },
+        sendErrorMessage(router) {
+            router.push({name: 'error', params: {errorStatus: 500, message: '서버와 연결이 끊어졌습니다. 다시 접속을 시도해주세요.'}})
+        }
     },
 })

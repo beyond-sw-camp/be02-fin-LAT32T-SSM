@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useRouter } from "vue-router";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
@@ -24,6 +23,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
         memberIds:[],
     }),
     actions: {
+        async createChatRoom(chatRoomName, memberList, router) {
         memberPush(){
             this.memberIds.push(this.memberId)
         },
@@ -32,29 +32,28 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 chatRoomName: this.chatRoomName,
                 memberId: this.memberIds
             };
-            const token = localStorage.getItem('accessToken');
-
             try {
                 let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
                     headers: {
-                        Authorization: token,
+                        Authorization: storedToken,
                     }
                 });
-                console.log(response);
                 toast(response.data.message, {
                     timeout: timeout
                 });
+                this.getRoomList(router);
 
             } catch (error) {
-                console.log(error);
-                toast.error(error.response.message, {
-                    timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
-                })
+                if (error.response.data.code === 'COMMON-002') {
+                    this.sendErrorMessage(router, error);
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                }
             }
         },
-        async getRoomList() {
-            const router = useRouter();
+        async getRoomList(router) {
             try {
                 let response = await axios.get(`${backend}/chat/rooms`, {
                     headers: {
@@ -65,10 +64,17 @@ export const useChatRoomStore = defineStore("chatRoom", {
                     this.roomList = response.data.result;
                 }
             } catch (error) {
-                console.log(error);
-                router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
+                if (error.response.data.code === 'COMMON-002') {
+                    this.sendErrorMessage(router, error);
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                }
             }
         },
+        sendErrorMessage(router, error) {
+            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
         makeChatRoom(){
             this.createChatRoom().then(()=>{
                 this.getRoomList();

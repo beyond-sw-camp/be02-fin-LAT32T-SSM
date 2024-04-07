@@ -6,6 +6,7 @@ import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
 const timeout = 10000;
+
 export const useMessageStore = defineStore("message", {
     state: () => ({
         recvList: [],
@@ -23,23 +24,20 @@ export const useMessageStore = defineStore("message", {
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {
-             if (chatRoomId !== undefined) {
-                 try {
-                     let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-                         headers: {
-                             Authorization: token
-                         },
-                     });
-                     response.data.result.forEach((message) => {
-                         this.addMessage(message);
-                     })
-                 } catch (error) {
-                    console.log(error);
-                     toast.error(error.response.data.message, {
-                         timeout: timeout,
-                         // 여기에 추가 옵션을 넣을 수 있습니다.
-                     })
-                 }
+             try {
+                 let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+                     headers: {
+                         Authorization: token
+                     },
+                 });
+                 response.data.result.forEach((message) => {
+                     this.addMessage(message);
+                 })
+             } catch (error) {
+                 toast.error(error.response.data.message, {
+                     timeout: timeout,
+                     onClose: () => window.location.href = '/'
+                 })
              }
         },
     },

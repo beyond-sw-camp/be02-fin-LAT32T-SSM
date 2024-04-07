@@ -27,7 +27,7 @@
                     </router-link>
                   </div>
                   <hr>
-                  <button @click="memberStore.login(memberStore.member)" class="btn btn-primary btn-user btn-block">
+                  <button @click="login" class="btn btn-primary btn-user btn-block">
                     로그인
                   </button>              
                 </div>
@@ -56,10 +56,12 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useMemberStore,),
+    ...mapStores(useMemberStore),
   },
   methods: {
-    
+    login() {
+      this.memberStore.login(this.memberStore.member, this.$router)
+    }
   },
   mounted() {
     this.memberStore.checkForToastMessage();
