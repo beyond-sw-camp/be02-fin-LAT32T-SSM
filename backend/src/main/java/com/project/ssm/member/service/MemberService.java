@@ -1,5 +1,6 @@
 package com.project.ssm.member.service;
 
+import com.project.ssm.chat.model.entity.RoomParticipants;
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.member.exception.MemberAccountException;
 import com.project.ssm.member.exception.MemberDuplicateException;
@@ -7,10 +8,7 @@ import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.model.ProfileImage;
 import com.project.ssm.member.model.request.*;
-import com.project.ssm.member.model.response.GetMemberReadRes;
-import com.project.ssm.member.model.response.GetProfileImageRes;
-import com.project.ssm.member.model.response.PostMemberLoginRes;
-import com.project.ssm.member.model.response.PostMemberSignupRes;
+import com.project.ssm.member.model.response.*;
 import com.project.ssm.member.repository.MemberRepository;
 import com.project.ssm.member.repository.ProfileImageRepository;
 import lombok.RequiredArgsConstructor;
@@ -148,5 +146,14 @@ public class MemberService {
             }
         }
         return getProfileImageRes;
+    }
+
+    public BaseResponse<List<GetChatRoomMembersRes>> getChatRoomMembers(String chatRoomName){
+        List<RoomParticipants> memberNameByChatRoomInMember = memberRepository.findMemberNameByChatRoomName(chatRoomName);
+        List<GetChatRoomMembersRes> members = new ArrayList<>();
+        for (RoomParticipants roomParticipants : memberNameByChatRoomInMember) {
+            members.add(GetChatRoomMembersRes.buildReadRes(roomParticipants.getMember()));
+        }
+        return BaseResponse.successRes("Member49",true, "채팅방 회원의 조회가 성공했습니다.", members);
     }
 }

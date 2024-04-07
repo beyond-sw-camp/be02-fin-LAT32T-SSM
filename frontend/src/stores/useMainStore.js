@@ -35,6 +35,9 @@ export const useMainStore = defineStore("main", {
     // 필터 목록에 멤버이름 들어가는 곳
     filteredMemberNames: [],
     checkedMembers: [],
+
+    // 필터 그룹의 채팅방 아이디가 들어가는 곳
+    selectedChatRoomName: ''
   }),
   actions: {
     base64UrlDecode(input) {
@@ -129,7 +132,6 @@ export const useMainStore = defineStore("main", {
 
     // 회의실 정보를 불러온다.
     async readMeetingRooms() {
-      console.log("메서드 진입")
       try {
         const response = await axios.get(backend + '/meetingroom/current');
         this.meetingRooms = response.data.result;
@@ -213,6 +215,28 @@ export const useMainStore = defineStore("main", {
           this.filteredMemberNames.push(member.memberName);
         }
       });
-    }
+    },
+
+    // 그룹명에 따라서 멤버 선택
+    async onChatRoomChange() {
+      if(this.selectedChatRoomName === '일반일정' || this.selectedChatRoomName === ''){
+        this.filteredMemberNames=[]
+        this.filteredMemberNames.push(this.member.name)
+      } else {      
+        try{
+          // 선택된 채팅방 ID를 사용하여 Axios 요청
+          const response = await axios.get(`${backend}/member/chatroommembers?chatRoomName=${this.selectedChatRoomName}`);
+          console.log(response.data.result)
+          this.filteredMemberNames=[]
+          this.filteredMemberNames = response.data.result.map(member => member.memberName);
+        }
+        catch(error){
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+            // 여기에 추가 옵션을 넣을 수 있습니다.
+          })
+        }          
+      }
+    },
   },
 })

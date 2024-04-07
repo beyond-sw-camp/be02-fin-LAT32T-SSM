@@ -22,7 +22,7 @@ public class ChatRoom {
     @Column(nullable = false, unique = true)
     private String chatRoomId;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String chatRoomName;
 
     @Column(nullable = false)
