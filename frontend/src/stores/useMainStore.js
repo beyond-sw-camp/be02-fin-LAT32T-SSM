@@ -36,8 +36,8 @@ export const useMainStore = defineStore("main", {
     filteredMemberNames: [],
     checkedMembers: [],
 
-    // 필터 그룹의 채팅방 아이디가 들어가는 곳
-    selectedChatRoomName: ''
+    // 필터 그룹의 채팅룸 객체가 들어가는곳
+    selectedChatRoom: "",
   }),
   actions: {
     base64UrlDecode(input) {
@@ -219,19 +219,19 @@ export const useMainStore = defineStore("main", {
 
     // 그룹명에 따라서 멤버 선택
     async onChatRoomChange() {
-      if(this.selectedChatRoomName === '일반일정' || this.selectedChatRoomName === ''){
+      if(this.selectedChatRoom === '일반일정' || this.selectedChatRoom === ''){
         this.filteredMemberNames=[]
         this.filteredMemberNames.push(this.member.name)
       } else {      
         try{
           // 선택된 채팅방 ID를 사용하여 Axios 요청
-          const response = await axios.get(`${backend}/member/chatroommembers?chatRoomName=${this.selectedChatRoomName}`);
+          const response = await axios.get(`${backend}/member/chatroommembers?chatRoomId=${this.selectedChatRoom.chatRoomId}`);
           console.log(response.data.result)
           this.filteredMemberNames=[]
           this.filteredMemberNames = response.data.result.map(member => member.memberName);
         }
         catch(error){
-          toast.error(error.response.data.message, {
+          toast.error(error.response.message, {
             timeout: timeout,
             // 여기에 추가 옵션을 넣을 수 있습니다.
           })

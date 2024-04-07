@@ -1,6 +1,8 @@
 var draggedEventIsAllDay;
 var activeInactiveWeekends = true;
 var backend = window.apiEndpoint;
+var selectedChatRoomName = '';
+
 var calendar = $('#calendar').fullCalendar({
 
   /** ******************
@@ -278,7 +280,12 @@ function getDisplayEventDate(event) {
 
   return displayEventDate;
 }
-
+function updateChatRoomName(chatRoomName) {
+  console.log(chatRoomName)
+  selectedChatRoomName = chatRoomName
+  // 여기에서 chatRoomName을 사용하는 로직을 추가합니다.
+  // 예: 외부 UI 업데이트, 서버로의 추가 요청 등
+}
 function filtering(event) {
   var show_username = true;
   var show_type = true;
@@ -286,7 +293,8 @@ function filtering(event) {
   var username = $('input:checkbox.filter:checked').map(function () {
     return $(this).val();
   }).get();
-  var types = $('#type_filter').val();
+  // var types = $('#type_filter').val();
+  var types = selectedChatRoomName;
 
   show_username = username.indexOf(event.username) >= 0;
 
@@ -297,6 +305,8 @@ function filtering(event) {
       show_type = types.indexOf(event.type) >= 0;
     }
   }
+
+
   return show_username && show_type;
 }
 
