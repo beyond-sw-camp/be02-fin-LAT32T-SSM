@@ -66,7 +66,7 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/chatroommembers")
-    public ResponseEntity getChatRoomMembers(@RequestParam(value = "chatRoomName") String chatRoomName ){
-        return ResponseEntity.ok().body(memberService.getChatRoomMembers(chatRoomName));
+    public ResponseEntity getChatRoomMembers(@RequestParam(value = "chatRoomId") String chatRoomId ){
+        return ResponseEntity.ok().body(memberService.getChatRoomMembers(chatRoomId));
     }
 }

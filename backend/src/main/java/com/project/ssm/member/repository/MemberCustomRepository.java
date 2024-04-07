@@ -17,8 +17,8 @@ public interface MemberCustomRepository {
     List<RoomParticipants> findChatRoomByMemberId(String memberId);
 
     /**
-     * @param chatRoomName
+     * @param chatRoomId
      * @return List<RoomParticipants>
      */
-    List<RoomParticipants> findMemberNameByChatRoomName(String chatRoomName);
+    List<RoomParticipants> findMemberNameByChatRoomName(String chatRoomId);
 }

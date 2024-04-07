@@ -61,7 +61,7 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
     }
 
     @Override
-    public List<RoomParticipants> findMemberNameByChatRoomName(String chatRoomName) {
+    public List<RoomParticipants> findMemberNameByChatRoomName(String chatRoomId) {
         QRoomParticipants roomParticipants = QRoomParticipants.roomParticipants;
         QChatRoom chatRoom = QChatRoom.chatRoom;
         QMember member = QMember.member;
@@ -75,7 +75,7 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
                 .leftJoin(member)
                 .on(roomParticipants.member.memberIdx.eq(member.memberIdx))
                 .where(
-                    roomParticipants.chatRoom.chatRoomName.eq(chatRoomName)
+                    roomParticipants.chatRoom.chatRoomId.eq(chatRoomId)
                 )
                 .fetch();
     }

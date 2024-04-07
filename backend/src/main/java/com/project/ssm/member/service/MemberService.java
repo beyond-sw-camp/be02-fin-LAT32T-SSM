@@ -148,8 +148,11 @@ public class MemberService {
         return getProfileImageRes;
     }
 
-    public BaseResponse<List<GetChatRoomMembersRes>> getChatRoomMembers(String chatRoomName){
-        List<RoomParticipants> memberNameByChatRoomInMember = memberRepository.findMemberNameByChatRoomName(chatRoomName);
+    public BaseResponse<List<GetChatRoomMembersRes>> getChatRoomMembers(String chatRoomId){
+        List<RoomParticipants> memberNameByChatRoomInMember = memberRepository.findMemberNameByChatRoomName(chatRoomId);
+        if(memberNameByChatRoomInMember.isEmpty()){
+            throw MemberNotFoundException.forChatRoomId();
+        }
         List<GetChatRoomMembersRes> members = new ArrayList<>();
         for (RoomParticipants roomParticipants : memberNameByChatRoomInMember) {
             members.add(GetChatRoomMembersRes.buildReadRes(roomParticipants.getMember()));

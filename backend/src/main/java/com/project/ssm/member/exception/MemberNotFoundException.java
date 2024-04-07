@@ -16,4 +16,8 @@ public class MemberNotFoundException extends EntityNotFoundException {
     public static MemberNotFoundException forMemberIdx(Long memberIdx) {
         return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("MemberIdx [ %s ] is not exists.", memberIdx));
     }
+
+    public static MemberNotFoundException forChatRoomId() {
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, "해당 채팅방에 속한 멤버는 없습니다.");
+    }
 }
