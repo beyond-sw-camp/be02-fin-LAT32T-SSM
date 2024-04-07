@@ -107,9 +107,9 @@ export const useMainStore = defineStore("main", {
     },
     notificaiton() {
       this.requestNotificationPermission();
-      
+
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
-      evtSource.addEventListener("test", function(event){
+      evtSource.addEventListener("test", function (event) {
         console.log(event.data)
       })
       evtSource.addEventListener("notification", function (event) {
@@ -119,7 +119,7 @@ export const useMainStore = defineStore("main", {
           timeout: 10000,
           // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
         });
-        
+
         // 사용자에게 알림 표시 웹브라우저 알람
         if (Notification.permission === "granted") {
           new Notification("알람 이벤트", {
@@ -191,7 +191,7 @@ export const useMainStore = defineStore("main", {
       this.searchedMember = [];
       this.memberSearchStatus = !this.memberSearchStatus;
     },
-    
+
     // 멤버찾기 메서드
     async searchMembers() {
       try {
@@ -219,23 +219,23 @@ export const useMainStore = defineStore("main", {
 
     // 그룹명에 따라서 멤버 선택
     async onChatRoomChange() {
-      if(this.selectedChatRoom === '일반일정' || this.selectedChatRoom === ''){
-        this.filteredMemberNames=[]
+      if (this.selectedChatRoom === '일반일정' || this.selectedChatRoom === '') {
+        this.filteredMemberNames = []
         this.filteredMemberNames.push(this.member.name)
-      } else {      
-        try{
+      } else {
+        try {
           // 선택된 채팅방 ID를 사용하여 Axios 요청
           const response = await axios.get(`${backend}/member/chatroommembers?chatRoomId=${this.selectedChatRoom.chatRoomId}`);
           console.log(response.data.result)
-          this.filteredMemberNames=[]
+          this.filteredMemberNames = []
           this.filteredMemberNames = response.data.result.map(member => member.memberName);
         }
-        catch(error){
+        catch (error) {
           toast.error(error.response.message, {
             timeout: timeout,
             // 여기에 추가 옵션을 넣을 수 있습니다.
           })
-        }          
+        }
       }
     },
   },

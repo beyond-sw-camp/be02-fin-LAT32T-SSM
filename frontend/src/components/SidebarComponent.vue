@@ -11,30 +11,15 @@
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <Button class="button-show" label="+" @click="visible = true"/>
-            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '30rem' }">
-                <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
-                <div class="flex align-items-center gap-3 mb-3">
-                    <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="chatRoomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
-                </div>
-                <div class="flex align-items-center gap-3 mb-5">
-                  <label for="email" class="font-semibold w-6rem">사용자아이디</label>
-                  <InputText v-model="memberId" id="사용자아이디" class="input-text flex-auto" autocomplete="off" />
-                  <Button class="button-secondary" type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
-                </div>
-                <div class="flex justify-content-end gap-2">
-                    <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button class="button-create" type="button" label="생성하기" @click="createNewChatRoom"></Button>
-                </div>
-            </Dialog>
+            <Button class="button-show" label="+" @click="chatRoomStore.closeModal()">+</Button>
+            <CreateChatRoomComponent></CreateChatRoomComponent>  
           </div>
         </span>
       </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(); chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
-          <i class="fas fa-caret-right" @click="chatRoomStore.getRoomList(); chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          <i class="fas fa-sort-down" @click="chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
           채널
         </h4>
         <ul>
@@ -56,16 +41,17 @@
 <script>
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
-import InputText from "primevue/inputtext";
+// import Dialog from "primevue/dialog";
+// import Button from "primevue/button";
+// import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import CreateChatRoomComponent from "@/components/CreateChatRoomComponent.vue"
 
 export default {
   name: "SidebarComponent",
-  components: { Dialog, Button, InputText },
+  components: {CreateChatRoomComponent },
   data() {
     return {
       member: {
