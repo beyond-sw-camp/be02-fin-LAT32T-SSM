@@ -1,11 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useMainStore } from "@/stores/useMainStore";
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
+import { useRouter } from "vue-router";
 
-const backend = process.env.VUE_APP_API_ENDPOINT;
-const timeout = 10000;
+// const backend = 'http://192.168.0.41/api'
+const backend = 'http://localhost:8080';
 export const useMessageStore = defineStore("message", {
     state: () => ({
         recvList: [],
@@ -17,12 +15,11 @@ export const useMessageStore = defineStore("message", {
              const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
              const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
              message.createdAt = amOrPm + formatHour + ':' + minutes;
-             useMainStore().getChatProfile(message.memberId).then(result => {
-                 message.profileImage = result;
-             })
+             console.log(message);
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {
+            const router = useRouter();
              if (chatRoomId !== undefined) {
                  try {
                      let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
@@ -34,13 +31,28 @@ export const useMessageStore = defineStore("message", {
                          this.addMessage(message);
                      })
                  } catch (error) {
-                    console.log(error);
-                     toast.error(error.response.data.message, {
-                         timeout: timeout,
-                         // 여기에 추가 옵션을 넣을 수 있습니다.
-                     })
+                     if (error.response.data.code === 'COMMON_001') {
+                         this.sendErrorMessage(router, error);
+                     } else if (error.response.data.code === 'COMMON_002') {
+                         this.sendErrorMessage(router, error);
+                     } else if (error.response.data.code === 'COMMON_003') {
+                         this.sendErrorMessage(router, error);
+                     } else if (error.response.data.code === 'CHATTING_015') {
+                         alert(error.response.data.message);
+                     } else if (error.response.data.code === 'CHATTING_016') {
+                         alert(error.response.data.message);
+                     } else if (error.response.data.code === 'CHATTING_017') {
+                         alert(error.response.data.message);
+                     } else if (error.response.data.code === 'CHATTING_018') {
+                         alert(error.response.data.message);
+                     } else if (error.response.data.code === 'CHATTING_019') {
+                         alert(error.response.data.message);
+                     }
                  }
              }
+        },
+        sendErrorMessage(router, error) {
+            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
         },
     },
     getters: {
