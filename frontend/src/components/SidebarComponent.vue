@@ -40,7 +40,7 @@
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click.once="stompStore.roomConnect(item.chatRoomId)">
+              <a href="#" @click.once="connectChatRoom(item)">
               <span class="make-white">
               <i class="fas fa-hashtag"></i>
                 {{ item.chatRoomName }}
@@ -96,11 +96,14 @@ export default {
       this.memberList.push(memberId);
     },
     createNewChatRoom() {
-      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList);
+      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList, this.$router);
       this.visible = false;
     },
     toggleArrow(){
       this.isArrowVisible = !this.isArrowVisible;
+    },
+    connectChatRoom(item) {
+      this.stompStore.roomConnect(item.chatRoomId, this.$router)
     }
   },
   mounted() {

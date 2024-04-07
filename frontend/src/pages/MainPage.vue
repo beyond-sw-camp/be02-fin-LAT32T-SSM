@@ -14,14 +14,6 @@
             <h4 class="channel-content-header-name">
               {{ chatRoomName }} 채팅방 <i class="fas fa-star"></i>
             </h4>
-            <!-- <section class="content-header-icons">
-              <div>
-                <i class="far fa-user"></i><span class="content-header-counter">5</span>
-              </div>
-              <p class="content-header-text">
-                {{ chatRoomName }} 채팅방 입니다.
-              </p>
-            </section> -->
           </article>
           <button class="btn-borderless btn-slack info" id="info" type="button">
             <div @click="showChatting" v-show="isFullcalendarVisible"> 채팅 </div>
@@ -146,10 +138,7 @@ export default {
     }
   },
   created() {
-    // 토큰 데이터 load
     this.mainStore.loadMemberData();
-
-    // SSE 연결 함수
     this.mainStore.notificaiton();
   },
   computed: {
@@ -192,7 +181,7 @@ export default {
     },
     setMember(token) {
       token = token.split(" ")[1];
-      const payload = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
+      const payload = token.split('.')[1];
       const tokenData = this.mainStore.base64UrlDecode(payload)
       this.memberId = tokenData.memberId;
       this.memberName = tokenData.memberName;
@@ -245,7 +234,7 @@ export default {
       .catch(() => {
         // Failed to fetch script
       });
-    useChatRoomStore().getRoomList();
+    useChatRoomStore().getRoomList(this.$router);
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }

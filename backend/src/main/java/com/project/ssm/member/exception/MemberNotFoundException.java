@@ -10,11 +10,11 @@ public class MemberNotFoundException extends EntityNotFoundException {
     }
 
     public static MemberNotFoundException forMemberId(String memberId) {
-        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("Member Id [ %s ] is not exists.", memberId));
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("%s은 존재하지 않는 회원입니다.", memberId));
     }
 
     public static MemberNotFoundException forMemberIdx(Long memberIdx) {
-        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("MemberIdx [ %s ] is not exists.", memberIdx));
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("%s은 존재하지 않는 회원입니다.", memberIdx));
     }
 
     public static MemberNotFoundException forChatRoomId() {
