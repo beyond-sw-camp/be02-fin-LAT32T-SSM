@@ -4,6 +4,7 @@ package com.project.ssm.member.repository;
 import com.project.ssm.chat.model.entity.QChatRoom;
 import com.project.ssm.chat.model.entity.QRoomParticipants;
 import com.project.ssm.chat.model.entity.RoomParticipants;
+import com.project.ssm.member.model.Member;
 import com.project.ssm.member.model.ProfileImage;
 import com.project.ssm.member.model.QMember;
 import com.project.ssm.member.model.QProfileImage;
@@ -55,6 +56,26 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
                 .on(roomParticipants.chatRoom.chatRoomIdx.eq(chatRoom.chatRoomIdx))
                 .where(
                         roomParticipants.member.memberId.eq(memberId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<RoomParticipants> findMemberNameByChatRoomName(String chatRoomName) {
+        QRoomParticipants roomParticipants = QRoomParticipants.roomParticipants;
+        QChatRoom chatRoom = QChatRoom.chatRoom;
+        QMember member = QMember.member;
+
+
+        return queryFactory
+                .select(roomParticipants)
+                .from(roomParticipants)
+                .leftJoin(chatRoom)
+                .on(roomParticipants.chatRoom.chatRoomIdx.eq(chatRoom.chatRoomIdx))
+                .leftJoin(member)
+                .on(roomParticipants.member.memberIdx.eq(member.memberIdx))
+                .where(
+                    roomParticipants.chatRoom.chatRoomName.eq(chatRoomName)
                 )
                 .fetch();
     }
