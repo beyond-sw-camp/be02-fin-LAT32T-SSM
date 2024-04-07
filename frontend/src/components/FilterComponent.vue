@@ -5,7 +5,7 @@
             <div class="panel-body">
                 <div class="col-lg-6">
                     <label for="calendar_view">채팅방List</label>
-                    <div class="input-group filter" @click="chatRoomStore.getRoomList()">
+                    <div class="input-group filter">
                         <select v-if="chatRoomStore.roomList.length > 0" class="filter" id="type_filter" v-model="mainStore.selectedChatRoom"
                             @change="mainStore.onChatRoomChange(); chatRoomChange()">
                             <option value="일반일정">일반일정</option>
