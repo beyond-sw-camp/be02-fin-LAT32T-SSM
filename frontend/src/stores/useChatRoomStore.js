@@ -12,12 +12,25 @@ export const useChatRoomStore = defineStore("chatRoom", {
         roomName: "",
         roomList: [],
         chatRoomId: "",
+        // 채팅방생성모달 visible 변수
+        visible: false,
+
+        // 채팅방이름
+        chatRoomName: '',
+        // 멤버Id
+        memberId:'',
+        // 채팅방에 추가하고싶은 Id
+        memberIds:[],
     }),
     actions: {
         async createChatRoom(chatRoomName, memberList, router) {
+        memberPush(){
+            this.memberIds.push(this.memberId)
+        },
+        async createChatRoom() {
             const roomInfo = {
-                chatRoomName: chatRoomName,
-                memberId: memberList
+                chatRoomName: this.chatRoomName,
+                memberId: this.memberIds
             };
             try {
                 let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
@@ -62,6 +75,18 @@ export const useChatRoomStore = defineStore("chatRoom", {
         },
         sendErrorMessage(router, error) {
             router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
+        makeChatRoom(){
+            this.createChatRoom().then(()=>{
+                this.getRoomList();
+                this.closeModal();
+            })
+        },
+
+        closeModal() {
+            this.chatRoomName='';
+            this.memberId='';
+            this.memberIds=[];
+            this.visible = !this.visible;
         }
     }
 })
