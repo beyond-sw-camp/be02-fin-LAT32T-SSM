@@ -14,6 +14,6 @@ public class MessageDuplicateException extends EntityDuplicateException {
     }
 
     public static MessageDuplicateException forDuplicateMessage(String message) {
-        return new MessageDuplicateException(ErrorCode.DUPLICATE_DELETE_MESSAGE, String.format("[%s] 메시지는 이미 삭제되었습니다.", message));
+        return new MessageDuplicateException(ErrorCode.DUPLICATE_DELETE_MESSAGE, String.format("%s 메시지는 이미 삭제되었습니다.", message));
     }
 }

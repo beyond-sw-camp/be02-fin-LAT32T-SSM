@@ -18,10 +18,10 @@ public class ChatRoomAccessException extends BusinessException {
     }
 
     public static ChatRoomAccessException forOutedChatRoom(String memberName) {
-        return new ChatRoomAccessException(ErrorCode.ALREADY_OUTED_CHATROOM, String.format("[%s]님은 이미 채팅방에서 삭제되었습니다.", memberName));
+        return new ChatRoomAccessException(ErrorCode.ALREADY_OUTED_CHATROOM, String.format("%s님은 이미 채팅방에서 삭제되었습니다.", memberName));
     }
 
     public static ChatRoomAccessException forNotAccessChatRoom(String memberName) {
-        return new ChatRoomAccessException(ErrorCode.NOT_ACCESS_CHATROOM, String.format("[%s]님은 채팅방에 존재하지 않는 사용자입니다.", memberName));
+        return new ChatRoomAccessException(ErrorCode.NOT_ACCESS_CHATROOM, String.format("%s님은 채팅방에 존재하지 않는 사용자입니다.", memberName));
     }
 }

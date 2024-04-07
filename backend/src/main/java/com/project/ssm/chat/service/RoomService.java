@@ -169,6 +169,9 @@ public class RoomService {
     }
 
     public BaseResponse<List<GetChatListRes>> getChatList(String token, String chatRoomId, Integer page, Integer size) {
+        chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
+                ChatRoomNotFoundException.forNotFoundChatRoom());
+
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
 

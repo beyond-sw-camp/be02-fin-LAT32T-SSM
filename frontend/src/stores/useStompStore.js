@@ -33,7 +33,7 @@ export const useStompStore = defineStore("stomp", {
             }, error => {
                 console.log(error);
                 console.log('=======에러발생=======');
-                this.connected = false;
+                stomp.connected = false;
                 console.log(error.code);
                 console.log('소켓 연결 실패', error);
                 if (error.code === 1001) {

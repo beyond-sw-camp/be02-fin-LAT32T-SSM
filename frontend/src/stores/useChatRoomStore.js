@@ -16,46 +16,47 @@ export const useChatRoomStore = defineStore("chatRoom", {
     }),
     actions: {
         async createChatRoom(chatRoomName, memberList) {
+            const router = useRouter();
             const roomInfo = {
                 chatRoomName: chatRoomName,
                 memberId: memberList
             };
-            const token = localStorage.getItem('accessToken');
-
             try {
                 let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
                     headers: {
-                        Authorization: token,
+                        Authorization: storedToken,
                     }
                 });
-                console.log(response);
                 toast(response.data.message, {
                     timeout: timeout
                 });
+                this.getRoomList();
 
             } catch (error) {
                 console.log(error);
-                toast.error(error.response.message, {
+                toast.error(error.response.data.message, {
                     timeout: timeout,
-                    // 여기에 추가 옵션을 넣을 수 있습니다.
                 })
+                this.sendErrorMessage(router, error);
             }
         },
         async getRoomList() {
-            const router = useRouter();
             try {
                 let response = await axios.get(`${backend}/chat/rooms`, {
                     headers: {
                         Authorization: storedToken
                     },
                 });
+                console.log(response);
                 if (response.data.result !== null) {
                     this.roomList = response.data.result;
                 }
             } catch (error) {
                 console.log(error);
-                router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
             }
         },
+        sendErrorMessage(router, error) {
+            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
+        }
     }
 })
