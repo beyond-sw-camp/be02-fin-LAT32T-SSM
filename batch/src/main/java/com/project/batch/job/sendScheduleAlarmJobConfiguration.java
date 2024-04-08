@@ -31,7 +31,7 @@ public class sendScheduleAlarmJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private static final int CHUNK_SIZE = 10000;
 
     @Bean
@@ -109,7 +109,7 @@ public class sendScheduleAlarmJobConfiguration {
             for (sendScheduleAlarmReq req : list) {
                 String message = "당신의 " + req.getTitle() +  " 일정이 시작전입니다.";
                 // 나중에 올릴땐 토픽 변경 SseMessage 으로
-                kafkaTemplate.send("notificationTopic", req.getMemberId(), message);
+                kafkaTemplate.send("notificationTopic", ""+req.getMemberId(), message);
             }
         };
     }

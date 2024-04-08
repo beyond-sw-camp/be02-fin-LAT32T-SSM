@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://mariadb-service:3306/lat32t
+    url: jdbc:mariadb://mariadb-service:3306/scdf
     username: root
     password: qwer1234
   jpa:
