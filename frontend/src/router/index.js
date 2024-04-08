@@ -4,8 +4,7 @@ import MainPage from "@/pages/MainPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
 import SignUpPage from "@/pages/SignUpPage.vue";
 import ChangeInfoPage from "@/pages/ChangeInfoPage.vue";
-import ErrorPage from "@/pages/ErrorPage.vue";
-
+import Error404Page from "@/pages/Error404Page.vue"; 
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,9 +12,14 @@ const router = createRouter({
     { path: '/', component: MainPage },
     { path: '/login', component: LoginPage },
     { path: '/signup', component: SignUpPage },
-    { path: '/:roomId', component: MainPage },
+    // uuid만 허용 8 - 4 - 4 - 4 - 12
+    { path: '/:roomId([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})', component: MainPage },
     { path: '/update', component: ChangeInfoPage },
-    { path: '/error/:errorStatus/:message', name: 'error', component: ErrorPage },
+    { path: '/error/:errorStatus/:message', name: 'error', component: Error404Page }, 
+    // `/:pathMatch(.*)`는 Vue 라우터에서 제공하는 동적 세그먼트 매칭 패턴
+    // 어떤 경로에도 매칭되지 않는 모든 요청을 Error404Page 컴포넌트로 리다이렉트
+    // 존재하지 않는 페이지에 접근하려 할 때 404 페이지로
+    { path: '/:pathMatch(.*)', component: Error404Page }, // 존재하지 않는 모든 경로에 대해 404 에러페이지
   ]
 })
 
