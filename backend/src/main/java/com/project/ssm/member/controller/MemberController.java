@@ -64,4 +64,9 @@ public class MemberController {
     public ResponseEntity getProfileImage(@RequestBody GetProfileImageReq getProfileImageReq) {
         return ResponseEntity.ok().body(memberService.getMemberProfile(getProfileImageReq));
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/chatroommembers")
+    public ResponseEntity getChatRoomMembers(@RequestParam(value = "chatRoomId") String chatRoomId ){
+        return ResponseEntity.ok().body(memberService.getChatRoomMembers(chatRoomId));
+    }
 }

@@ -1,10 +1,5 @@
 <template>
   <section class="sidebar">
-    <article class="sidebar-1">
-      <div class="box-1"></div>
-      <div class="box-2"></div>
-      <div class="box-3">+</div>
-    </article>
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
@@ -16,48 +11,21 @@
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <Button class="button-show" label="+" @click="visible = true"/>
-            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '30rem' }">
-                <span class="p-text-secondary block mb-2">새로운 채팅방 생성하기</span>
-                <div class="flex align-items-center gap-3 mb-3">
-                    <label for="chatRoomName" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="chatRoomName" id="채팅방 이름" class="input-text flex-auto " autocomplete="off" />
-                </div>
-                <div class="flex align-items-center gap-3 mb-5">
-                  <label for="email" class="font-semibold w-6rem">사용자아이디</label>
-                  <InputText v-model="memberId" id="사용자아이디" class="input-text flex-auto" autocomplete="off" />
-                  <Button class="button-secondary" type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
-                </div>
-                <div class="flex justify-content-end gap-2">
-                    <Button class="button-cancel" type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button class="button-create" type="button" label="생성하기" @click="createChatRoom"></Button>
-                </div>
-            </Dialog>
+            <Button class="button-show" label="+" @click="chatRoomStore.closeModal()">+</Button>
+            <CreateChatRoomComponent></CreateChatRoomComponent>  
           </div>
         </span>
       </section>
-      <section class="unread">
-        <h4 class="unread-header">
-          <span class="unread-icons">
-            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-            ><i class="fas fa-minus fa-xs"></i>
-          </span>
-          읽지 않은 메시지
-        </h4>
-        <ul>
-          <li>
-            <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
-          </li>
-        </ul>
-      </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(); chatRoomListHide()"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          채널
         </h4>
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click.once="stompStore.roomConnect(item.chatRoomId)">
+              <a href="#" @click.once="connectChatRoom(item)">
               <span class="make-white">
               <i class="fas fa-hashtag"></i>
                 {{ item.chatRoomName }}
@@ -73,19 +41,17 @@
 <script>
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
-import InputText from "primevue/inputtext";
+// import Dialog from "primevue/dialog";
+// import Button from "primevue/button";
+// import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
-import axios from "axios";
-
-const backend = process.env.VUE_APP_API_ENDPOINT
+import CreateChatRoomComponent from "@/components/CreateChatRoomComponent.vue"
 
 export default {
   name: "SidebarComponent",
-  components: { Dialog, Button, InputText },
+  components: {CreateChatRoomComponent },
   data() {
     return {
       member: {
@@ -99,6 +65,7 @@ export default {
       visible: false,
       recvList: [],
       isChatRoomListVisible: true,
+      isArrowVisible: true,
     }
   },
   computed: {
@@ -114,24 +81,16 @@ export default {
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    async createChatRoom() {
-      console.log(this.memberList)
-      console.log(this.chatRoomName);
-      const roomInfo = {
-        chatRoomName: this.chatRoomName,
-        memberId: this.memberList
-      };
-      const token = localStorage.getItem('accessToken');
-      console.log(token);
-      let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
-        headers: {
-          Authorization: token,
-        }
-      });
-      console.log(response.data);
-
+    createNewChatRoom() {
+      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList, this.$router);
       this.visible = false;
     },
+    toggleArrow(){
+      this.isArrowVisible = !this.isArrowVisible;
+    },
+    connectChatRoom(item) {
+      this.stompStore.roomConnect(item.chatRoomId, this.$router)
+    }
   },
   mounted() {
     // 토큰 데이터 load
@@ -141,6 +100,13 @@ export default {
 </script>
 
 <style scoped>
+.fa-sort-down {
+  cursor: pointer;
+}
+.fa-caret-right{
+  cursor: pointer;
+}
+
 /* 기본 스타일링 */
 body {
     font-family: 'Arial', sans-serif; /* 기본 글꼴 */
@@ -628,18 +594,10 @@ body::-webkit-scrollbar-thumb {
 
 /* first left-sidebar */
 
-.sidebar-1 {
-  grid-column: 1 / 1;
-  border-right: 0.1rem solid var(--slack-border-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* second left-sidebar */
 
 .sidebar-2 {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
   overflow: auto;
 }
 

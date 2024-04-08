@@ -1,5 +1,6 @@
 package com.project.ssm.chat.service;
 
+
 import com.project.ssm.chat.exception.ChatRoomAccessException;
 import com.project.ssm.chat.exception.ChatRoomNotFoundException;
 import com.project.ssm.chat.exception.MessageAccessException;
@@ -14,15 +15,18 @@ import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.member.config.utils.JwtUtils;
+import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +43,7 @@ public class RoomService {
     private final MemberRepository memberRepository;
     private final RoomParticipantsRepository roomPartRepository;
     private final MessageRepository messageRepository;
+    private final KafkaAdmin kafkaAdmin;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -53,8 +58,15 @@ public class RoomService {
             roomPartRepository.save(RoomParticipants.buildRoomPart(memberInfo, room));
         }
 
+        newTopic(room.getChatRoomId());
         PostCreateRoomRes postCreateRoomRes = PostCreateRoomRes.buildRoomRes(room.getChatRoomName(), room.getChatRoomId());
         return BaseResponse.successRes("CHATTING_001", true, "채팅방이 생성되었습니다.", postCreateRoomRes);
+    }
+
+    private void newTopic(String chatRoomId) {
+        String topic = "chat-room-" + chatRoomId;
+        NewTopic newTopic = TopicBuilder.name(topic).build();
+        kafkaAdmin.createOrModifyTopics(newTopic);
     }
 
     public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
@@ -157,6 +169,9 @@ public class RoomService {
     }
 
     public BaseResponse<List<GetChatListRes>> getChatList(String token, String chatRoomId, Integer page, Integer size) {
+        chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
+                ChatRoomNotFoundException.forNotFoundChatRoom());
+
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
 

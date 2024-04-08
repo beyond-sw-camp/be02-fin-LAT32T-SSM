@@ -1,6 +1,5 @@
 package com.project.ssm.member.model.response;
 
-import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,19 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostMemberLoginRes {
+public class GetChatRoomMembersRes {
 
     @NotBlank
-    private String token;
+    @Size(max = 20)
+    private String memberName;
 
-    public static PostMemberLoginRes buildLoginRes(Member member, String secretKey, Long expiredTimeMs) {
-        return PostMemberLoginRes.builder()
-                .token(JwtUtils.generateAccessToken(member, secretKey, expiredTimeMs))
+    public static GetChatRoomMembersRes buildReadRes(Member member) {
+        return GetChatRoomMembersRes.builder()
+                .memberName(member.getMemberName())
                 .build();
     }
 }

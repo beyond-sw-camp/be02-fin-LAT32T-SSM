@@ -4,6 +4,12 @@ jwt:
     expired-time-ms: ${JWT_EXP_TIME_MS}
 
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    bootstrap-servers: ${KAFKA_SERVER}
   datasource:
     driver-class-name: ${DB_DRIVER}
     url: ${DB_URL}

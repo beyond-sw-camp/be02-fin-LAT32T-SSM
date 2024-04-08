@@ -17,7 +17,7 @@
                       placeholder="아이디를 입력해주세요" :disabled="memberStore.checkId" >
                     <div class="input-group-append">
                       <!-- 버튼의 타입을 'button'으로 설정하여 폼 제출을 방지합니다 -->
-                      <button type="button" class="btn btn-primary btn-user btn-block" @click="memberStore.checkIdDuplicate">중복
+                      <button type="button" class="btn btn-primary btn-user btn-block" @click="checkIdDuplicate">중복
                         검사</button>
                     </div>
                   </div>
@@ -56,7 +56,7 @@
                 </div>
                 <hr>
               </form>
-              <button @click="memberStore.signup()" class="btn btn-primary btn-user btn-block">
+              <button @click="signup" class="btn btn-primary btn-user btn-block">
                 회원 가입
               </button>
               <hr>
@@ -85,6 +85,12 @@ export default {
     ...mapStores(useMemberStore),
   },
   methods: {
+    signup() {
+      this.memberStore.signup(this.$router);
+    },
+    checkIdDuplicate() {
+      this.memberStore.checkIdDuplicate(this.$router);
+    },
     handleFileUpload(event) {
       const file = event.target.files[0]; // 사용자가 선택한 파일
       this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
@@ -281,7 +287,6 @@ export default {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: .35rem;
-  overflow-y: auto;
 }
 
 .o-hidden {
@@ -306,8 +311,7 @@ export default {
   min-height: 1px;
   /* 기존 설정 */
   padding: 1.25rem;
-  overflow-y: auto;
-  /* 세로 스크롤 활성화 */
+  
 }
 
 .p-0 {

@@ -1,8 +1,12 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useMainStore } from "@/stores/useMainStore";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
+const timeout = 10000;
+
 export const useMessageStore = defineStore("message", {
     state: () => ({
         recvList: [],
@@ -20,19 +24,20 @@ export const useMessageStore = defineStore("message", {
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {
-             if (chatRoomId !== undefined) {
-                 try {
-                     let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-                         headers: {
-                             Authorization: token
-                         },
-                     });
-                     response.data.result.forEach((message) => {
-                         this.addMessage(message);
-                     })
-                 } catch (error) {
-                    console.log(error);
-                 }
+             try {
+                 let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+                     headers: {
+                         Authorization: token
+                     },
+                 });
+                 response.data.result.forEach((message) => {
+                     this.addMessage(message);
+                 })
+             } catch (error) {
+                 toast.error(error.response.data.message, {
+                     timeout: timeout,
+                     onClose: () => window.location.href = '/'
+                 })
              }
         },
     },

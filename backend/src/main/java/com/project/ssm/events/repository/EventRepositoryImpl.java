@@ -13,14 +13,19 @@ import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 public class EventRepositoryImpl implements EventCustomRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -55,25 +60,31 @@ public class EventRepositoryImpl implements EventCustomRepository {
                 .fetch();
     }
 
-//    @Override
-//    public List<Event> findEventsByDate(Long memberIdx, String date) {
-//        QEvent event = QEvent.event;
-//        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
-//
-//        return queryFactory
-//                .select(event)
-//                .from(event)
-//                .leftJoin(eventParticipants)
-//                .on(event.eventIdx.eq(eventParticipants.event.eventIdx))
-//                .where(
-//                        eventParticipants.member.memberIdx.eq(memberIdx)
-//                                .and(
-//                                        event.startedAt.substring(0, 10).eq(date)
-//                                                .or(event.closedAt.substring(0, 10).eq(date))
-//                                )
-//                )
-//                .fetch();
-//    }
+    // 메서드의 파라미터로 시작 날짜와 종료 날짜를 받습니다.
+    @Override
+    public List<EventParticipants> findEventParticipantsBetweenDates(String start, String end) {
+        QEvent event = QEvent.event;
+        QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
+
+        return queryFactory
+                .select(eventParticipants)
+                .from(eventParticipants)
+                .leftJoin(event)
+                .on(eventParticipants.event.eventIdx.eq(event.eventIdx))
+                .where(
+
+
+                        // 데이터베이스의 날짜 함수를 사용하여 문자열 필드를 날짜로 변환하고 범위 비교를 수행
+                        Expressions.stringTemplate("DATE_FORMAT({0},{1})", event.startedAt, ConstantImpl.create("%Y-%m-%d %H:%i"))
+                                .between(start, end)
+                                .or(
+                                        Expressions.stringTemplate("DATE_FORMAT({0},{1})", event.closedAt, ConstantImpl.create("%Y-%m-%d %H:%i"))
+                                                .between(start, end)
+                                )
+
+                )
+                .fetch();
+    }
 
     @Override
     public List<Event> findEventsByReservationTime(Long meetingRoomIdx, String date) {
@@ -93,13 +104,15 @@ public class EventRepositoryImpl implements EventCustomRepository {
     /**
      * 일정 알람을 위한 메소드
      * String 타입의 startedAt을 Date 타입으로 바꾸고
+     * 이벤트참가 테이블과 이벤트 테이블 조인을 해서 현재 시간 기준 10분 이후 데이터를 뽑는다.
+     * 나오는 멤버를 찾아서 emitter로 메세지를 보낸다.
      */
     @Override
     public List<EventParticipants> findMemberByEventTime() {
         QEvent event = QEvent.event;
         QEventParticipants eventParticipants = QEventParticipants.eventParticipants;
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime tenMinutesAfter = now.plusMinutes(10);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
