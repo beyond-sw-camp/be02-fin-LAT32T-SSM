@@ -26,7 +26,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
         memberPush(){
             this.memberIds.push(this.memberId)
         },
-        async createChatRoom() {
+        async createChatRoom(router) {
             const roomInfo = {
                 chatRoomName: this.chatRoomName,
                 memberId: this.memberIds
@@ -40,7 +40,6 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 toast(response.data.message, {
                     timeout: timeout
                 });
-                this.getRoomList(router);
 
             } catch (error) {
                 if (error.response.data.code === 'COMMON-002') {
@@ -53,6 +52,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
             }
         },
         async getRoomList(router) {
+            console.log(router)
             try {
                 let response = await axios.get(`${backend}/chat/rooms`, {
                     headers: {
@@ -65,6 +65,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
             } catch (error) {
                 if (error.response.data.code === 'COMMON-002') {
                     this.sendErrorMessage(router, error);
+                    
                 } else {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
@@ -75,9 +76,10 @@ export const useChatRoomStore = defineStore("chatRoom", {
         sendErrorMessage(router, error) {
             router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
         },
-        makeChatRoom(){
+        makeChatRoom(router){
+            console.log(router)
             this.createChatRoom().then(()=>{
-                this.getRoomList();
+                this.getRoomList(router);
                 this.closeModal();
             })
         },
