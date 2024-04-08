@@ -47,10 +47,6 @@ public class MessageService {
     private final ObjectMapper objectMapper;
     private final EmittersService emittersService;
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
-
-
     @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         log.info("consume-message : {}", record.value());
@@ -82,7 +78,6 @@ public class MessageService {
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
         if (!sendMessageDto.getMessage().isEmpty()) {
-
             Member member = memberRepository.findByMemberId(sendMessageDto.getMemberId()).orElseThrow(() ->
                     MemberNotFoundException.forMemberId(sendMessageDto.getMemberId()));
 
@@ -112,11 +107,5 @@ public class MessageService {
         } else {
             throw MessageAccessException.forNotContent();
         }
-    }
-
-    public void enterRoom(String token) {
-        token = JwtUtils.checkJwtToken(token);
-        String memberId = JwtUtils.getMemberInfo(token, secretKey);
-        messagingTemplate.convertAndSend("/sub/room", memberId);
     }
 }
