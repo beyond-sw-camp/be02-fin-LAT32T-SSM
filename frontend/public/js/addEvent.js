@@ -119,6 +119,13 @@ var newEvent = function (start, end, eventType) {
                 //DB연동시 중복이벤트 방지를 위한
                 $('#calendar').fullCalendar('removeEvents');
                 $('#calendar').fullCalendar('refetchEvents');
+            },
+            error: function (response) {
+                if (response.status >= 500) {
+                    window.location.href = '/ServerErrorPage.html';
+                } else {
+                    window.location.href = '/NotFoundErrorPage.html';
+                }
             }
         });
     });

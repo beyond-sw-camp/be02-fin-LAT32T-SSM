@@ -130,6 +130,10 @@ var editEvent = function (event, element, view) {
             alert('삭제되었습니다.');
             $('#calendar').fullCalendar('removeEvents');
             $('#calendar').fullCalendar('refetchEvents');
+        },
+        error: function (response) {
+            console.log(response);
+            console.log(response.responseJSON);
         }
     });
 

@@ -61,6 +61,10 @@ export const useMainStore = defineStore("main", {
         // 태초의 필터 목록에 본인 이름을 넣는다.
         this.filteredMemberNames = [];
         this.filteredMemberNames.push(this.member.name);
+      } else {
+        toast.error('권한이 없는 사용자입니다. 다시 로그인해주세요', {
+          timeout: timeout
+        })
       }
     },
     async onDateClick(date) {
@@ -80,10 +84,8 @@ export const useMainStore = defineStore("main", {
         });
         return response.data;
       } catch (error) {
-        console.log(error);
         toast.error(error.response.data.message, {
           timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
         })
         return null;
       }
@@ -114,23 +116,17 @@ export const useMainStore = defineStore("main", {
       })
       evtSource.addEventListener("notification", function (event) {
         console.log(event.data)
-        // 토스트로 알람구현
         toast.success(event.data, {
-          timeout: 10000,
-          // 여기에 추가적인 toast 옵션을 설정할 수 있습니다.
+          timeout: timeout,
         });
-
-        // 사용자에게 알림 표시 웹브라우저 알람
         if (Notification.permission === "granted") {
           new Notification("알람 이벤트", {
             body: event.data,
-            // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
           });
         }
       }, false);
     },
 
-    // 회의실 정보를 불러온다.
     async readMeetingRooms() {
       try {
         const response = await axios.get(backend + '/meetingroom/current');
@@ -142,7 +138,6 @@ export const useMainStore = defineStore("main", {
         console.error('회의실 정보를 가져오지 못했습니다:', error);
         toast.error(error.response.data.message, {
           timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
         })
       }
     },
@@ -159,7 +154,6 @@ export const useMainStore = defineStore("main", {
         console.error('멤버 정보를 가져오지 못했습니다:', error);
         toast.error(error.response.data.message, {
           timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
         })
       }
     },
@@ -181,12 +175,10 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         toast.error(error.response.data.message, {
           timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
         })
       }
     },
 
-    // 멤버찾기 컴포넌트 open, close
     openComponent() {
       this.searchedMember = [];
       this.memberSearchStatus = !this.memberSearchStatus;
@@ -217,23 +209,20 @@ export const useMainStore = defineStore("main", {
       });
     },
 
-    // 그룹명에 따라서 멤버 선택
     async onChatRoomChange() {
+      console.log('채팅방 바꾸기');
       if (this.selectedChatRoom === '일반일정' || this.selectedChatRoom === '') {
         this.filteredMemberNames = []
         this.filteredMemberNames.push(this.member.name)
       } else {
         try {
-          // 선택된 채팅방 ID를 사용하여 Axios 요청
           const response = await axios.get(`${backend}/member/chatroommembers?chatRoomId=${this.selectedChatRoom.chatRoomId}`);
-          console.log(response.data.result)
           this.filteredMemberNames = []
           this.filteredMemberNames = response.data.result.map(member => member.memberName);
         }
         catch (error) {
           toast.error(error.response.message, {
             timeout: timeout,
-            // 여기에 추가 옵션을 넣을 수 있습니다.
           })
         }
       }

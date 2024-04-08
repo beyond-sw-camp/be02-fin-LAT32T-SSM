@@ -18,6 +18,9 @@
 <script>
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
+import {toast} from "vue3-toastify";
+
+const timeout = 10000;
 
 export default {
   data() {
@@ -47,7 +50,6 @@ export default {
     },
     async onDateClick() {
       try {
-        // 스토어 응답 데이터 가져옴
         const responseData = await this.mainStore.onDateClick(this.date);
         console.log(responseData)
         if (!responseData) {
@@ -55,17 +57,15 @@ export default {
           this.selectedDateDetails = [];
           return;
         }
-        console.log(responseData);
         if (responseData.result && responseData.result) {
-          // title만 추출
           this.selectedDateDetails = responseData.result.map(event => event.title);
         } else {
-          console.error('반환된 데이터 없음.');
           this.selectedDateDetails = [];
         }
-      } catch (error) {
-        console.error('HTTP 요청 실패:', error);
-        this.selectedDateDetails = [];
+      } catch (error) {   // 서버에서 예외가 발생한 경우
+        toast.error('잘못된 요청입니다.', {
+          timeout: timeout,
+        })
       }
     },
   },

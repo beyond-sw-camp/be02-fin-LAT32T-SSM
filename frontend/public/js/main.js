@@ -135,6 +135,10 @@ var calendar = $('#calendar').fullCalendar({
           // 콘솔 창이 아니라 다른 컴포넌트? 혹은 alert 사용하기
           console.log(response.message);
         }
+      },
+      error: function (response) {
+        console.log(response);
+        console.log(response.responseJSON);
       }
     });
   },
@@ -161,6 +165,10 @@ var calendar = $('#calendar').fullCalendar({
       },
       success: function (response) {
         alert('수정: ' + newDates.startDate + ' ~ ' + newDates.endDate);
+      },
+      error: function (response) {
+        console.log(response);
+        console.log(response.responseJSON);
       }
     });
 
@@ -283,8 +291,6 @@ function getDisplayEventDate(event) {
 function updateChatRoomName(chatRoomName) {
   console.log(chatRoomName)
   selectedChatRoomName = chatRoomName
-  // 여기에서 chatRoomName을 사용하는 로직을 추가합니다.
-  // 예: 외부 UI 업데이트, 서버로의 추가 요청 등
 }
 function filtering(event) {
   var show_username = true;
