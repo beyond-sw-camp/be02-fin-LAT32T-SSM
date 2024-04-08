@@ -8,7 +8,7 @@
             <span @click="movePage">{{ errorStatus }}</span>
           </div>
           <span class="inner-status">{{ message }}</span>
-          <span class="inner-status">로그인 페이지로 돌아가시려면 앞에 보이시는 숫자를 클릭해주세요.</span>
+          <!--END CONTENT-->
         </div>
       </div>
     </div>

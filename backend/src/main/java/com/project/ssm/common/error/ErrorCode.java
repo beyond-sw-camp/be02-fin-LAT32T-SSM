@@ -4,26 +4,22 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
     // 공통
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "COMMON-001", "유효성 검증에 실패 하였습니다."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-002", "서버에서 요청을 처리할 수 없습니다."),
-    CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, "COMMON-003", "테이블 컬럼의 제약조건을 위반 하였습니다."),
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "COMMON_001", "유효성 검증에 실패 하였습니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_002", "서버에서 요청을 처리할 수 없습니다."),
+    CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, "COMMON_003", "테이블 컬럼의 제약조건을 위반 하였습니다."),
 
     // 계정
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ACCOUNT-001", "인증에 실패 하였습니다."),
-    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "ACCOUNT-002", "토큰이 존재하지 않습니다."),
-    INVALID_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT-003", "토큰이 유효하지 않습니다."),
-    EXPIRED_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT-004", "토큰의 유효기간이 만료 되었습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ACCOUNT_001", "인증에 실패 하였습니다."),
+    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "ACCOUNT_002", "토큰이 존재하지 않습니다."),
+    INVALID_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_003", "토큰이 유효하지 않습니다."),
+    EXPIRED_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_004", "토큰의 유효기간이 만료 되었습니다."),
 
 
     // 회원
     DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복된 경우"),
     MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없는 경우"),
-    DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_016", "회원의 패스워드가 저장된 데이터와 다른 경우"),
-    SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_036", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
-
-
-
-
+    DIFFERENT_USER_PASSWORD(HttpStatus.BAD_REQUEST, "USER-004", "회원의 패스워드가 저장된 데이터와 다른 경우"),
+  
     // 회의실
     MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "MEETINGROOM_000" , "회의실을 찾을 수 없습니다."),
     MEETINGROOM_DUPLOCATE(HttpStatus.BAD_REQUEST, "MEETINGROOM_001","이미 존재하는 회의실 입니다."),

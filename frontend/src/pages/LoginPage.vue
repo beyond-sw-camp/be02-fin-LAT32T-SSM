@@ -29,7 +29,9 @@
                   <hr>
                   <button @click="login" class="btn btn-primary btn-user btn-block">
                     로그인
-                  </button>              
+                  </button>
+                <Toast/>
+                  <button label="Error" severity="danger" @click="showError">버튼</button>
                 </div>
               </div>
             </div>
@@ -43,11 +45,10 @@
 import { mapStores } from "pinia";
 import { useMemberStore } from "@/stores/useMemberStore";
 
-
 export default {
   name: 'LoginPage',
   components: {
-    
+    Toast
   },
   data() {
     return {
@@ -59,12 +60,7 @@ export default {
     ...mapStores(useMemberStore),
   },
   methods: {
-    login() {
-      this.memberStore.login(this.memberStore.member, this.$router)
-    }
-  },
-  mounted() {
-    this.memberStore.checkForToastMessage();
+    
   }
 }
 </script>

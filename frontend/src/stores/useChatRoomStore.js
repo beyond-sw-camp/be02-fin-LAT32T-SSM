@@ -74,15 +74,6 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 }
             }
         },
-        sendErrorMessage(router, error) {
-            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
-        },
-        makeChatRoom(){
-            this.createChatRoom().then(()=>{
-                this.getRoomList();
-                this.closeModal();
-            })
-        },
 
         closeModal() {
             this.chatRoomName='';
