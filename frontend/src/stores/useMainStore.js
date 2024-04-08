@@ -133,17 +133,19 @@ export const useMainStore = defineStore("main", {
     // 회의실 정보를 불러온다.
     async readMeetingRooms() {
       try {
-        const response = await axios.get(backend + '/meetingroom/current');
-        this.meetingRooms = response.data.result;
-        toast(response.data.message, {
-          timeout: timeout
-        });
+        const response = await axios.get(`${backend}/meetingroom/current`);
+        if (response && response.data && response.data.result) {
+          this.meetingRooms = response.data.result;
+          toast(response.data.message, { timeout: timeout });
+        } else {
+          throw new Error('유효하지 않은 응답 구조입니다.');
+        }
       } catch (error) {
         console.error('회의실 정보를 가져오지 못했습니다:', error);
-        toast.error(error.response.data.message, {
+        toast.error(error.response ? error.response.data.message : '회의실 정보를 가져오지 못했습니다.', {
           timeout: timeout,
           // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        });
       }
     },
 
@@ -151,38 +153,48 @@ export const useMainStore = defineStore("main", {
     async readMember() {
       try {
         const response = await axios.get(backend + '/member/read');
+        if (!response.data || !response.data.result) {
+          console.log(response);
+          throw new Error('서버로부터 올바른 데이터 구조를 받지 못함');
+        }
         this.members = response.data.result;
         toast(response.data.message, {
           timeout: timeout
         });
       } catch (error) {
         console.error('멤버 정보를 가져오지 못했습니다:', error);
-        toast.error(error.response.data.message, {
+        const errorMessage = error.response && error.response.data && error.response.data.message
+                             ? error.response.data.message
+                             : '응답을 확인할 수 없습니다.';
+        console.error(errorMessage);
+        toast.error(errorMessage, {
           timeout: timeout,
           // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        });
       }
     },
     async getProfileImage() {
-      const response = await axios.post(backend + '/member/profile', {
-        memberId: this.member.memberId
-      })
-      this.member.profileImage = response.data[0].imageAddr;
-    },
-    async getChatProfile(memberId) {
       try {
-        const response = await axios.post(backend + '/member/profile', {
-          memberId: memberId
-        })
-        toast(response.data.message, {
-          timeout: timeout
+        const response = await axios.post(`${backend}/member/profile`, {
+          memberId: this.member.memberId
         });
-        return response.data[0].imageAddr;
+        this.member.profileImage = response.data[0].imageAddr;
       } catch (error) {
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        console.error('프로필 이미지를 가져오지 못했습니다:', error);
+        if (error.response) {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+            // 여기에 추가 옵션을 넣을 수 있습니다.
+          });
+        } else if (error.request) {
+          toast.error('서버에 요청을 보낼 수 없습니다.', {
+            timeout: timeout,
+          });
+        } else {
+          toast.error('프로필 이미지를 가져오는 중 오류가 발생했습니다.', {
+            timeout: timeout,
+          });
+        }
       }
     },
 

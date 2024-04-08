@@ -62,13 +62,15 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 if (response.data.result !== null) {
                     this.roomList = response.data.result;
                 }
-            } catch (error) {
-                if (error.response.data.code === 'COMMON-002') {
+        } catch (error) {
+                if (error.response && error.response.data && error.response.data.code === 'COMMON-002') {
                     this.sendErrorMessage(router, error);
-                } else {
+                } else if (error.response && error.response.data) {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
+                } else {
+                    console.log('조회에 실패하였습니다.:', error);
                 }
             }
         },
