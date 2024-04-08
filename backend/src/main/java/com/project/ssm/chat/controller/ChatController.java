@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin("*")
 public class ChatController {
 
     private final MessageService messageService;
@@ -23,6 +25,7 @@ public class ChatController {
 
     @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable(value = "roomId") String roomId, SendMessageReq sendMessageReq) {
+        log.info("message : {}", sendMessageReq);
         messageService.sendMessage(roomId, sendMessageReq);
     }
 
@@ -30,4 +33,6 @@ public class ChatController {
     public void updateMessage(@DestinationVariable(value = "roomId") String roomId, UpdateMessageReq updateMessageReq) {
         messageService.updateMessage(roomId, updateMessageReq);
     }
+
+
 }

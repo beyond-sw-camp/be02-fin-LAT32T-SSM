@@ -2,8 +2,8 @@ package com.project.ssm.events.service;
 
 import com.project.ssm.common.BaseResponse;
 import com.project.ssm.common.error.ErrorCode;
-import com.project.ssm.events.utils.EventsOfDate;
-import com.project.ssm.events.utils.ReservationFilter;
+import com.project.ssm.utils.EventsOfDate;
+import com.project.ssm.utils.ReservationFilter;
 import com.project.ssm.events.exception.*;
 import com.project.ssm.events.model.entity.Event;
 import com.project.ssm.events.model.entity.EventParticipants;
@@ -70,20 +70,14 @@ public class EventService {
 
     private void saveEventParticipants(PostEventReq request, Event event) {
         for (String memberId : request.getMemberId()) {
-            Member byMemberId = memberRepository.findByMemberId(memberId).orElseThrow(()->
+            Member byMemberId = memberRepository.findByMemberId(memberId).orElseThrow(() ->
                     MemberNotFoundException.forMemberId(memberId));
             eventParticipantsRepository.save(EventParticipants.buildEventPart(event, byMemberId));
         }
     }
 
-    private void test () {
-
-    }
-
-    public BaseResponse<List<GetEventRes>> listEvents(Member member, int year) {
-        Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
-                MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
-        List<EventParticipants> events = eventRepository.findEventParticipantsByYear(verifiedMember.getMemberIdx(), year);
+    public BaseResponse<List<GetEventRes>> listEvents(String startDate, String endDate) {
+        List<EventParticipants> events = eventRepository.findEventParticipantsBetweenDates(startDate, endDate);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
             for (EventParticipants event : events) {
@@ -94,6 +88,7 @@ public class EventService {
             return BaseResponse.successRes("CALENDAR_002", true, "아직 일정이 없습니다.", eventsList);
         }
     }
+
 
     public BaseResponse<List<GetEventRes>> readEvent(Member member, String date) {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
@@ -156,7 +151,7 @@ public class EventService {
         Event event = eventRepository.findById(request.getEventIdx()).orElseThrow(() ->
                 EventNotFoundException.forEventId(request.getEventIdx()));
 
-        if(reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getReservationStart(), request.getReservationEnd())){
+        if (reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getReservationStart(), request.getReservationEnd())) {
             Event reservation = Event.setReservation(request, meetingRoom, event);
             eventRepository.save(reservation);
             PatchReservationRes patchReservationRes = PatchReservationRes.buildReservationRes(reservation);

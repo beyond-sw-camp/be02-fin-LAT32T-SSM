@@ -19,6 +19,6 @@ public class ChatRoomDuplicateException extends EntityDuplicateException {
     }
 
     public static ChatRoomDuplicateException forMemberId(String memberName) {
-        return new ChatRoomDuplicateException(ErrorCode.DUPLICATE_ADD_MEMBER, String.format("[%s]님은 이미 추가되었습니다.", memberName));
+        return new ChatRoomDuplicateException(ErrorCode.DUPLICATE_ADD_MEMBER, String.format("%s님은 이미 추가되었습니다.", memberName));
     }
 }

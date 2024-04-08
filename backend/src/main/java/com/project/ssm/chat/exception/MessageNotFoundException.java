@@ -13,6 +13,6 @@ public class MessageNotFoundException extends EntityNotFoundException {
     }
     
     public static MessageNotFoundException forNotFoundMessage(Long messageIdx) {
-        return new MessageNotFoundException(ErrorCode.MESSAGE_NOT_FOUND, String.format("[%s]번 메시지를 찾을 수 없습니다.", messageIdx));
+        return new MessageNotFoundException(ErrorCode.MESSAGE_NOT_FOUND, String.format("%s번 메시지를 찾을 수 없습니다.", messageIdx));
     }
 }

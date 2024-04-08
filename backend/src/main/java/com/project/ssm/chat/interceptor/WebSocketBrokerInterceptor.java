@@ -1,6 +1,8 @@
 package com.project.ssm.chat.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.KafkaAdminClient;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -27,6 +29,8 @@ public class WebSocketBrokerInterceptor implements ChannelInterceptor {
         } else if (StompCommand.SUBSCRIBE == commandType) {
             log.info("commandType3 = {}", commandType);
             // 채팅방 구독할 때 확인
+            log.info("세션 아이디 = {}", headerAccessor.getSessionId());
+
         }
         return message;
     }

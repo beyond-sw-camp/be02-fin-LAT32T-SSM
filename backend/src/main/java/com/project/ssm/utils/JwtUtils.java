@@ -1,4 +1,4 @@
-package com.project.ssm.member.config.utils;
+package com.project.ssm.utils;
 
 
 import com.project.ssm.member.exception.MemberAccountException;
@@ -62,7 +62,7 @@ public class JwtUtils {
             token = token.split(" ")[1];
             return token;
         } else {
-            throw MemberAccountException.forInvalidToken(token);
+            throw MemberAccountException.forInvalidToken();
         }
     }
 
@@ -75,9 +75,9 @@ public class JwtUtils {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SignatureException e) {
-            throw MemberAccountException.forInvalidToken(token);
+            throw MemberAccountException.forInvalidToken();
         } catch (ExpiredJwtException e) {
-            throw MemberAccountException.forExpiredToken(token);
+            throw MemberAccountException.forExpiredToken();
         }
     }
 }

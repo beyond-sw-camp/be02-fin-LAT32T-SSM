@@ -1,9 +1,9 @@
-package com.project.ssm.member.config.filter;
+package com.project.ssm.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.common.error.ErrorResponse;
-import com.project.ssm.member.config.utils.JwtUtils;
+import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberAccountException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
