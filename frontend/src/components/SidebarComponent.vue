@@ -18,8 +18,8 @@
       </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
-          <i class="fas fa-caret-right" @click="chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
           채널
         </h4>
         <ul>
@@ -41,9 +41,6 @@
 <script>
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-// import Dialog from "primevue/dialog";
-// import Button from "primevue/button";
-// import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
