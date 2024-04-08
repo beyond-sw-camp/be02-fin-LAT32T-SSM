@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -187,6 +188,10 @@ public class RoomService {
                             message.getMember().getMemberId()
                     ));
                 }
+
+                // 리스트를 역순으로 뒤집기
+                Collections.reverse(chatList);
+
                 return BaseResponse.successRes("CHATTING_008", true, "메시지 조회를 성공하였습니다.", chatList);
             }
         }
