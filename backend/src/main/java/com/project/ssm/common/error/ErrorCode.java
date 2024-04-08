@@ -38,7 +38,7 @@ public enum ErrorCode {
     CHATROOM_NOR_FOUND(HttpStatus.NOT_FOUND, "CHATTING_010", "찾을 수 없는 채팅방입니다."),
     DUPLICATE_ADD_MEMBER(HttpStatus.CONFLICT, "CHATTING_011", "이미 추가되었습니다."),
     ALREADY_DELETE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_012", "이미 삭제된 채팅방입니다."),
-    ALREADY_OUTED_CHATROOM(HttpStatus.CONFLICT, "CHATTING_013", "현재 채팅방을 나간 상태입니다."),
+    ALREADY_OUTED_CHATROOM(HttpStatus.CONFLICT, "CHATTING_013", "이미 떠난 채팅방입니다."),
     NOT_ACCESS_CHATROOM(HttpStatus.FORBIDDEN, "CHATTING_014", "채팅방에 존재하지 않는 사용자입니다."),
 
     // 메시지
