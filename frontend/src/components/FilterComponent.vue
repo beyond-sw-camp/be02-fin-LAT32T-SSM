@@ -5,7 +5,7 @@
             <div class="panel-body">
                 <div class="col-lg-6">
                     <label for="calendar_view">채팅방List</label>
-                    <div class="input-group filter" @click="chatRoomStore.getRoomList()">
+                    <div class="input-group filter" @click="chatRoomStore.getRoomList(this.$router)">
                         <select v-if="chatRoomStore.roomList.length > 0" class="filter" id="type_filter" v-model="mainStore.selectedChatRoom"
                             @change="mainStore.onChatRoomChange(); chatRoomChange()">
                             <option value="일반일정">일반일정</option>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-lg-6">
                     <label for="calendar_view">등록자별</label>
-                    <button @click="mainStore.openComponent"><i class="fa fa-plus"></i></button>
+                    <button @click="mainStore.openComponent()"><i class="fa fa-plus"></i></button>
                     <MemberSearchComponent></MemberSearchComponent>
                     <div class="input-group filter">
                         <label v-for="(member, index) in mainStore.filteredMemberNames" :key="index" :value="member"
@@ -68,13 +68,10 @@ export default {
     },
     methods: {
         chatRoomChange() {
-      // 선택된 채팅방의 이름을 외부 함수로 전달합니다.
-      // 여기서는 예시로 updateChatRoomName이라는 외부 함수를 호출합니다.
-      // 실제로는 이 함수를 외부 JavaScript에서 정의해야 합니다.
-      if (this.mainStore.selectedChatRoom && typeof updateChatRoomName === "function") {
-        updateChatRoomName(this.mainStore.selectedChatRoom.chatRoomName);
-      }
-    }
+          if (this.mainStore.selectedChatRoom && typeof updateChatRoomName === "function") {
+            updateChatRoomName(this.mainStore.selectedChatRoom.chatRoomName);
+          }
+        }
     },
 }
 </script>

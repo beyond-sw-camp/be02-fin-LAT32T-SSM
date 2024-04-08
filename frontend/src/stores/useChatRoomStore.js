@@ -1,19 +1,58 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useRouter } from "vue-router";
-// const backend = 'http://192.168.0.41/api'
-const backend = 'http://localhost:8080';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
+const backend = process.env.VUE_APP_API_ENDPOINT;
 const storedToken = localStorage.getItem("accessToken");
+const timeout = 10000;
 
 export const useChatRoomStore = defineStore("chatRoom", {
     state: () => ({
         roomName: "",
         roomList: [],
         chatRoomId: "",
+        // 채팅방생성모달 visible 변수
+        visible: false,
+
+        // 채팅방이름
+        chatRoomName: '',
+        // 멤버Id
+        memberId:'',
+        // 채팅방에 추가하고싶은 Id
+        memberIds:[],
     }),
     actions: {
-        async getRoomList() {
-            const router = useRouter();
+        memberPush(){
+            this.memberIds.push(this.memberId)
+        },
+        async createChatRoom(router) {
+            const roomInfo = {
+                chatRoomName: this.chatRoomName,
+                memberId: this.memberIds
+            };
+            try {
+                let response = await axios.post(`${backend}/chat/room/create`, roomInfo, {
+                    headers: {
+                        Authorization: storedToken,
+                    }
+                });
+                toast(response.data.message, {
+                    timeout: timeout
+                });
+
+            } catch (error) {
+                if (error.response.data.code === 'COMMON-002') {
+                    this.sendErrorMessage(router, error);
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                }
+            }
+        },
+        async getRoomList(router) {
+            console.log(router)
             try {
                 let response = await axios.get(`${backend}/chat/rooms`, {
                     headers: {
@@ -22,32 +61,34 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 });
                 if (response.data.result !== null) {
                     this.roomList = response.data.result;
-                    console.log(response.data.message);
                 }
             } catch (error) {
-                if (error.response.data.code === "COMMON-001") {
+                if (error.response.data.code === 'COMMON-002') {
                     this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'COMMON-002') {
-                    this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'COMMON_003') {
-                    this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'CHATTING_009') {
-                    this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'CHATTING_010') {
-                    this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'CHATTING_011') {
-                    alert(error.response.data.message);
-                } else if (error.response.data.code === 'CHATTING_012') {
-                    alert(error.response.data.message);
-                } else if (error.response.data.code === 'CHATTING_013') {
-                    alert(error.response.data.message);
-                } else if (error.response.data.code === 'CHATTING_014') {
-                    this.sendErrorMessage(router, error);
+                    
+                } else {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
                 }
             }
         },
         sendErrorMessage(router, error) {
-            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}});
+            router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
         },
+        makeChatRoom(router){
+            console.log(router)
+            this.createChatRoom().then(()=>{
+                this.getRoomList(router);
+                this.closeModal();
+            })
+        },
+
+        closeModal() {
+            this.chatRoomName='';
+            this.memberId='';
+            this.memberIds=[];
+            this.visible = !this.visible;
+        }
     }
 })

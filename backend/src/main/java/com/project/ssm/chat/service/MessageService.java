@@ -14,6 +14,7 @@ import com.project.ssm.chat.model.request.UpdateMessageReq;
 import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
+import com.project.ssm.notification.service.EmittersService;
 import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
@@ -26,8 +27,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +45,7 @@ public class MessageService {
     private final RoomParticipantsRepository roomParticipantsRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final ObjectMapper objectMapper;
-
-    @Value("${jwt.secret-key}")
-    private String secretKey;
-
+    private final EmittersService emittersService;
 
     @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
@@ -55,11 +56,28 @@ public class MessageService {
 
         log.info("convert message : {}", message);
         messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
+        // 알람을 위한 부분
+        List<RoomParticipants> memberIdsByChatRoomName = memberRepository.findMemberNameByChatRoomName(sendMessageReq.getChatRoomId());
+        if(!memberIdsByChatRoomName.isEmpty()){
+            for (RoomParticipants roomParticipants : memberIdsByChatRoomName) {
+                String memberId = roomParticipants.getMember().getMemberId();
+                if(!memberId.equals(record.key())){
+                    SseEmitter emitter = emittersService.getEmitters().get(memberId);
+                    if (emitter != null) {
+                        try {
+                            emitter.send(SseEmitter.event().name("notification").data(sendMessageReq.getMessage()));
+                        } catch (IOException e) {
+                            log.info("카프카 데이터 보낼때 에러 발생");
+                            emittersService.getEmitters().remove(memberId);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void sendMessage(String chatRoomId, SendMessageReq sendMessageDto) {
         if (!sendMessageDto.getMessage().isEmpty()) {
-
             Member member = memberRepository.findByMemberId(sendMessageDto.getMemberId()).orElseThrow(() ->
                     MemberNotFoundException.forMemberId(sendMessageDto.getMemberId()));
 
@@ -89,11 +107,5 @@ public class MessageService {
         } else {
             throw MessageAccessException.forNotContent();
         }
-    }
-
-    public void enterRoom(String token) {
-        token = JwtUtils.checkJwtToken(token);
-        String memberId = JwtUtils.getMemberInfo(token, secretKey);
-        messagingTemplate.convertAndSend("/sub/room", memberId);
     }
 }

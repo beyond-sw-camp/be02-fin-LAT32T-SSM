@@ -3,13 +3,12 @@
     <div class="outer">
       <div class="middle">
         <div class="inner">
-          <!--BEGIN CONTENT-->
-          <div class="inner-circle"><i class="fa fa-cogs"></i><span>{{ errorStatus }}</span></div>
+          <div class="inner-circle">
+            <i class="fa fa-cogs"></i>
+            <span @click="movePage">{{ errorStatus }}</span>
+          </div>
           <span class="inner-status">{{ message }}</span>
-          <router-link to="/login">
-            로그인 페이지로 돌아가기
-          </router-link>
-          <!--END CONTENT-->
+          <span class="inner-status">로그인 페이지로 돌아가시려면 앞에 보이시는 숫자를 클릭해주세요.</span>
         </div>
       </div>
     </div>
@@ -28,6 +27,11 @@ export default {
   created() {
     this.errorStatus = this.$route.params.errorStatus;
     this.message = this.$route.params.message;
+  },
+  methods: {
+    movePage() {
+      window.location.href = '/login'
+    }
   }
 }
 </script>
@@ -113,7 +117,7 @@ body {
   color: #e0e0e0;
 }
 .page-404 .outer .middle .inner .inner-status {
-  font-size: 20px;
+  font-size: 15px;
 
   display: block;
 

@@ -1,6 +1,7 @@
 package com.project.ssm.notification.controller;
 
 
+import com.project.ssm.notification.service.EmittersService;
 import com.project.ssm.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final EmittersService emittersService;
     private final NotificationService notificationService;
 
     @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -29,16 +30,16 @@ public class NotificationController {
         SseEmitter emitter = new SseEmitter(150000L);
         log.info("Emitter for client {}: {}", memberId, emitter);
 
-        emitters.put(memberId, emitter);
+        emittersService.getEmitters().put(memberId, emitter);
 
         emitter.onCompletion(() -> {
             log.info("Emitter completed for client {}", memberId);
-            emitters.remove(memberId);
+            emittersService.getEmitters().remove(memberId);
         });
 
         emitter.onTimeout(() -> {
             log.info("Emitter timed out for client {}", memberId);
-            emitters.remove(memberId);
+            emittersService.getEmitters().remove(memberId);
         });
 
         try {
@@ -54,13 +55,13 @@ public class NotificationController {
     }
     @KafkaListener(topics = "notificationTopic", groupId = "#{@kafkaListenerGroupId}")
     public void sendAlarmToClients(ConsumerRecord<String, String> record) {
-        SseEmitter emitter = emitters.get(record.key());
+        SseEmitter emitter = emittersService.getEmitters().get(record.key());
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(record.value()));
             } catch (IOException e) {
                 log.info("카프카 데이터 보낼때 에러 발생");
-                emitters.remove(record.key());
+                emittersService.getEmitters().remove(record.key());
             }
         }
     }
