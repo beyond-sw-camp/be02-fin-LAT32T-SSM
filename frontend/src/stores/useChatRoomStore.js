@@ -26,7 +26,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
         memberPush(){
             this.memberIds.push(this.memberId)
         },
-        async createChatRoom(router) {
+        async createChatRoom() {
             const roomInfo = {
                 chatRoomName: this.chatRoomName,
                 memberId: this.memberIds
@@ -40,6 +40,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 toast(response.data.message, {
                     timeout: timeout
                 });
+                this.getRoomList(router);
 
             } catch (error) {
                 if (error.response.data.code === 'COMMON-002') {
@@ -52,7 +53,6 @@ export const useChatRoomStore = defineStore("chatRoom", {
             }
         },
         async getRoomList(router) {
-            console.log(router)
             try {
                 let response = await axios.get(`${backend}/chat/rooms`, {
                     headers: {
@@ -62,24 +62,24 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 if (response.data.result !== null) {
                     this.roomList = response.data.result;
                 }
-            } catch (error) {
-                if (error.response.data.code === 'COMMON-002') {
+        } catch (error) {
+                if (error.response && error.response.data && error.response.data.code === 'COMMON-002') {
                     this.sendErrorMessage(router, error);
-                    
-                } else {
+                } else if (error.response && error.response.data) {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
+                } else {
+                    console.log('조회에 실패하였습니다.:', error);
                 }
             }
         },
         sendErrorMessage(router, error) {
             router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
         },
-        makeChatRoom(router){
-            console.log(router)
+        makeChatRoom(){
             this.createChatRoom().then(()=>{
-                this.getRoomList(router);
+                this.getRoomList();
                 this.closeModal();
             })
         },
