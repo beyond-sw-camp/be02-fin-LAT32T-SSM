@@ -16,11 +16,6 @@ public class MessageRepositoryCustomImpl extends QuerydslRepositorySupport imple
         super(Message.class);
     }
 
-    @Override
-    public List<Message> findList() {
-        return null;
-    }
-
     public Page<Message> findList(Pageable pageable, String chatRoomId) {
         QMessage message = new QMessage("message");
 

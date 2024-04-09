@@ -11,12 +11,10 @@
               </div>
               <form class="user" enctype="multipart/form-data">
                 <div class="form-group">
-                  <!-- input group을 사용하여 인풋과 버튼을 하나의 그룹으로 묶습니다 -->
                   <div class="input-group">
                     <input v-model="memberStore.member.memberId" type="text" class="form-control form-control-user"
                       placeholder="아이디를 입력해주세요" :disabled="memberStore.checkId" >
                     <div class="input-group-append">
-                      <!-- 버튼의 타입을 'button'으로 설정하여 폼 제출을 방지합니다 -->
                       <button type="button" class="btn btn-primary btn-user btn-block" @click="checkIdDuplicate">중복
                         검사</button>
                     </div>
@@ -50,7 +48,6 @@
                   <label for="fileUpload" class="btn btn-primary btn-user btn-block">프로필 이미지 선택</label>
                   <span id="fileName">선택된 파일 없음</span>
                 </div>
-                <!-- 이미지 미리보기 -->
                 <div id="imageContainer">
                   <img id="imagePreview" src="" alt="이미지 미리보기" style="max-width: 100%; height: auto; display: none;">
                 </div>
