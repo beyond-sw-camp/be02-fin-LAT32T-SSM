@@ -98,14 +98,14 @@ class MeetingRoomControllerTest {
                 .reservations(Collections.singletonList(reservation))
                 .build();
 
-//        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
+        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
 
 
         mvc.perform(get("/meetingroom/select/{meetingRoomIdx}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("MEETING_000"))
+                .andExpect(jsonPath("$.code").value("aaaaa"))
                 .andExpect(jsonPath("$.message").value("회의실 예약 조회"))
                 .andExpect(jsonPath("$.result.roomIdx").value(1))
                 .andExpect(jsonPath("$.result.roomName").value("제 1 회의실"))
@@ -114,13 +114,13 @@ class MeetingRoomControllerTest {
 
 
 
-    @Test
-    void MeetingRoomController_getAllMeetingRoom_success() throws Exception {
-
-    }
-
-    @Test
-    void MeetingRoomController_deleteMeetingRoom_success() throws Exception {
-
-    }
+//    @Test
+//    void MeetingRoomController_getAllMeetingRoom_success() throws Exception {
+//
+//    }
+//
+//    @Test
+//    void MeetingRoomController_deleteMeetingRoom_success() throws Exception {
+//
+//    }
 }
