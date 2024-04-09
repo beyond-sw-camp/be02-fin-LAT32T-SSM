@@ -23,7 +23,7 @@ describe('SignUpPage.vue', () => {
     const inputDepartment = '[placeholder="부서명을 입력해주세요"]';
     const inputPosition = '[placeholder="직책을 입력해주세요"]';
 
-    await wrapper.find(inputId).setValue('test001231231@gmail.com');
+    await wrapper.find(inputId).setValue('test001@gmail.com');
     await wrapper.find(inputName).setValue('Test Name');
     await wrapper.find(inputPassword).setValue('password123');
     await wrapper.find(inputDepartment).setValue('Development');
