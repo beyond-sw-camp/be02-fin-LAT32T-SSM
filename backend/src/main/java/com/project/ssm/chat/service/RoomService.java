@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class RoomService {
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
                 ChatRoomNotFoundException.forNotFoundChatRoom());
         chatRoom.setChatRoomStatus(false);
-        chatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+        chatRoom.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
         chatRoomRepository.save(chatRoom);
         return BaseResponse.successRes("CHATTING_004", true, "채팅방이 삭제되었습니다.",
                 DeleteRoomRes.buildDeleteRoom(chatRoomId, chatRoom.getUpdatedAt()));

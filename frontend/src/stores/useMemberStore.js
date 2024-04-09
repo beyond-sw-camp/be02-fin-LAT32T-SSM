@@ -90,6 +90,8 @@ export const useMemberStore = defineStore("member", {
                 } catch(error){
                     if (error.code === 'ERR_NETWORK') {
                         this.sendErrorMessage(router);
+                    } else if (error.response.stauts === 500) {
+                        this.sendErrorMessage(router);
                     } else {
                         toast.error(error.response.data.message, {
                             timeout: timeout,

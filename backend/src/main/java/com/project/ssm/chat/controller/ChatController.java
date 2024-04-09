@@ -27,6 +27,4 @@ public class ChatController {
     public void updateMessage(@DestinationVariable(value = "roomId") String roomId, UpdateMessageReq updateMessageReq) {
         messageService.updateMessage(roomId, updateMessageReq);
     }
-
-
 }
