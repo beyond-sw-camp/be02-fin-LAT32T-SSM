@@ -26,6 +26,7 @@ public class MessageRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         List<Message> result = from(message)
                 .where(message.chatRoom.chatRoomId.eq(chatRoomId))
+                .orderBy(message.createdAt.desc()) // 채팅방 내역이 최신 10개가 조회 되게 수정
                 .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

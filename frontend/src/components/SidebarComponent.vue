@@ -25,7 +25,7 @@
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click.once="connectChatRoom(item)">
+              <a href="#" @click="connectChatRoom(item)">
               <span class="make-white">
               <i class="fas fa-hashtag"></i>
                 {{ item.chatRoomName }}
@@ -48,7 +48,7 @@ import CreateChatRoomComponent from "@/components/CreateChatRoomComponent.vue"
 
 export default {
   name: "SidebarComponent",
-  components: {CreateChatRoomComponent },
+  components: { CreateChatRoomComponent },
   data() {
     return {
       member: {
@@ -85,8 +85,9 @@ export default {
     toggleArrow(){
       this.isArrowVisible = !this.isArrowVisible;
     },
-    connectChatRoom(item) {
-      this.stompStore.roomConnect(item.chatRoomId, this.$router)
+    async connectChatRoom(item) {
+      await this.stompStore.roomConnect(item.chatRoomId, this.$router)
+      
     }
   },
   mounted() {

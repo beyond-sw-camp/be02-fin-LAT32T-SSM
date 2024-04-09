@@ -271,7 +271,7 @@ a:-webkit-any-link {
 
 .p-rich_text_block,.p-rich_text_section {
   counter-reset: list-0 list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
-  width: 100px;
+  width: 100%;
   display: flex;
   margin-left: 10px;
 }
