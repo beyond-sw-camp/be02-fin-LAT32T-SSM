@@ -15,14 +15,12 @@ import com.project.ssm.chat.repository.ChatRoomRepository;
 import com.project.ssm.chat.repository.MessageRepository;
 import com.project.ssm.chat.repository.RoomParticipantsRepository;
 import com.project.ssm.notification.service.EmittersService;
-import com.project.ssm.utils.JwtUtils;
 import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -56,7 +54,6 @@ public class MessageService {
 
         log.info("convert message : {}", message);
         messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
-        // 알람을 위한 부분
         List<RoomParticipants> memberIdsByChatRoomName = memberRepository.findMemberNameByChatRoomName(sendMessageReq.getChatRoomId());
         if(!memberIdsByChatRoomName.isEmpty()){
             for (RoomParticipants roomParticipants : memberIdsByChatRoomName) {
