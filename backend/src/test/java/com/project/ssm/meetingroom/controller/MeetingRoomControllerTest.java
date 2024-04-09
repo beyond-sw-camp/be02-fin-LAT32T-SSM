@@ -1,6 +1,9 @@
 package com.project.ssm.meetingroom.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
+import com.project.ssm.meetingroom.model.response.MeetingRoomAddResult;
 import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
 import com.project.ssm.meetingroom.model.response.GetMeetingRoomSelectRes;
 import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
@@ -24,6 +27,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -101,8 +105,8 @@ class MeetingRoomControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("ROOM_010"))
-                .andExpect(jsonPath("$.message").value("회의실 및 예약 정보 조회를 성공하였습니다."))
+                .andExpect(jsonPath("$.code").value("MEETING_000"))
+                .andExpect(jsonPath("$.message").value("회의실 예약 조회"))
                 .andExpect(jsonPath("$.result.roomIdx").value(1))
                 .andExpect(jsonPath("$.result.roomName").value("제 1 회의실"))
                 .andExpect(jsonPath("$.result.roomCapacity").value(10));
