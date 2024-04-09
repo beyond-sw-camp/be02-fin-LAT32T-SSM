@@ -98,7 +98,7 @@ class MeetingRoomControllerTest {
                 .reservations(Collections.singletonList(reservation))
                 .build();
 
-        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
+//        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
 
 
         mvc.perform(get("/meetingroom/select/{meetingRoomIdx}", 1)
