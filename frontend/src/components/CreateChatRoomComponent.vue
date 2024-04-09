@@ -17,7 +17,7 @@
             </div>
             <div class="modal-footer">
                 <button @click="chatRoomStore.memberPush()">추가</button>
-                <button @click="chatRoomStore.makeChatRoom()">생성하기</button>
+                <button @click="chatRoomStore.makeChatRoom(this.$router)">생성하기</button>
                 <button @click="chatRoomStore.closeModal()">취소하기</button>
             </div>
         </div>

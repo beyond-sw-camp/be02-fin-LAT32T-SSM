@@ -18,14 +18,14 @@
       </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down" @click="chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
-          <i class="fas fa-caret-right" @click="chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
           채널
         </h4>
         <ul>
           <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click.once="connectChatRoom(item)">
+              <a href="#" @click="connectChatRoom(item)">
               <span class="make-white">
               <i class="fas fa-hashtag"></i>
                 {{ item.chatRoomName }}
@@ -41,9 +41,6 @@
 <script>
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-// import Dialog from "primevue/dialog";
-// import Button from "primevue/button";
-// import InputText from "primevue/inputtext";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
@@ -51,7 +48,7 @@ import CreateChatRoomComponent from "@/components/CreateChatRoomComponent.vue"
 
 export default {
   name: "SidebarComponent",
-  components: {CreateChatRoomComponent },
+  components: { CreateChatRoomComponent },
   data() {
     return {
       member: {
@@ -88,8 +85,9 @@ export default {
     toggleArrow(){
       this.isArrowVisible = !this.isArrowVisible;
     },
-    connectChatRoom(item) {
-      this.stompStore.roomConnect(item.chatRoomId, this.$router)
+    async connectChatRoom(item) {
+      await this.stompStore.roomConnect(item.chatRoomId, this.$router)
+      
     }
   },
   mounted() {

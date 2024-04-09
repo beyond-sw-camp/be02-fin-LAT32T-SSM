@@ -169,22 +169,7 @@ export const useMainStore = defineStore("main", {
       })
       this.member.profileImage = response.data[0].imageAddr;
     },
-    async getChatProfile(memberId) {
-      try {
-        const response = await axios.post(backend + '/member/profile', {
-          memberId: memberId
-        })
-        toast(response.data.message, {
-          timeout: timeout
-        });
-        return response.data[0].imageAddr;
-      } catch (error) {
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
-      }
-    },
+    
 
     // 멤버찾기 컴포넌트 open, close
     openComponent() {

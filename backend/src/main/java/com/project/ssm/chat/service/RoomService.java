@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -72,10 +73,6 @@ public class RoomService {
     public BaseResponse<List<GetRoomListRes>> getRoomList(String token) {
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
-        // QueryDsl 적용 전
-//        List<RoomParticipants> roomParticipants = roomPartRepository.findAllByMember_MemberId(memberId);
-
-        // QueryDsl 적용 후
         List<RoomParticipants> roomParticipants = memberRepository.findChatRoomByMemberId(memberId);
         List<GetRoomListRes> roomListRes = new ArrayList<>();
 
@@ -102,7 +99,7 @@ public class RoomService {
             memberIdList.add(memberId);
         }
 
-        return BaseResponse.successRes("CHATTING_003", true, "",
+        return BaseResponse.successRes("CHATTING_003", true, "채팅방 수정이 완료되었습니다.",
                 PatchUpdateRoomRes.buildRoom(patchUpdateRoomReq.getChatRoomId(), chatRoom.getChatRoomName(), memberIdList));
     }
 
@@ -112,31 +109,31 @@ public class RoomService {
         chatRoom.setChatRoomStatus(false);
         chatRoom.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
         chatRoomRepository.save(chatRoom);
-        return BaseResponse.successRes("CHATTING_004", true, "",
+        return BaseResponse.successRes("CHATTING_004", true, "채팅방이 삭제되었습니다.",
                 DeleteRoomRes.buildDeleteRoom(chatRoomId, chatRoom.getUpdatedAt()));
     }
 
-    public BaseResponse<PatchOutRoomRes> outRoom(String token, String chatRoomIdx) {
+    public BaseResponse<PatchOutRoomRes> outRoom(String token, String chatRoomId) {
         token = JwtUtils.checkJwtToken(token);
         String memberId = JwtUtils.getUserMemberId(token, secretKey);
 
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
                 MemberNotFoundException.forMemberId(memberId));
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomIdx).orElseThrow(() ->
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
                 ChatRoomNotFoundException.forNotFoundChatRoom());
 
         for (RoomParticipants roomParticipants : member.getRoomParticipantsList()) {
             if (roomParticipants.getChatRoom().getChatRoomId().equals(chatRoom.getChatRoomId())) {
                 roomPartRepository.deleteById(roomParticipants.getRoomParticipantsIdx());
-                return BaseResponse.successRes("CHATTING_005", true, "",
+                return BaseResponse.successRes("CHATTING_005", true, "채팅방을 나가셨습니다.",
                         PatchOutRoomRes.buildOutRoom(chatRoom.getChatRoomId(), member.getMemberId()));
             }
         }
         throw ChatRoomAccessException.forNotAccessChatRoom(member.getMemberName());
     }
 
-    public BaseResponse<GetRoomInfoRes> getRoomInfo(String roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(roomId).orElseThrow(() ->
+    public BaseResponse<GetRoomInfoRes> getRoomInfo(String chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(chatRoomId).orElseThrow(() ->
                 ChatRoomNotFoundException.forNotFoundChatRoom());
 
         List<ReturnMessageRes> messageList = new ArrayList<>();
@@ -191,6 +188,10 @@ public class RoomService {
                             message.getMember().getMemberId()
                     ));
                 }
+
+                // 리스트를 역순으로 뒤집기
+                Collections.reverse(chatList);
+
                 return BaseResponse.successRes("CHATTING_008", true, "메시지 조회를 성공하였습니다.", chatList);
             }
         }

@@ -26,7 +26,7 @@
           </div>
           <div v-show="!isFullcalendarVisible">
             <div>
-              <ChatBlockComponent v-for="(item, idx) in getAllMessage" :key="idx" v-bind:item="item" />
+              <ChatBlockComponent v-for="(item, idx) in messageStore.recvList" :key="idx" v-bind:item="item" />
             </div>
           </div>
         </section>
@@ -110,7 +110,7 @@ import { mapStores } from "pinia";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
-import { mapActions, mapState } from "pinia";
+import { mapActions } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
 
 export default {
@@ -142,7 +142,6 @@ export default {
     this.mainStore.notificaiton();
   },
   computed: {
-    ...mapState(useMessageStore, ['getAllMessage']),
     ...mapStores(useMainStore, useMessageStore, useStompStore)
   },
   methods: {
@@ -173,9 +172,9 @@ export default {
       });
     },
     showChatting() {
-      if (localStorage.getItem("chatRoomId") !== null) {
-        this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 10);
-      }
+      // if (localStorage.getItem("chatRoomId") !== null) {
+      //   this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 10);
+      // }
 
       this.isFullcalendarVisible = !this.isFullcalendarVisible;
     },
