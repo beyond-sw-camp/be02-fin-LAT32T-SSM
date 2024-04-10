@@ -20,29 +20,33 @@ export const useStompStore = defineStore("stomp", {
             if(this.subscription !== null){
                 this.subscription.unsubscribe();
             }
-                window.localStorage.setItem("chatRoomId", chatRoomId);
-                const stomp = Stomp.client(`${backend}/chat`);
-                stomp.connect({}, frame => {
-                    stomp.connected = true;
-                    toast('채팅방에 접속하였습니다.', {
-                        timeout: timeout,
-                    })
-                    this.chatStomp = stomp;
-                    this.subscription = stomp.subscribe("/sub/room/" + chatRoomId, res => {
-                        useMessageStore().addMessage(JSON.parse(res.body));
-                    })
-                    
-                }, error => {
-                    stomp.connected = false;
-                    if (error.code === 1001 || error.code === 1002 || error.code === 1006) {
-                        this.retrySocketConnect(error, chatRoomId, router);
-                    } else {
-                        router.push({name: 'error', params: {errorStatus: error.code, message: '서버가 예기치 못한 오류로 인해 종료되어 현재 채팅방에 접속할 수 없습니다.'}});
-                    }
+            window.localStorage.setItem("chatRoomId", chatRoomId);
+            const stomp = Stomp.client(`${backend}/chat`);
+            stomp.connect({}, frame => {
+                console.log(frame.command);
+                stomp.connected = true;
+                console.log('소켓 연결 성공', frame);
+                toast('채팅방에 접속하였습니다.', {
+                    timeout: timeout,
                 })
-                useMessageStore().recvList = []
-                await useMessageStore().getChatList(chatRoomId, storedToken, 1, 10); 
-                   
+                this.chatStomp = stomp;
+                this.subscription = stomp.subscribe("/sub/room/" + chatRoomId, res => {
+                    console.log("연결 후 채팅방 아이디", chatRoomId);
+                    console.log(res);
+                    console.log("구독으로 받은 메시지입니다.", res.body);
+                    useMessageStore().addMessage(JSON.parse(res.body));
+                })
+            }, error => {
+                console.log(error);
+                console.log('=======에러발생=======');
+                stomp.connected = false;
+                console.log(error.code);
+                if (error.code === 1001 || error.code === 1002 || error.code === 1006) {
+                    this.retrySocketConnect(error, chatRoomId, router);
+                }
+            })
+            useMessageStore().recvList = []
+            await useMessageStore().getChatList(chatRoomId, storedToken, 1, 10)
         },
         retrySocketConnect(error, chatRoomId, router) {
             toast.error('채팅방과 연결이 끊어졌습니다.', {
