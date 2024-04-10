@@ -7,14 +7,12 @@ beforeEach(() => {
 });
 
 describe('SignUpPage.vue', () => {
-  // 페이지 렌더링 테스트
-  it('renders the signup page', () => {
+  it('회원가입 페이지 랜더링', () => {
     const wrapper = shallowMount(SignUpPage);
     expect(wrapper.text()).toContain('회원 가입');
   });
 
-  // 데이터 입력 테스트
-  it('allows input to be set', async () => {
+  it('입력값 세팅', async () => {
     const wrapper = shallowMount(SignUpPage);
 
     const inputId = '[placeholder="아이디를 입력해주세요"]';
@@ -35,11 +33,9 @@ describe('SignUpPage.vue', () => {
     expect(wrapper.find(inputDepartment).element.value).toBe('Development');
     expect(wrapper.find(inputPosition).element.value).toBe('Developer');
 
-    // 실제 파일 업로드 로직 대신 호출 여부만 확인
     const mockFileUploadMethod = jest.fn();
     wrapper.vm.handleFileUpload = mockFileUploadMethod;
-  
-    // 파일 업로드 시뮬레이션
+
     await wrapper.find('input[type="file"]').trigger('change');
 
     expect(mockFileUploadMethod).toHaveBeenCalledTimes(1);
