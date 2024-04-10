@@ -55,14 +55,7 @@ public class MessageService {
             for (RoomParticipants roomParticipants : memberIdsByChatRoomName) {
                 String memberId = roomParticipants.getMember().getMemberId();
                 if(!memberId.equals(record.key())){
-                    SseEmitter emitter = emittersService.getEmitters().get(memberId);
-                    if (emitter != null) {
-                        try {
-                            emitter.send(SseEmitter.event().name("notification").data(sendMessageReq.getMessage()));
-                        } catch (IOException e) {
-                            emittersService.getEmitters().remove(memberId);
-                        }
-                    }
+                    emittersService.sendAlarmToClients(memberId, sendMessageReq.getMemberName() +": "+ sendMessageReq.getMessage());
                 }
             }
         }

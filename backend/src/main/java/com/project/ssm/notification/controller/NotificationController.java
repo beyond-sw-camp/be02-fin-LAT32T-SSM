@@ -48,16 +48,9 @@ public class NotificationController {
 
         return emitter;
     }
+
     @KafkaListener(topics = "notificationTopic", groupId = "#{@kafkaListenerGroupId}")
     public void sendAlarmToClients(ConsumerRecord<String, String> record) {
-        SseEmitter emitter = emittersService.getEmitters().get(record.key());
-        if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event().name("notification").data(record.value()));
-            } catch (IOException e) {
-                log.info("카프카 데이터 보낼때 에러 발생");
-                emittersService.getEmitters().remove(record.key());
-            }
-        }
+        emittersService.sendAlarmToClients(record.key(), record.value());
     }
 }
