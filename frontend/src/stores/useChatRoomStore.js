@@ -42,12 +42,17 @@ export const useChatRoomStore = defineStore("chatRoom", {
                 });
 
             } catch (error) {
-                if (error.response.data.code === 'COMMON-002') {
-                    this.sendErrorMessage(router, error);
-                } else {
+                if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                } else {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
                 }
             }
         },
@@ -63,13 +68,17 @@ export const useChatRoomStore = defineStore("chatRoom", {
                     this.roomList = response.data.result;
                 }
             } catch (error) {
-                if (error.response.data.code === 'COMMON-002') {
-                    this.sendErrorMessage(router, error);
-                    
-                } else {
+                if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
+                    this.sendErrorMessage(router, error);
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                } else {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
                 }
             }
         },
