@@ -56,7 +56,7 @@ var newEvent = function (start, end, eventType) {
             backgroundColor: editColor.val(),
             textColor: '#ffffff',
             allDay: false,
-            roomIdx: editRoom.val()
+            roomIdx: editRoom.val() === '' ? null : Number(editRoom.val())
         };
 
         if (eventData.start > eventData.end) {
