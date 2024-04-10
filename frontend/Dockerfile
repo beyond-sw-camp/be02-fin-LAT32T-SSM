@@ -11,4 +11,6 @@ RUN rm -rf /usr/share/nginx/html/index.html
 ADD ./dist/index.html /usr/share/nginx/html/index.html
 RUN rm -rf /etc/nginx/conf.d/default.conf
 ADD ./nginx/default.conf /etc/nginx/conf.d/default.conf
+ADD ./cert/certificate.crt /etc/nginx/certificate.crt
+ADD ./cert/private.key /etc/nginx/private.key
 CMD ["nginx", "-g", "daemon off;"]
