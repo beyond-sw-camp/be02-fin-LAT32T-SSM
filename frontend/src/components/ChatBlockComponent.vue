@@ -4,7 +4,7 @@
       <section class="feeds-user-avatar">
         <button class="c-button-unstyled c-message_kit__avatar c-avatar c-avatar--interactive" aria-hidden="true" aria-label="프로필 보기" tabindex="-1" type="button" style="height: 36px; width: 36px">
             <span class="c-base_icon__width_only_container" style="height: 36px; width: 36px">
-              <img src="" class="c-base_icon c-base_icon--image" aria-hidden="true" role="img" alt="" style="width: 36px"/>
+              <img :src="item.profileImage" @error="getDefaultImage" class="c-base_icon c-base_icon--image" role="img" alt="" style="width: 36px">
             </span>
         </button>
       </section>
@@ -17,7 +17,7 @@
             <span class="c-message__sender c-message_kit__sender" data-qa="message_sender" data-stringify-type="replace" data-stringify-text="test">
               <span class="p-member_profile_hover_card" role="presentation">
                 <a aria-label="오늘, 오후 12:43:59" data-stringify-type="replace" data-stringify-text="[오후 12:43]" data-stringify-requires-siblings="true" data-ts="1709869439.969209" delay="300" data-sk="tooltip_parent" class="c-link c-timestamp">
-                  <span class="c-timestamp__label" data-qa="timestamp_label">오후 12:43</span>
+                  <span class="c-timestamp__label" data-qa="timestamp_label">{{ item.createdAt }}</span>
                 </a>
               </span>
             </span>
@@ -44,11 +44,18 @@
 </template>
 
 <script>
+import defaultImage from "@/assets/basic_profile.jpg";
+
 export default {
   name: 'ChatBlockComponent',
   props: [
       "item"
-  ]
+  ],
+  methods: {
+    getDefaultImage(e) {
+      e.target.src = defaultImage;
+    },
+  },
 }
 </script>
 
@@ -264,7 +271,7 @@ a:-webkit-any-link {
 
 .p-rich_text_block,.p-rich_text_section {
   counter-reset: list-0 list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
-  width: 100px;
+  width: 100%;
   display: flex;
   margin-left: 10px;
 }

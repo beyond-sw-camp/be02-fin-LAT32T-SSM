@@ -12,27 +12,56 @@
       </form>
 
       <div class="move-left">
-        <a href="#"><i class="far fa-question-circle"></i></a>
-        <div class="user-img-wrapper" id="user">
-          <img src="images/user2.jpg" alt="User 1" />
-        </div>
+        <li class="nav-item">
+          <a id="update" @click.prevent="update">회원정보변경</a>
+          <a id="logout" @click.prevent="logout">로그아웃</a>
+        </li>
       </div>
     </nav>
   </header>
 </template>
 <script>
+
 export default {
   name: "HeaderComponent",
+  computed: {
+
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('accessToken');
+      window.location.href = "/";
+    },
+
+    update() {      
+      this.$router.push("/update");
+    }
+  }
 };
 </script>
 
 <style>
+.move-left a {
+  margin-right: 10px;
+}
+
+#update {
+  color: white ;
+  cursor: pointer;
+}
+
+#logout {
+  color: white ;
+  cursor: pointer;
+}
 /*!
  * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 
- .fa,.fas,.far {
+.fa,
+.fas,
+.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -237,12 +266,21 @@ export default {
   src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg");
 }
 
-.fa,.fas {
+.fa,
+.fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
 
-html,body,div,a,img,i,form,header,nav {
+html,
+body,
+div,
+a,
+img,
+i,
+form,
+header,
+nav {
   margin: 0;
   padding: 0;
   border: 0;
@@ -539,7 +577,7 @@ body::-webkit-scrollbar-thumb {
   overflow: auto;
 }
 
-.move-right > i:first-of-type {
+.move-right>i:first-of-type {
   border-right: 0.1rem solid var(--slack-tag-border-color);
 }
 
@@ -687,5 +725,8 @@ body::-webkit-scrollbar-thumb {
   .search-bar i {
     left: 0.1rem;
   }
+}
+#logout{
+  color: white;
 }
 </style>

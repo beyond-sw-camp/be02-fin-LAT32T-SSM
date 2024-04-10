@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +20,10 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomIdx;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String chatRoomId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String chatRoomName;
 
     @Column(nullable = false)
@@ -45,8 +46,8 @@ public class ChatRoom {
                 .chatRoomId(UUID.randomUUID().toString())
                 .chatRoomName(roomName)
                 .chatRoomStatus(true)
-                .startedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .startedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
                 .build();
     }
 }

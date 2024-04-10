@@ -1,0 +1,151 @@
+pipeline {
+    agent any
+    tools {
+        nodejs "nodejs-20.10.0"
+    }
+    environment {
+        //Docker Hub 아이디와 비밀번호 설정
+        dockerhubid = '도커_아이디'
+        dockerhubpw = '도커_비밀번호'
+        SLACK_CHANNEL = '#slack-notification'
+        SLACK_TOKEN = 'slack-token'
+        TEAM_DOMAIN = 'lat32t'
+    }
+    stages {
+        stage('git clone') {
+            steps {
+                // GitHub 저장소에서 코드를 클론합니다.
+                git branch: 'develop', url: 'https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM.git'
+                sh 'pwd'
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Git Clone] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Git Clone] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    dir('frontend'){
+                        sh 'pwd'
+                        sh 'ls -al'
+                        sh 'rm -rf dist/'
+                        sh 'npm install --force'
+                    }
+                }
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Install Dependencies] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Install Dependencies] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('Project Test') {
+            steps {
+                script {
+                    dir('frontend'){
+                        sh 'npm run test'
+                    }
+                }
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Project Test] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Project Test] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('Project Build') {
+            steps {
+                dir('frontend'){
+                    sh 'pwd'
+                    sh 'npm run build'
+                }
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Build Project] Job Info -  '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Build Project] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                // Docker 이미지 빌드
+                dir('/var/lib/jenkins/workspace/frontend-pipe/frontend') {
+                    sh 'pwd'
+                    sh 'ls -al'
+                    sh "docker build -t hosin/lat32t:frontend1.${BUILD_ID} ."
+                }
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Docker Build] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Docker Build] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                // Docker 이미지를 Docker Hub에 푸시
+                dir('/var/lib/jenkins/workspace/frontend-pipe/frontend') {
+                sh 'pwd'
+                sh 'ls -al'
+                sh "docker login -u $dockerhubid -p $dockerhubpw"
+                sh "docker push hosin/lat32t:frontend1.${BUILD_ID}"
+                }
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [Docker Push] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [Docker Push] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+        stage('SSH transfer & Apply Deployment') {
+            steps {
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'master',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "frontend/frontend-deployment.yml",
+                                    removePrefix: 'frontend/',
+                                    remoteDirectory: '/root/',
+                                    execCommand: '''
+                                        sed -i "s/VERSION/$BUILD_NUMBER/g" /root/root/frontend-deployment.yml
+                                        kubectl apply -f ./root/frontend-deployment.yml
+                                    '''
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+            post {
+                success {
+                    slackSend (channel: SLACK_CHANNEL, color: '#00FF00', message: "SUCCESSFUL: stage - [SSH transfer & Apply Deployment] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+                failure {
+                    slackSend (channel: SLACK_CHANNEL, color: '#FF0000', message: "FAILED: stage - [SSH transfer & Apply Deployment] Job Info - '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", teamDomain: TEAM_DOMAIN, tokenCredentialId: SLACK_TOKEN)
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,6 @@
 package com.project.ssm.chat.repository.querydsl;
 
 import com.project.ssm.chat.model.entity.Message;
-import com.project.ssm.chat.model.entity.QChatRoom;
 import com.project.ssm.chat.model.entity.QMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,16 +16,12 @@ public class MessageRepositoryCustomImpl extends QuerydslRepositorySupport imple
         super(Message.class);
     }
 
-    @Override
-    public List<Message> findList() {
-        return null;
-    }
-
     public Page<Message> findList(Pageable pageable, String chatRoomId) {
         QMessage message = new QMessage("message");
 
         List<Message> result = from(message)
-                .where(message.chatRoom.roomId.eq(chatRoomId))
+                .where(message.chatRoom.chatRoomId.eq(chatRoomId))
+                .orderBy(message.createdAt.desc()) // 채팅방 내역이 최신 10개가 조회 되게 수정
                 .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -1,6 +1,8 @@
 /* ****************
  *  일정 편집
  * ************** */
+var backend = window.apiEndpoint;
+
 var editEvent = function (event, element, view) {
 
     $('#deleteEvent').data('id', event._id); //클릭한 이벤트 ID
@@ -80,36 +82,57 @@ var editEvent = function (event, element, view) {
 
         //일정 업데이트
         $.ajax({
-            type: "get",
-            url: "",
-            data: {
-                //...
+            type: "PATCH",
+            url: backend + "/calendar/event/update",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('accessToken')
             },
+            datatype: "JSON",
+            data: JSON.stringify({
+                "eventIdx":event._id,
+                "title": event.title,
+                "startedAt":event.start,
+                "closedAt":event.end,
+                "eventContent":event.description,
+                "type":"null",
+                "backgroundColor":event.backgroundColor,
+                "allDay":statusAllDay,
+            }),
             success: function (response) {
+                console.log(response)
                 alert('수정되었습니다.')
             }
         });
 
     });
-};
 
-// 삭제버튼
-$('#deleteEvent').on('click', function () {
+    // 삭제버튼
+    $('#deleteEvent').on('click', function () {
     
     $('#deleteEvent').unbind();
-    $("#calendar").fullCalendar('removeEvents', $(this).data('id'));
+    //$("#calendar").fullCalendar('removeEvents', $(this).data('id'));
     eventModal.modal('hide');
 
     //삭제시
     $.ajax({
-        type: "get",
-        url: "",
+        type: "DELETE",
+        url: backend + "/calendar/event/delete/" + event._id,
+        headers: {
+            'Authorization': localStorage.getItem('accessToken')
+        },
+        dataType: "JSON",
         data: {
-            //...
+            
         },
         success: function (response) {
+            console.log(response)           
             alert('삭제되었습니다.');
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
         }
     });
 
 });
+};
+

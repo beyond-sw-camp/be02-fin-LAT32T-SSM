@@ -1,10 +1,8 @@
 package com.project.ssm.meetingroom.controller;
 
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddRes;
-import com.project.ssm.meetingroom.model.response.MeetingRoomListRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
+import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
+import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/meetingroom")
 @AllArgsConstructor
@@ -19,61 +18,35 @@ public class MeetingRoomController {
 
     private final MeetingRoomService meetingRoomService;
 
-    @PostMapping("/add") // 회의실 추가
-    public ResponseEntity<BaseResponse> addMeetingRoom(@RequestBody MeetingRoomAddReq request) {
-        MeetingRoomAddRes.MeetingRoomAddResult result = meetingRoomService.createMeetingRoom(request);
-
-        BaseResponse response = BaseResponse.builder()
-                .isSuccess(true)
-                .code("ROOM_001")
-                .message("새로운 회의실이 생성되었습니다.")
-                .result(result)
-                .build();
-
-        return ResponseEntity.ok().body(response);
+    // 회의실 생성
+    @RequestMapping(method = RequestMethod.POST, value = "/create")
+    public ResponseEntity<Object> createMeetingRoom(@RequestBody PostMeetingRoomReq request){
+//        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok().body(meetingRoomService.createMeetingRoom(request));
     }
 
-    @GetMapping("/select/{meetingRoomIdx}") // 회의실 단일 조회
-    public ResponseEntity<BaseResponse> getMeetingRoom(@PathVariable Long meetingRoomIdx) {
-        MeetingSelectRes details = meetingRoomService.getMeetingRoom(meetingRoomIdx);
+    // 현재 회의실 조회
+    @RequestMapping(method = RequestMethod.GET, value = "/current")
+    public ResponseEntity<Object> getCurrentMeetingRoom(){
+        return ResponseEntity.ok().body(meetingRoomService.GetCurrentMeetingRoom());
+    }
 
-        BaseResponse response = BaseResponse.builder()
-                .isSuccess(true)
-                .code("ROOM_010")
-                .message("회의실 및 예약 정보 조회를 성공하였습니다.")
-                .result(details.getResult())
-                .build();
+    // 회의실 조회
 
-        return ResponseEntity.ok().body(response);
+    @RequestMapping(method = RequestMethod.GET, value = "/select/{meetingRoomIdx}") // 회의실 단일 조회
+    public ResponseEntity<Object> getMeetingRoom(@PathVariable Long meetingRoomIdx) {
+        return ResponseEntity.ok().body(meetingRoomService.getMeetingRoom(meetingRoomIdx));
     }
 
 
-
-    @GetMapping("/list") // 회의실 전체 조회
-    public ResponseEntity<BaseResponse> getAllMeetingRooms() {
-        List<MeetingRoomListRes> meetingRooms = meetingRoomService.getAllMeetingRooms();
-        BaseResponse response = BaseResponse.builder()
-                .isSuccess(true)
-                .code("ROOM_031")
-                .message("회의실 조회 요청을 정상적으로 처리하였습니다.")
-                .result(meetingRooms)
-                .build();
-        return ResponseEntity.ok().body(response);
+    @RequestMapping(method = RequestMethod.GET, value = "/list") // 회의실 전체 조회
+    public ResponseEntity<Object> getAllMeetingRooms() {
+        return ResponseEntity.ok().body(meetingRoomService.getAllMeetingRooms());
     }
 
-
-
-    @DeleteMapping("/delete/{meetingRoomIdx}") // 회의실 삭제
-    public ResponseEntity<BaseResponse> deleteMeetingRoom(@PathVariable Long meetingRoomIdx) {
-        meetingRoomService.deleteMeetingRoom(meetingRoomIdx);
-
-        BaseResponse response = BaseResponse.builder()
-                .code("ROOM_032")
-                .isSuccess(true)
-                .message("회의실이 삭제되었습니다.")
-                .build();
-
-        return ResponseEntity.ok().body(response);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{meetingRoomIdx}") // 회의실 삭제
+    public ResponseEntity<Object> deleteMeetingRoom(@PathVariable Long meetingRoomIdx) {
+        return ResponseEntity.ok().body(meetingRoomService.deleteMeetingRoom(meetingRoomIdx));
     }
 
 }

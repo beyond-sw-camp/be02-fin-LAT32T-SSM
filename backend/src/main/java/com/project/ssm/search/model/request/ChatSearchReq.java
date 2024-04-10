@@ -1,6 +1,5 @@
 package com.project.ssm.search.model.request;
 
-import com.project.ssm.search.model.response.ChatSearchRes;
 import lombok.Builder;
 import lombok.Data;
 

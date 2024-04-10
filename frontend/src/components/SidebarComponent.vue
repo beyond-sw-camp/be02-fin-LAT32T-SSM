@@ -1,90 +1,37 @@
 <template>
   <section class="sidebar">
-    <article class="sidebar-1">
-      <div class="box-1"></div>
-      <div class="box-2"></div>
-      <div class="box-3">+</div>
-    </article>
     <article class="sidebar-2">
       <section class="sidebar-user">
         <div class="sidebar-user-info">
-          <h4>{{ member.name }}</h4>
+          <h4>{{ mainStore.member.name }}</h4>
           <i class="fas fa-chevron-down"></i>
         </div>
         <p class="sidebar-user-info-additional">
-          <i class="fas fa-circle"></i>{{ member.department }}
+          <i class="fas fa-circle"></i>{{ mainStore.member.department }}
         </p>
         <span class="user-edit-icon">
           <div class="card flex justify-content-center">
-            <Button label="Show" @click="visible = true"/>
-            <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
-                <span class="p-text-secondary block mb-5">새로운 채팅방 생성하기</span>
-                <div class="flex align-items-center gap-3 mb-3">
-                    <label for="username" class="font-semibold w-6rem">채팅방 이름</label>
-                    <InputText v-model="roomName" id="채팅방 이름" class="flex-auto" autocomplete="off" />
-                </div>
-                <div class="flex align-items-center gap-3 mb-5">
-                  <label for="email" class="font-semibold w-6rem">사용자 아이디</label>
-                  <InputText v-model="memberId" id="사용자 아이디" class="flex-auto" autocomplete="off" />
-                  <Button type="button" label="추가" severity="secondary" @click="addMember(memberId)"></Button>
-                </div>
-                <div class="flex justify-content-end gap-2">
-                    <Button type="button" label="취소하기" severity="secondary" @click="visible = false"></Button>
-                    <Button type="button" label="생성하기" @click="createRoom"></Button>
-                </div>
-            </Dialog>
+            <Button class="button-show" label="+" @click="chatRoomStore.closeModal()">+</Button>
+            <CreateChatRoomComponent></CreateChatRoomComponent>  
           </div>
         </span>
       </section>
-      <section class="unread">
-        <h4 class="unread-header">
-          <span class="unread-icons">
-            <i class="fas fa-minus"></i><i class="fas fa-minus fa-sm"></i
-            ><i class="fas fa-minus fa-xs"></i>
-          </span>
-          읽지 않은 메시지
-        </h4>
-        <ul>
-          <li>
-            <a href="#"><i class="far fa-comment-dots"></i>Threads</a>
-          </li>
-        </ul>
-      </section>
       <section class="channels">
         <h4 class="channels-header">
-          <i class="fas fa-sort-down"></i> 채널
+          <i class="fas fa-sort-down" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();"  v-show="isArrowVisible"></i> 
+          <i class="fas fa-caret-right" @click="chatRoomStore.getRoomList(this.$router); chatRoomListHide(); toggleArrow();" v-show="!isArrowVisible"></i>
+          채널
         </h4>
         <ul>
-          <li v-for="(item, idx) in roomList" :key="idx">
+          <li v-for="(item, idx) in chatRoomStore.roomList" :key="idx" v-show="isChatRoomListVisible">
             <router-link v-bind:to="`/${item.chatRoomId}`">
-              <a href="#" @click="roomConnect(item.chatRoomId)">
-                <span class="make-white">
-                <i class="fas fa-hashtag"></i>
-                  {{ item.chatRoomName }}
-                </span>
+              <a href="#" @click="connectChatRoom(item)">
+              <span class="make-white">
+              <i class="fas fa-hashtag"></i>
+                {{ item.chatRoomName }}
+              </span>
               </a>
             </router-link>
-          </li>
-        </ul>
-      </section>
-      <section class="direct-messages">
-        <h4 class="direct-messages-header">
-          <i class="fas fa-sort-down"></i> 다이렉트 메시지
-        </h4>
-        <ul>
-          <li>
-            <a href="#">
-              <i class="fas fa-circle online"></i>
-              정주연
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span class="make-white">
-                <i class="fas fa-circle offline"></i>
-              </span>
-              최대현
-            </a>
           </li>
         </ul>
       </section>
@@ -92,20 +39,16 @@
   </section>
 </template>
 <script>
-import axios from "axios";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { useStompStore } from "@/stores/useStompStore";
-import {mapActions} from "pinia";
-import VueJwtDecode from 'vue-jwt-decode';
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
-import InputText from "primevue/inputtext";
+import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/useMainStore";
+import CreateChatRoomComponent from "@/components/CreateChatRoomComponent.vue"
 
 export default {
   name: "SidebarComponent",
-  components: { Dialog, Button, InputText },
+  components: { CreateChatRoomComponent },
   data() {
     return {
       member: {
@@ -114,119 +57,140 @@ export default {
         memberId: ""
       },
       memberId: "",
-      roomName: "",
+      chatRoomName: "",
       memberList: [],
       visible: false,
-      roomList: [],
-      recvList: []
+      recvList: [],
+      isChatRoomListVisible: true,
+      isArrowVisible: true,
     }
   },
+  computed: {
+    ...mapStores(useChatRoomStore, useMainStore, useStompStore, useMessageStore)
+  },
   methods: {
-    ...mapActions(useMessageStore, ['addMessage']),
-    ...mapActions(useStompStore, ['basicConnect']),
-    ...mapActions(useStompStore, ['roomConnect']),
+    chatRoomListHide() {
+      this.isChatRoomListVisible = !this.isChatRoomListVisible;
+    },
     toggle(event) {
       this.$refs.op.toggle(event);
     },
     addMember(memberId) {
       this.memberList.push(memberId);
     },
-    async createRoom() {
-      this.memberList.push(this.member.memberId);
-      const roomInfo = {
-        roomName: this.roomName,
-        memberId: this.memberList
-      };
-
-      let response = await axios.post("http://localhost:8080/chat/room/create", roomInfo);
-      console.log(response.data);
-
+    createNewChatRoom() {
+      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList, this.$router);
       this.visible = false;
     },
-    async getRoomList() {
-      let response = await axios.get("http://localhost:8080/chat/rooms", {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        }
-      });
-      this.roomList = response.data;
-      console.log(this.roomList);
+    toggleArrow(){
+      this.isArrowVisible = !this.isArrowVisible;
     },
-    // enterRoom(chatRoomId) {
-    //   console.log(chatRoomId);
-    //   const server = "http://localhost:8080/chat"
-    //   let socket = new SockJS(server);
-    //   this.stompClient = Stomp.over(socket);
-    //   console.log(`소켓 연결을 시도 중 서버 주소: ${server}`)
-    //   window.localStorage.setItem("chatRoomId", chatRoomId);
-    //   this.getChatList(chatRoomId, localStorage.getItem("accessToken"), 1, 4);
-    //   this.stompClient.connect(
-    //     {},
-    //     frame => {
-    //       this.connected = true;
-    //       console.log('소켓 연결 성공', frame);
-    //       this.stompClient.subscribe("/sub/room/" + chatRoomId, res => {
-    //         console.log("연결 후 채팅방 아이디", chatRoomId);
-    //         console.log(res);
-    //         console.log("구독으로 받은 메시지입니다.", res.body);
-    //         this.addMessage(JSON.parse(res.body));
-    //       });
-    //     },
-    //     error => {
-    //       console.log('소켓 연결 실패', error);
-    //       this.connected = false;
-    //     }
-    //   )
-    // },
-    sendMessage(e) {
-      console.log(e);
-      if (e.keyCode === 13 && this.userName !== '' && this.message !== '') {
-        this.send(this.chatRoomId);
-        this.message = ''
-      }
-    },
-    send() {
-      console.log('Send Message:' + this.message);
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = {
-          userName: this.member.name,
-          message: this.message
-        };
-        console.log(msg);
-        this.stompClient.send("/send/room/" + this.$route.params.roomId, JSON.stringify(msg), {});
-      }
-    },
-    setMember(token) {
-      token = VueJwtDecode.decode(token.split(" ")[1]);
-      this.member.name = token.memberName;
-      this.member.department = token.department;
-      this.member.memberId = token.memberId;
-    },
-    async getChatList(chatRoomId, token, page, size) {
-      let response = await axios.get(`http://localhost:8080/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-        headers: {
-          Authorization: token
-        },
-      });
-      console.log(response.data);
-      response.data.forEach((message) => {
-        this.addMessage(message);
-      })
-    },
+    async connectChatRoom(item) {
+      await this.stompStore.roomConnect(item.chatRoomId, this.$router)
+      
+    }
   },
   mounted() {
-    this.getRoomList();
-    if (localStorage.getItem("accessToken") !== null) {
-      this.setMember(localStorage.getItem("accessToken"));
-    }
-    if (localStorage.getItem("chatRoomId") !== null) {
-      this.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 4);
-    }
+    // 토큰 데이터 load
+    this.mainStore.loadMemberData();
   }
 };
 </script>
 
-<style>
+<style scoped>
+.fa-sort-down {
+  cursor: pointer;
+}
+.fa-caret-right{
+  cursor: pointer;
+}
+
+/* 기본 스타일링 */
+body {
+    font-family: 'Arial', sans-serif; /* 기본 글꼴 */
+    padding: 20px; /* 페이지 내부 여백 */
+    background-color: #f4f4f4; /* 배경색 */
+}
+
+/* 제목 스타일 */
+.p-text-secondary {
+    color: #333; /* 제목 글자색 */
+    margin-bottom: 1.25rem; /* 아래쪽 여백 */
+    font-size: 1.5rem; /* 글자 크기 */
+    font-weight: bold; /* 글자 두께 */
+}
+
+/* 플렉스 컨테이너 */
+.flex {
+    display: flex; /* 플렉스 박스 사용 */
+    align-items: center; /* 항목들을 가운데 정렬 */
+    gap: 1rem; /* 항목들 사이의 간격 */
+}
+
+/* 입력 필드와 레이블 스타일 */
+label {
+    font-weight: bold; /* 레이블 글자 두께 */
+    width: 6rem; /* 레이블 너비 */
+}
+
+.input-text {
+    flex-grow: 1; /* 입력 필드가 남은 공간을 모두 차지하도록 */
+    padding: 0.5rem; /* 입력 필드 내부 여백 */
+    border: 1px solid #ccc; /* 테두리 스타일 */
+    border-radius: 0.25rem; /* 테두리 모서리 둥글게 */
+}
+
+/* 버튼 스타일 */
+.button {
+    padding: 0.5rem 1rem; /* 버튼 내부 여백 */
+    border: none; /* 테두리 없애기 */
+    border-radius: 0.25rem; /* 모서리 둥글게 */
+    color: white; /* 글자색 */
+    cursor: pointer; /* 마우스 커서를 포인터로 */
+    transition: background-color 0.3s; /* 배경색 변경시 애니메이션 효과 */
+}
+
+/* "추가" 버튼 스타일 */
+.button-secondary {
+    background-color: #6c757d; /* 배경색 */
+}
+
+.button-secondary:hover {
+    background-color: #5a6268; /* 호버 시 배경색 */
+}
+
+/* "취소하기" 버튼 스타일 */
+.button-cancel {
+    background-color: #dc3545; /* 배경색 */
+}
+
+.button-cancel:hover {
+    background-color: #c82333; /* 호버 시 배경색 */
+}
+
+/* "생성하기" 버튼 스타일 */
+.button-create {
+    background-color: #28a745; /* 배경색 */
+}
+
+.button-create:hover {
+    background-color: #218838; /* 호버 시 배경색 */
+}
+
+/* 맨 아래 버튼 그룹 정렬 */
+.flex.justify-content-end {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+/* 하단 마진 조정 */
+.mb-3, .mb-5 {
+    margin-bottom: 1rem; /* 여백 조정 */
+}
+
+.gap-2, .gap-3 {
+    gap: 0.5rem; /* 간격 조정 */
+}
+
 .fa,.fas,.far {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -454,6 +418,10 @@ export default {
   content: "\f503";
 }
 
+*, :before, :after {
+  box-sizing: inherit;
+}
+
 @font-face {
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
@@ -624,18 +592,10 @@ body::-webkit-scrollbar-thumb {
 
 /* first left-sidebar */
 
-.sidebar-1 {
-  grid-column: 1 / 1;
-  border-right: 0.1rem solid var(--slack-border-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* second left-sidebar */
 
 .sidebar-2 {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
   overflow: auto;
 }
 
@@ -1054,6 +1014,17 @@ body::-webkit-scrollbar-thumb {
     margin-right: 0.5rem;
     font-size: 0.7rem;
   }
+}
+
+.chat-room-list-detail {
+  padding: 0.3rem 0.5rem;
+  margin: 0.5rem 1rem;
+  //background-color: var(--slack-tag-background);
+  border-radius: 0.625rem;
+  color: var(--slack-tag-border-color);
+  display: flex;
+  align-items: flex-start;
+  flex-grow: 1;
 }
  
 </style>

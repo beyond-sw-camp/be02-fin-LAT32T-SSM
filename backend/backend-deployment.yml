@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssm-backend-deployment
+spec:
+  selector:
+    matchLabels:
+      type: ssm-backend-app
+  replicas: 2
+  strategy:
+    type: RollingUpdate       # 무중단 배포 방식
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        type: ssm-backend-app
+    spec:
+      containers:
+        - name: ssm-service-container
+          image: hosin/lat32t:backend1.VERSION
+          envFrom:
+            - configMapRef:
+                name: cm-ssm-backend
+          readinessProbe:
+            httpGet:
+              path: /calendar/event/healthcheck # readlinessProbe 헬스체크를 위한 경로 설정
+              port: 8080
+            initialDelaySeconds: 20    # 최초 Probe전의 지연 시간
+            periodSeconds: 10          # Probe를 체크하는 시간 간격
+            successThreshold: 3       # 성공 결과 수신 횟수
+          ports:
+            - containerPort: 8080
+      terminationGracePeriodSeconds: 10   # 컨테이너가 강제 종료되기 전의 유예시간

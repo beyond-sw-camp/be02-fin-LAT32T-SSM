@@ -12,7 +12,7 @@ public class MemberDuplicateException extends EntityDuplicateException {
 
     // 회원ID 중복
     public static MemberDuplicateException forMemberId(String memberId) {
-        return new MemberDuplicateException(ErrorCode.DUPLICATE_SIGNUP_ID, String.format("SignUp Id [ %s ] is duplicated.", memberId));
+        return new MemberDuplicateException(ErrorCode.DUPLICATE_SIGNUP_ID, String.format("%s은 이미 존재하는 아이디입니다.", memberId));
     }
 
 }

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Entity
@@ -27,12 +28,10 @@ public class Message {
     @Column(nullable = false)
     private String updatedAt;
 
-    // TODO: 멤버랑 연관관계 맺기
     @ManyToOne
     @JoinColumn(name = "member_idx")
     private Member member;
 
-    // TODO: 채팅방이랑 연관관계 맺기
     @ManyToOne
     @JoinColumn(name = "chatRoom_idx")
     private ChatRoom chatRoom;
@@ -40,8 +39,8 @@ public class Message {
     public static Message createMessage(String message, Member member, ChatRoom chatRoom) {
         return Message.builder()
                 .message(message)
-                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
-                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")))
                 .member(member)
                 .chatRoom(chatRoom)
                 .build();

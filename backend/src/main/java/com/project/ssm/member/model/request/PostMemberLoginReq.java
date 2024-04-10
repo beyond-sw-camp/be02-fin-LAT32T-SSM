@@ -5,11 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PostMemberLoginReq {
+
+    @NotBlank
+    @Size(max = 45)
     private String memberId;
+
+    @NotBlank
+    @Size(max = 45)
     private String password;
 }
