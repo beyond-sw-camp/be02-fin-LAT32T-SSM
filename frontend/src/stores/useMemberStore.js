@@ -37,15 +37,16 @@ export const useMemberStore = defineStore("member", {
                 });
                 window.location.href = "/";
             }catch(error){
-                if (error.code === 'ERR_NETWORK') {
+                if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
                     localStorage.removeItem("accessToken");
                     this.member.memberId="";
                     this.member.memberPw="";
                     this.sendErrorMessage(router);
                 } else {
-                    toast.error(error.response.data.message, {
-                        timeout: timeout,
-                    })
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
                 }
             }          
           },
@@ -88,14 +89,15 @@ export const useMemberStore = defineStore("member", {
                     localStorage.setItem("toastMessage", response.data.message);                      
                     window.location.href = "/login";
                 } catch(error){
-                    if (error.code === 'ERR_NETWORK') {
-                        this.sendErrorMessage(router);
-                    } else if (error.response.stauts === 500) {
-                        this.sendErrorMessage(router);
-                    } else {
+                    if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                        localStorage.removeItem("accessToken");
+                        this.member.memberId="";
+                        this.member.memberPw="";
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         })
+                    } else {
+                        this.sendErrorMessage(router);
                     }
                 }
             }
@@ -127,14 +129,12 @@ export const useMemberStore = defineStore("member", {
                     window.location.href = "/login";
                 }catch(error){
                     if(error.response.data.code === "MEMBER_016" || error.response.data.code === "MEMBER_036"){
-                        if (error.code === 'ERR_NETWORK') {
-                            this.sendErrorMessage(router);
-                        } else {
-                            toast.error(error.response.data.message, {
-                                timeout: timeout,
-                            });
-                        }
-                    }    
+                        toast.error(error.response.data.message, {
+                            timeout: timeout,
+                        });
+                    } else {
+                        this.sendErrorMessage(router);
+                    }
                 }
             }else{
                 toast.error("새롭게 입력하신 비밀번호가 서로 다릅니다.", {
@@ -165,12 +165,12 @@ export const useMemberStore = defineStore("member", {
 
             } catch (error) {
                 this.checkId = false;
-                if (error.code === 'ERR_NETWORK') {
-                    this.sendErrorMessage(router);
-                } else {
+                if(error.response.data.code === "MEMBER-001"){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });
+                } else {
+                    this.sendErrorMessage(router);
                 }
             }
         },

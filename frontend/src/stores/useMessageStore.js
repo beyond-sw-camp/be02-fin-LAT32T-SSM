@@ -37,10 +37,29 @@ export const useMessageStore = defineStore("message", {
                      this.addMessage(message);
                  })
              } catch (error) {
-                 toast.error(error.response.data.message, {
-                     timeout: timeout,
-                     onClose: () => window.location.href = '/'
-                 })
+                 if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                     toast.error(error.response.data.message, {
+                         timeout: timeout,
+                         onClose: () => window.location.href = '/'
+                     })
+                 } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                     toast.error(error.response.data.message, {
+                         timeout: timeout,
+                         onClose: () => window.location.href = '/'
+                     })
+                 } else if (error.response.data.code === 'MEMBER-001') {
+                     toast.error(error.response.data.message, {
+                         timeout: timeout,
+                         onClose: () => window.location.href = '/'
+                     })
+                 } else if (error.response.data.code === 'CHATTING_010') {
+                     toast.error(error.response.data.message, {
+                         timeout: timeout,
+                         onClose: () => window.location.href = '/'
+                     })
+                 } else {
+                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                 }
              }
         },
         async getChatProfile(memberId) {
@@ -50,10 +69,13 @@ export const useMessageStore = defineStore("message", {
               })
               return response.data[0].imageAddr;
             } catch (error) {
-              toast.error(error.response.data.message, {
-                timeout: timeout,
-                // 여기에 추가 옵션을 넣을 수 있습니다.
-              })
+                if (error.response.data.code === 'MEMBER-001') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                } else {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                }
             }
           },
     },
