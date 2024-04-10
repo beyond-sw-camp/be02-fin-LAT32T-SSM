@@ -20,9 +20,6 @@ export const useStompStore = defineStore("stomp", {
             if(this.subscription !== null){
                 this.subscription.unsubscribe();
             }
-                
-                
-             
                 window.localStorage.setItem("chatRoomId", chatRoomId);
                 const stomp = Stomp.client(`${backend}/chat`);
                 stomp.connect({}, frame => {
@@ -48,10 +45,6 @@ export const useStompStore = defineStore("stomp", {
                         this.retrySocketConnect(error, chatRoomId, router);
                     }
                 })
-                 
-                
-
-                
                 useMessageStore().recvList = []
                 await useMessageStore().getChatList(chatRoomId, storedToken, 1, 10); 
                    
