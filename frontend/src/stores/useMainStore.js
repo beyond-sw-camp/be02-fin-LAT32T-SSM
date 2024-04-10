@@ -128,6 +128,24 @@ export const useMainStore = defineStore("main", {
           });
         }
       }, false);
+      let reconnectAttempts = 0;
+      const maxReconnectAttempts = 5; // 최대 재연결 시도 횟수
+      evtSource.addEventListener("error", function () {
+        if (evtSource.readyState === EventSource.CONNECTING) {
+          reconnectAttempts++;
+          console.log(`재연결 시도 중... (${reconnectAttempts}/${maxReconnectAttempts})`);
+      
+          if (reconnectAttempts >= maxReconnectAttempts) {
+            console.log("서버와의 재연결 시도 횟수가 최대치에 도달했습니다.");
+            evtSource.close(); // 더 이상 재연결 시도를 하지 않음
+            toast.error("서버와의 연결을 재시도하는 횟수가 최대치에 도달했습니다.", {
+              timeout: 10000,
+            });
+          }
+        } else if (evtSource.readyState === EventSource.CLOSED) {
+          console.log("서버와의 연결이 완전히 종료되었습니다.");
+        }
+      }, false);
     },
 
     // 회의실 정보를 불러온다.
@@ -169,7 +187,7 @@ export const useMainStore = defineStore("main", {
       })
       this.member.profileImage = response.data[0].imageAddr;
     },
-    
+
 
     // 멤버찾기 컴포넌트 open, close
     openComponent() {
