@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="2" failures="0" errors="0" time="2.559">
-  <testsuite name="SignUpPage.vue" errors="0" failures="0" skipped="0" timestamp="2024-03-21T15:33:41" time="1.407" tests="2">
-    <testcase classname="SignUpPage.vue renders the signup page" name="SignUpPage.vue renders the signup page" time="0.236">
+<testsuites name="jest tests" tests="6" failures="0" errors="0" time="4.81">
+  <testsuite name="CalendarComponent" errors="0" failures="0" skipped="0" timestamp="2024-04-10T16:27:02" time="1.415" tests="1">
+    <testcase classname="CalendarComponent 날짜에 따른 이벤트 색상 결정" name="CalendarComponent 날짜에 따른 이벤트 색상 결정" time="0.164">
     </testcase>
-    <testcase classname="SignUpPage.vue allows input to be set" name="SignUpPage.vue allows input to be set" time="0.058">
+  </testsuite>
+  <testsuite name="SignUpPage.vue" errors="0" failures="0" skipped="0" timestamp="2024-04-10T16:27:02" time="1.729" tests="2">
+    <testcase classname="SignUpPage.vue 회원가입 페이지 랜더링" name="SignUpPage.vue 회원가입 페이지 랜더링" time="0.183">
+    </testcase>
+    <testcase classname="SignUpPage.vue 입력값 세팅" name="SignUpPage.vue 입력값 세팅" time="0.029">
+    </testcase>
+  </testsuite>
+  <testsuite name="SidebarComponent" errors="0" failures="0" skipped="0" timestamp="2024-04-10T16:27:02" time="1.833" tests="3">
+    <testcase classname="SidebarComponent 채널 랜더링 확인" name="SidebarComponent 채널 랜더링 확인" time="0.152">
+    </testcase>
+    <testcase classname="SidebarComponent 토글 확인" name="SidebarComponent 토글 확인" time="0.031">
+    </testcase>
+    <testcase classname="SidebarComponent 토클 확인" name="SidebarComponent 토클 확인" time="0.012">
     </testcase>
   </testsuite>
 </testsuites>
