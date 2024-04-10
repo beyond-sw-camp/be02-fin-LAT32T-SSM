@@ -46,8 +46,7 @@ export const useStompStore = defineStore("stomp", {
                 }
             })
             useMessageStore().recvList = []
-            await useMessageStore().getChatList(chatRoomId, storedToken, 1, 10);
-                   
+            await useMessageStore().getChatList(chatRoomId, storedToken, 1, 10)
         },
         retrySocketConnect(error, chatRoomId, router) {
             toast.error('채팅방과 연결이 끊어졌습니다.', {

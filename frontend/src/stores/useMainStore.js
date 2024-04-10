@@ -70,7 +70,7 @@ export const useMainStore = defineStore("main", {
       let day = ('0' + date.getDate()).slice(-2);
       const formattedDate = year + "-" + month + "-" + day;
       try {
-        const response = await axios.get(backend + `/calendar/event/date/${formattedDate}`, {
+        const response = await axios.get(`${backend}/calendar/event/date/${formattedDate}`, {
           headers: {
             Authorization: localStorage.getItem('accessToken'),
           }
@@ -105,7 +105,7 @@ export const useMainStore = defineStore("main", {
         });
       }
     },
-    notificaiton() {
+    notificationData() {
       this.requestNotificationPermission();
 
       const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
@@ -136,14 +136,14 @@ export const useMainStore = defineStore("main", {
           console.log(`재연결 시도 중... (${reconnectAttempts}/${maxReconnectAttempts})`);
       
           if (reconnectAttempts >= maxReconnectAttempts) {
-            console.log("서버와의 재연결 시도 횟수가 최대치에 도달했습니다.");
             evtSource.close(); // 더 이상 재연결 시도를 하지 않음
-            toast.error("서버와의 연결을 재시도하는 횟수가 최대치에 도달했습니다.", {
+            toast.error("서버와의 연결을 실패하였습니다.", {
               timeout: 10000,
             });
+            window.location.href = 'error/500/서버와의 연결이 끊어졌습니다. 다시 로그인해주세요.';
           }
         } else if (evtSource.readyState === EventSource.CLOSED) {
-          console.log("서버와의 연결이 완전히 종료되었습니다.");
+          window.location.href = 'error/500/서버와의 연결이 끊어졌습니다. 다시 로그인해주세요.';
         }
       }, false);
     },

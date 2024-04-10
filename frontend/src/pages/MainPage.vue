@@ -139,7 +139,7 @@ export default {
   },
   created() {
     this.mainStore.loadMemberData();
-    this.mainStore.notificaiton();
+    this.mainStore.notificationData();
   },
   computed: {
     ...mapStores(useMainStore, useMessageStore, useStompStore)
