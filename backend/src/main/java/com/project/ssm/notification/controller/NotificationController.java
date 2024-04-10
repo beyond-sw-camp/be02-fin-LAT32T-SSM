@@ -2,7 +2,6 @@ package com.project.ssm.notification.controller;
 
 
 import com.project.ssm.notification.service.EmittersService;
-import com.project.ssm.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -12,18 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 @RestController
 @Slf4j
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class NotificationController {
 
     private final EmittersService emittersService;
-    private final NotificationService notificationService;
 
     @RequestMapping(value = "/notification/{memberId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter handle(@PathVariable String memberId) {

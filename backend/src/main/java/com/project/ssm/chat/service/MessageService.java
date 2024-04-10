@@ -47,12 +47,8 @@ public class MessageService {
 
     @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
-        log.info("consume-message : {}", record.value());
-        log.info("key : {}", record.key());
         String message = objectMapper.writeValueAsString(record.value());
         SendMessageReq sendMessageReq = objectMapper.readValue(message, SendMessageReq.class);
-
-        log.info("convert message : {}", message);
         messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getChatRoomId(), sendMessageReq);
         List<RoomParticipants> memberIdsByChatRoomName = memberRepository.findMemberNameByChatRoomName(sendMessageReq.getChatRoomId());
         if(!memberIdsByChatRoomName.isEmpty()){
@@ -64,7 +60,6 @@ public class MessageService {
                         try {
                             emitter.send(SseEmitter.event().name("notification").data(sendMessageReq.getMessage()));
                         } catch (IOException e) {
-                            log.info("카프카 데이터 보낼때 에러 발생");
                             emittersService.getEmitters().remove(memberId);
                         }
                     }
@@ -83,7 +78,7 @@ public class MessageService {
 
             messageRepository.save(Message.createMessage(sendMessageDto.getMessage(), member, chatRoom));
             String topic = "chat-room-" + chatRoomId;
-            kafkaTemplate.send(topic, "" + member.getMemberId(), sendMessageDto);
+            kafkaTemplate.send(topic, "" + member.getMemberId().toString(), sendMessageDto);
         } else {
             throw MessageAccessException.forNotContent();
         }

@@ -1,16 +1,11 @@
 package com.project.ssm.meetingroom.controller;
 
-import com.project.ssm.common.BaseResponse;
 import com.project.ssm.meetingroom.model.request.PostMeetingRoomReq;
-import com.project.ssm.meetingroom.model.response.*;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/meetingroom")
 @AllArgsConstructor
