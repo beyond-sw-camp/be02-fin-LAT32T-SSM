@@ -4,7 +4,6 @@ package com.project.ssm.member.repository;
 import com.project.ssm.chat.model.entity.QChatRoom;
 import com.project.ssm.chat.model.entity.QRoomParticipants;
 import com.project.ssm.chat.model.entity.RoomParticipants;
-import com.project.ssm.member.model.Member;
 import com.project.ssm.member.model.ProfileImage;
 import com.project.ssm.member.model.QMember;
 import com.project.ssm.member.model.QProfileImage;
@@ -18,11 +17,6 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    /**
-     * 회원 정보 수정 시 profile 이미지를 가져오기 위한 메서드
-     * @param memberIdx
-     * @return
-     */
     @Override
     public List<ProfileImage> findByMemberIdx(Long memberIdx) {
         QMember member = QMember.member;
@@ -39,11 +33,6 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
                 .fetch();
     }
 
-    /**
-     *
-     * @param memberId
-     * @return
-     */
     @Override
     public List<RoomParticipants> findChatRoomByMemberId(String memberId) {
         QRoomParticipants roomParticipants = QRoomParticipants.roomParticipants;

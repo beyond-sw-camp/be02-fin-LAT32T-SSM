@@ -88,20 +88,35 @@ public class RoomService {
         }
     }
 
-    public Object updateRoom(PatchUpdateRoomReq patchUpdateRoomReq) {
+    public Object updateRoom(PatchUpdateRoomReq patchUpdateRoomReq, Member member) {
         List<String> memberIdList = new ArrayList<>();
+        boolean checkMember = true;
+
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomId(patchUpdateRoomReq.getChatRoomId()).orElseThrow(() ->
                 ChatRoomNotFoundException.forNotFoundChatRoom());
 
-        for (String memberId : patchUpdateRoomReq.getMemberId()) {
-            Member member = memberRepository.findByMemberId(memberId).orElseThrow(() ->
-                    MemberNotFoundException.forMemberId(memberId));
-            roomPartRepository.save(RoomParticipants.buildRoomPart(member, chatRoom));
-            memberIdList.add(memberId);
+        for (RoomParticipants roomParticipants : chatRoom.getRoomParticipantsList()) {
+            if (roomParticipants.getMember().getMemberId().equals(member.getMemberId())) {
+                checkMember = true;
+                break;
+            } else {
+                checkMember = false;
+            }
         }
 
-        return BaseResponse.successRes("CHATTING_003", true, "채팅방 수정이 완료되었습니다.",
-                PatchUpdateRoomRes.buildRoom(patchUpdateRoomReq.getChatRoomId(), chatRoom.getChatRoomName(), memberIdList));
+        if (!checkMember) {
+            throw ChatRoomAccessException.forNotAccessChatRoom(member.getMemberName());
+        } else {
+            for (String memberId : patchUpdateRoomReq.getMemberId()) {
+                Member addMember = memberRepository.findByMemberId(memberId).orElseThrow(() ->
+                        MemberNotFoundException.forMemberId(memberId));
+                roomPartRepository.save(RoomParticipants.buildRoomPart(addMember, chatRoom));
+                memberIdList.add(memberId);
+            }
+
+            return BaseResponse.successRes("CHATTING_003", true, "채팅방 수정이 완료되었습니다.",
+                    PatchUpdateRoomRes.buildRoom(patchUpdateRoomReq.getChatRoomId(), chatRoom.getChatRoomName(), memberIdList));
+        }
     }
 
     public BaseResponse<DeleteRoomRes> deleteChatRoom(String chatRoomId) {

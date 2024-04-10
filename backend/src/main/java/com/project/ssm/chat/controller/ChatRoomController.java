@@ -15,7 +15,6 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
-@CrossOrigin("*")
 @Slf4j
 public class ChatRoomController {
 
@@ -44,7 +43,8 @@ public class ChatRoomController {
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/update")
     public ResponseEntity<Object> updateRoom(@RequestBody @Valid PatchUpdateRoomReq patchUpdateRoomReq) {
-        return ResponseEntity.ok().body(roomService.updateRoom(patchUpdateRoomReq));
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(roomService.updateRoom(patchUpdateRoomReq, member));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/room/out/{chatRoomId}")
