@@ -1,126 +1,100 @@
 package com.project.ssm.meetingroom.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ssm.common.BaseResponse;
-import com.project.ssm.meetingroom.model.request.MeetingRoomAddReq;
-import com.project.ssm.meetingroom.model.response.MeetingRoomAddResult;
-import com.project.ssm.meetingroom.model.response.MeetingSelectRes;
-import com.project.ssm.meetingroom.model.response.GetMeetingRoomSelectRes;
-import com.project.ssm.meetingroom.model.response.MeetingSelectResReservation;
+import com.project.ssm.config.security.SecurityConfig;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
+import com.project.ssm.meetingroom.model.response.*;
+import com.project.ssm.meetingroom.repository.MeetingRoomRepository;
 import com.project.ssm.meetingroom.service.MeetingRoomService;
+import com.project.ssm.member.exception.security.CustomAccessDeniedHandler;
+import com.project.ssm.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest(MeetingRoomController.class)
-@ContextConfiguration(classes = {MeetingRoomController.class})
+@ContextConfiguration(classes = {SecurityConfig.class, MeetingRoomController.class})
+@AutoConfigureMockMvc
 class MeetingRoomControllerTest {
+
     @Autowired
     MockMvc mvc;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @MockBean
     private MeetingRoomService meetingRoomService;
 
-    // Spring Security 우회를 위해 SecurityFilterChain을 모의 빈 처리
     @MockBean
-    private SecurityFilterChain securityFilterChain;
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    @MockBean
+    private MemberRepository memberRepository;
 
-//    @Test
-//    void MeetingRoomController_addMeetingRoom_success() throws Exception {
-//        MeetingRoomAddResult result = MeetingRoomAddResult.builder()
-//                .idx(1L)
-//                .roomName("제 1 회의실")
-//                .build();
-//
-//        MeetingRoomAddReq request = MeetingRoomAddReq.builder()
-//                .roomName("제 1 회의실")
-//                .roomCapacity(10)
-//                .build();
-//
-//        given(meetingRoomService.createMeetingRoom(any())).willReturn(result);
-//
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        String content = mapper.writeValueAsString(request);
-//
-//        mvc.perform(post("/meetingroom/add")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(content))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.isSuccess").value(true))
-//                .andExpect(jsonPath("$.code").value("ROOM_001"))
-//                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."))
-//                .andExpect(jsonPath("$.result.idx").value(result.getIdx()))
-//                .andExpect(jsonPath("$.result.roomName").value(result.getRoomName()))
-//                .andExpect(jsonPath("$.message").value("새로운 회의실이 생성되었습니다."));
-//    }
+    @MockBean
+    private MeetingRoomRepository meetingRoomRepository;
 
-
-    @Test
-    void MeetingRoomController_getMeetingRoom_success() throws Exception {
-        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String createdAt = LocalDateTime.now().format(customFormatter);
-        String startedAt = LocalDateTime.now().plusHours(5).format(customFormatter);
-        String closedAt = LocalDateTime.now().plusHours(10).format(customFormatter);
-
-
-        MeetingSelectResReservation reservation = MeetingSelectResReservation.builder()
-                .eventIdx(1L)
-                .createdAt(createdAt)
-                .startedAt(startedAt)
-                .closedAt(closedAt)
+    @BeforeEach
+    public void setUp() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
                 .build();
-        GetMeetingRoomSelectRes roomSelectResult = GetMeetingRoomSelectRes.builder()
-                .roomIdx(1L)
-                .roomName("제 1 회의실")
-                .roomCapacity(10)
-                .reservations(Collections.singletonList(reservation))
-                .build();
-
-        given(meetingRoomService.getMeetingRoom(any())).willReturn(BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", roomSelectResult));
-
-
-        mvc.perform(get("/meetingroom/select/{meetingRoomIdx}", 1)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.code").value("aaaaa"))
-                .andExpect(jsonPath("$.message").value("회의실 예약 조회"))
-                .andExpect(jsonPath("$.result.roomIdx").value(1))
-                .andExpect(jsonPath("$.result.roomName").value("제 1 회의실"))
-                .andExpect(jsonPath("$.result.roomCapacity").value(10));
     }
 
+    @Test
+    @WithMockUser
+    void getAllMeetingRooms() throws Exception {
+
+        MeetingRoom meetingRoom = MeetingRoom.builder()
+                .meetingRoomIdx(1L)
+                .meetingRoomName("회의실1")
+                .meetingRoomCapacity(10)
+                .isAvailable(true)
+                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .build();
+
+        MeetingRoomListRes meetingRoomListRes = MeetingRoomListRes.buildMeetingRoomListRes(meetingRoom);
+
+        BaseResponse<List<MeetingRoomListRes>> response = BaseResponse.successRes("MEETING_000", true, "회의실 전체 조회", List.of(meetingRoomListRes));
 
 
-//    @Test
-//    void MeetingRoomController_getAllMeetingRoom_success() throws Exception {
-//
-//    }
-//
-//    @Test
-//    void MeetingRoomController_deleteMeetingRoom_success() throws Exception {
-//
-//    }
+        //Given
+        given(meetingRoomService.getAllMeetingRooms()).willReturn(response);
+
+        //When
+        ResultActions result = mvc.perform(get("/meetingroom/list")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //Then
+        result.andExpect(status().isOk()).andExpect(jsonPath("$.isSuccess").value(true));
+
+
+    }
 }
