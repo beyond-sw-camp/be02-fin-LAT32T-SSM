@@ -28,7 +28,6 @@ export const useStompStore = defineStore("stomp", {
             console.log(stomp);
 
             stomp.connect({}, frame => {
-                stomp.debug = null;
                 console.log(frame.command);
                 stomp.connected = true;
                 toast('채팅방에 접속하였습니다.', {
