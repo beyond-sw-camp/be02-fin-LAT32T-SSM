@@ -24,11 +24,9 @@ public class MeetingRoomService {
 
     // 회의실 생성
     public BaseResponse<PostMeetingRoomRes> createMeetingRoom(PostMeetingRoomReq request) {
-//        meetingRoomRepository.findByMeetingRoomName(request.getMeetingRoomName()).orElseThrow(() ->
-//                MeetingRoomNotFoundException.forMeetingRoomName(request.getMeetingRoomName()));
         MeetingRoom meetingRoom = meetingRoomRepository.save(MeetingRoom.buildMeetingRoom(request));
         PostMeetingRoomRes response = PostMeetingRoomRes.buildMeetingRoomRes(meetingRoom);
-        return BaseResponse.successRes("MEETING_000",true, "회의실이 생성되었습니다.",response);
+        return BaseResponse.successRes("MEETING_001",true, "회의실이 생성되었습니다.",response);
     }
 
     // 현재 회의실 조회
@@ -40,7 +38,7 @@ public class MeetingRoomService {
             GetNowMeetingRoomRes response = GetNowMeetingRoomRes.buildMeetingRoomRes(meetingRoom);
             meetingRoomList.add(response);
         }
-        return BaseResponse.successRes("MEETING_000",true, "회의실 현황 조회.",meetingRoomList);
+        return BaseResponse.successRes("MEETING_002",true, "회의실 현황 조회.",meetingRoomList);
     }
 
     // 회의실 단일 조회
@@ -58,7 +56,7 @@ public class MeetingRoomService {
             reservationList.add(reservationDetail);
         }
         GetMeetingRoomSelectRes result = GetMeetingRoomSelectRes.buildRoomSelectRes(meetingRoom, reservationList);
-        return BaseResponse.successRes("MEETING_000", true, "회의실 예약 조회", result);
+        return BaseResponse.successRes("MEETING_003", true, "회의실 예약 조회", result);
     }
 
     // 회의실 전체 조회
@@ -71,7 +69,7 @@ public class MeetingRoomService {
             MeetingRoomListRes listRes = MeetingRoomListRes.buildMeetingRoomListRes(room);
             meetingRoomListResList.add(listRes);
         }
-        return BaseResponse.successRes("MEETING_000", true, "회의실 전체 조회", meetingRoomListResList);
+        return BaseResponse.successRes("MEETING_004", true, "회의실 전체 조회", meetingRoomListResList);
     }
 
     public BaseResponse<String> deleteMeetingRoom(Long meetingRoomIdx) {
@@ -79,6 +77,6 @@ public class MeetingRoomService {
                 MeetingRoomNotFoundException.forMeetingRoomIdx());
         meetingRoomRepository.delete(meetingRoom);
 
-        return BaseResponse.successRes("MEETING_000", true, "회의실 삭제 성공", "ok");
+        return BaseResponse.successRes("MEETING_005", true, "회의실 삭제 성공", "ok");
     }
 }

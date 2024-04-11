@@ -1,6 +1,7 @@
 package com.project.ssm.events.model.response;
 
 import com.project.ssm.events.model.entity.Event;
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,10 +19,10 @@ public class PatchReservationRes {
     @NotBlank
     private Long meetingRoomIdx;
 
-    public static PatchReservationRes buildReservationRes (Event event) {
+    public static PatchReservationRes buildReservationRes (Event event, MeetingRoom meetingRoom) {
        return PatchReservationRes.builder()
                .eventTitle(event.getTitle())
-               .meetingRoomIdx(builder().meetingRoomIdx)
+               .meetingRoomIdx(meetingRoom.getMeetingRoomIdx())
                .build();
     }
 }

@@ -14,8 +14,4 @@ public class ReservationAccessException extends EntityNotFoundException {
     public static ReservationAccessException forReservationTime() {
         return new ReservationAccessException(ErrorCode.RESERVATION_ACCESS, "종료 시간은 시작시간보다 앞설 수 없습니다.");
     }
-
-    public static ReservationAccessException forDuplicatedReservationTime() {
-        return new ReservationAccessException(ErrorCode.RESERVATION_ACCESS, "해당 시간에 예약할 수 없습니다.");
-    }
 }

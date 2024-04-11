@@ -56,14 +56,14 @@ public class EventService {
             return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
         } else {
             meetingRoom = meetingRoomRepository.findById(request.getMeetingRoomIdx()).orElseThrow(() ->
-                    ReservationAccessException.forDuplicatedReservationTime());
+                    ReservationDuplicateException.forevent());
             if (reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt())) {
                 Event event = eventRepository.save(Event.buildEvent(verifiedMember, request, meetingRoom));
                 saveEventParticipants(request, event);
                 PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
                 return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
             } else {
-                throw ReservationAccessException.forDuplicatedReservationTime();
+                throw ReservationDuplicateException.forevent();
             }
         }
     }
@@ -85,7 +85,7 @@ public class EventService {
             }
             return BaseResponse.successRes("CALENDAR_002", true, "일정 조회를 성공하였습니다.", eventsList);
         } else {
-            return BaseResponse.successRes("CALENDAR_002", true, "아직 일정이 없습니다.", eventsList);
+            return BaseResponse.successRes("CALENDAR_003", true, "아직 일정이 없습니다.", eventsList);
         }
     }
 
@@ -101,9 +101,9 @@ public class EventService {
             for (Event event : events) {
                 eventsList.add(GetEventRes.buildEventRes(verifiedMember, event));
             }
-            return BaseResponse.successRes("CALENDAR_002", true, "일정이 상세 조회되었습니다.", eventsList);
+            return BaseResponse.successRes("CALENDAR_004", true, "일정이 상세 조회되었습니다.", eventsList);
         } else {
-            return BaseResponse.successRes("CALENDAR_002", true, "아직 일정이 없습니다.", eventsList);
+            return BaseResponse.successRes("CALENDAR_003", true, "아직 일정이 없습니다.", eventsList);
         }
     }
 
@@ -116,7 +116,7 @@ public class EventService {
         if (memberIdxOfEvent.equals(member.getMemberIdx())) {
             Event updatedEvent = eventRepository.save(Event.setEvent(request, event));
             PatchEventRes patchEventRes = PatchEventRes.buildEventRes(updatedEvent);
-            return BaseResponse.successRes("CALENDAR_004", true, "일정이 수정되었습니다.", patchEventRes);
+            return BaseResponse.successRes("CALENDAR_005", true, "일정이 수정되었습니다.", patchEventRes);
         } else {
             throw EventAccessException.forMemberId(verifiedMember.getMemberId());
         }
@@ -133,7 +133,7 @@ public class EventService {
             eventParticipantsRepository.deleteByEvent(event);
             eventRepository.delete(event);
             DeleteEventRes deleteEventRes = DeleteEventRes.buildEventRes(event);
-            return BaseResponse.successRes("CALENDAR_005", true, "일정이 삭제되었습니다.", deleteEventRes);
+            return BaseResponse.successRes("CALENDAR_006", true, "일정이 삭제되었습니다.", deleteEventRes);
         } else {
             throw EventAccessException.forMemberId(member.getMemberId());
         }
@@ -151,19 +151,28 @@ public class EventService {
         Event event = eventRepository.findById(request.getEventIdx()).orElseThrow(() ->
                 EventNotFoundException.forEventId(request.getEventIdx()));
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime start = LocalDateTime.parse(request.getReservationStart(), formatter);
+        LocalDateTime end = LocalDateTime.parse(request.getReservationEnd(), formatter);
+
         if (reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getReservationStart(), request.getReservationEnd())) {
             Event reservation = Event.setReservation(request, meetingRoom, event);
             eventRepository.save(reservation);
-            PatchReservationRes patchReservationRes = PatchReservationRes.buildReservationRes(reservation);
-            return BaseResponse.successRes("MEETING_000", true, "회의실 예약이 완료되었습니다.", patchReservationRes);
-        } else {
+            PatchReservationRes patchReservationRes = PatchReservationRes.buildReservationRes(reservation, meetingRoom);
+            return BaseResponse.successRes("RESERVATION_001", true, "회의실 예약이 완료되었습니다.", patchReservationRes);
+        } else if (end.isBefore(start)) {
             throw ReservationAccessException.forReservationTime();
+        } else {
+            throw ReservationDuplicateException.forevent();
         }
     }
 
     // 회의실 예약 조회
     @Transactional
     public BaseResponse<List<GetReservationRes>> listReservations(Member member, Long meetingRoomIdx, String date) {
+        meetingRoomRepository.findById(meetingRoomIdx).orElseThrow(()->
+                MeetingRoomNotFoundException.forMeetingRoomIdx());
         memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
         List<Event> events = eventRepository.findEventsByReservationTime(meetingRoomIdx, date);
@@ -172,9 +181,9 @@ public class EventService {
             for (Event event : events) {
                 eventsList.add(GetReservationRes.buildReservationRes(event));
             }
-            return BaseResponse.successRes("MEETING_000", true, "회의실 예약 내역이 조회되었습니다.", eventsList);
+            return BaseResponse.successRes("RESERVATION_002", true, "회의실 예약 내역이 조회되었습니다.", eventsList);
         } else {
-            return BaseResponse.successRes("MEETING_000", true, "아직 예약 내역이 없습니다.", null);
+            return BaseResponse.successRes("RESERVATION_003", true, "아직 예약 내역이 없습니다.", null);
         }
     }
 
@@ -200,6 +209,6 @@ public class EventService {
 
         // 예약 정보 포함해 응답
         DeleteReservationCancelRes deleteReservationCancelRes = DeleteReservationCancelRes.buildReservationCancel(meetingRoom, reservationInfo);
-        return BaseResponse.successRes("EVENT_000", true, "---", deleteReservationCancelRes);
+        return BaseResponse.successRes("RESERVATION_004", true, "예약이 삭제되었습니다.", deleteReservationCancelRes);
     }
 }
