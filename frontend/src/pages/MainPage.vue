@@ -242,9 +242,7 @@ export default {
     this.mainStore.readMember();
 
     // 회의실정보를 불러온다.
-    // this.mainStore.readMeetingRooms();
-
-    this.meetingRoomStore.fetchRooms();
+    this.mainStore.readMeetingRooms();
 
     // 프로필 이미지 불러오기
     this.mainStore.getProfileImage();
