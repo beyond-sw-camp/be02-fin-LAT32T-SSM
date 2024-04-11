@@ -8,11 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ssm (1)" />
-        <module name="ssm" />
         <module name="ssm (2)" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ssm" target="11" />
       <module name="ssm-batch" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -20,7 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ssm" options="-parameters" />
       <module name="ssm (1)" options="-parameters" />
-      <module name="ssm (2)" options="-parameters" />
+      <module name="ssm (2)" options="" />
     </option>
   </component>
 </project>

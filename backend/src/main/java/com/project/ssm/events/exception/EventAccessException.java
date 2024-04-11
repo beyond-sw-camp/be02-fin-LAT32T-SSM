@@ -29,4 +29,8 @@ public class EventAccessException extends BusinessException {
     public static EventAccessException forEmptyInput() {
         return  new EventAccessException(ErrorCode.EMPTY_INPUT);
     }
+
+    public static EventAccessException forInvalidInput() {
+        return  new EventAccessException(ErrorCode.INVALID_INPUT);
+    }
 }
