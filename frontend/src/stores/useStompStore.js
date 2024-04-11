@@ -20,12 +20,17 @@ export const useStompStore = defineStore("stomp", {
             if(this.subscription !== null){
                 this.subscription.unsubscribe();
             }
+
+            console.log(backend);
             window.localStorage.setItem("chatRoomId", chatRoomId);
             const stomp = Stomp.client(`${backend}/chat`);
+
+            console.log(stomp);
+
             stomp.connect({}, frame => {
+                stomp.debug = null;
                 console.log(frame.command);
                 stomp.connected = true;
-                console.log('소켓 연결 성공', frame);
                 toast('채팅방에 접속하였습니다.', {
                     timeout: timeout,
                 })
