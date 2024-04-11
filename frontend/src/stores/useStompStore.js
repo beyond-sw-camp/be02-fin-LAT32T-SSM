@@ -3,6 +3,7 @@ import Stomp from "webstomp-client";
 import { useMessageStore } from "@/stores/useMessageStore";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import SockJS from "sockjs-client";
 
 const storedToken = localStorage.getItem("accessToken");
 const timeout = 10000;
