@@ -11,6 +11,21 @@ export const useMessageStore = defineStore("message", {
         recvList: [],
     }),
     actions: {
+        async addMessageFromSub(message) {
+            const date = new Date();
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
+            const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
+            message.createdAt = amOrPm + formatHour + ':' + minutes;
+            try {
+               const result = await this.getChatProfile(message.memberId);
+               message.profileImage = result;
+           } catch (error) {
+               // 에러 처리 로직을 여기에 추가하세요. 예를 들어, 기본 이미지 설정 등
+               console.error("프로필 이미지를 가져오는 데 실패했습니다", error);
+           }
+            this.recvList.push(message);
+        },
         async addMessage(message) {
              const date = new Date(message.createdAt);
              const minutes = date.getMinutes().toString().padStart(2, '0');
