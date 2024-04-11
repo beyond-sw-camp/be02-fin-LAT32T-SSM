@@ -146,6 +146,12 @@ export const useMainStore = defineStore("main", {
           window.location.href = 'error/500/서버와의 연결이 끊어졌습니다. 다시 로그인해주세요.';
         }
       }, false);
+
+       // 'open' 이벤트 리스너 추가
+        evtSource.addEventListener("open", function() {
+          console.log("연결이 성공적으로 다시 수립되었습니다.");
+          reconnectAttempts = 0; // 재연결 시도 횟수 초기화
+      }, false);
     },
 
     // 회의실 정보를 불러온다.
