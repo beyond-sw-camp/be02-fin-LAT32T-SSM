@@ -1,5 +1,6 @@
 package com.project.ssm.events.model.request;
 
+import com.project.ssm.meetingroom.model.entity.MeetingRoom;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
