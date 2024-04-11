@@ -139,7 +139,7 @@ export default {
   },
   created() {
     this.mainStore.loadMemberData();
-    this.mainStore.notificaiton();
+    this.mainStore.notificationData();
   },
   computed: {
     ...mapStores(useMainStore, useMessageStore, useStompStore)
@@ -242,7 +242,9 @@ export default {
     this.mainStore.readMember();
 
     // 회의실정보를 불러온다.
-    this.mainStore.readMeetingRooms();
+    // this.mainStore.readMeetingRooms();
+
+    this.meetingRoomStore.fetchRooms();
 
     // 프로필 이미지 불러오기
     this.mainStore.getProfileImage();

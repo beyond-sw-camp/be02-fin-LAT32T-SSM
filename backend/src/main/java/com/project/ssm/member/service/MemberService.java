@@ -136,14 +136,12 @@ public class MemberService {
     }
 
     public List<GetProfileImageRes> getMemberProfile(GetProfileImageReq getProfileImageReq) {
-        Optional<Member> member = memberRepository.findByMemberId(getProfileImageReq.getMemberId());
+        Member member = memberRepository.findByMemberId(getProfileImageReq.getMemberId()).orElseThrow(() ->
+                MemberNotFoundException.forMemberId(getProfileImageReq.getMemberId()));
         List<GetProfileImageRes> getProfileImageRes = new ArrayList<>();
 
-        if (member.isPresent()) {
-            List<ProfileImage> profileImage = member.get().getProfileImage();
-            for (ProfileImage image : profileImage) {
-                getProfileImageRes.add(GetProfileImageRes.buildProfileImage(image.getImageAddr()));
-            }
+        for (ProfileImage profileImage : member.getProfileImage()) {
+            getProfileImageRes.add(GetProfileImageRes.buildProfileImage(profileImage.getImageAddr()));
         }
         return getProfileImageRes;
     }
