@@ -3,7 +3,7 @@
     <div class="meeting-room-container">
       <div class="meeting-rooms">
         <div v-for="(room, index) in mainStore.meetingRooms" :key="index"
-          :class="{ 'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable }">
+             :class="{ 'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable }">
           <button @click="selectMeetingRoom(room.meetingRoomIdx)">{{ room.meetingRoomName }}</button>
         </div>
       </div>
@@ -16,6 +16,7 @@
           <div class="color-box"></div>
           이용 불가
         </div>
+        <MeetingRoomModalComponent v-if="showModal" @close="showModal = false"/>
       </div>
     </div>
   </div>
@@ -24,11 +25,17 @@
 <script>
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/useMainStore";
-import axios from "axios";
-const backend = process.env.VUE_APP_API_ENDPOINT;
+import { useMeetingRoomStore } from '@/stores/useMeetingRoomStore'; // 스토어 import
+import MeetingRoomModalComponent from './MeetingRoomModalComponent.vue'; // 모달 컴포넌트 import
+//import axios from "axios";
+//const backend = process.env.VUE_APP_API_ENDPOINT;
 export default {
+  components: {
+    MeetingRoomModalComponent, // 컴포넌트 등록
+  },
   data() {
     return {
+      showModal: false, // 모달 제어를 위한 데이터
     };
   },
   computed: {
@@ -36,9 +43,12 @@ export default {
   },
   methods: {
     async selectMeetingRoom(roomIdx) {
-      console.log(roomIdx);
-      const response = await axios.get(`${backend}/meetingroom/select/` + roomIdx);
-      console.log(response);
+      const meetingRoomStore = useMeetingRoomStore(); // 스토어 사용
+      await meetingRoomStore.fetchRoomReservations(roomIdx); // 회의실 예약 정보 가져오기
+      this.showModal = true; // 모달 창 보이기
+      //console.log(roomIdx);
+      //const response = await axios.get(`${backend}/meetingroom/select/` + roomIdx);
+      //console.log(response);
     },
   },
 };
