@@ -38,7 +38,7 @@ export const useStompStore = defineStore("stomp", {
                     console.log("연결 후 채팅방 아이디", chatRoomId);
                     console.log(res);
                     console.log("구독으로 받은 메시지입니다.", res.body);
-                    useMessageStore().addMessage(JSON.parse(res.body));
+                    useMessageStore().addMessageFromSub(JSON.parse(res.body));
                 })
             }, error => {
                 console.log(error);

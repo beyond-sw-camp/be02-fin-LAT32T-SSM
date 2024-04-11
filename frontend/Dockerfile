@@ -13,4 +13,5 @@ RUN rm -rf /etc/nginx/conf.d/default.conf
 ADD ./nginx/default.conf /etc/nginx/conf.d/default.conf
 ADD ./cert/certificate.crt /etc/nginx/certificate.crt
 ADD ./cert/private.key /etc/nginx/private.key
+ENV TZ=Asia/Seoul
 CMD ["nginx", "-g", "daemon off;"]
