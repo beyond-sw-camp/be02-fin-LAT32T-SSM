@@ -29,6 +29,7 @@ spring:
     show-sql: true
     database-platform: ${DB_PLATFORM}
 
+
 cloud:
   aws:
     s3:
