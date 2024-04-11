@@ -65,7 +65,6 @@ class EventControllerTest {
     @Test
     @WithMockUser
     void listEvents() throws Exception {
-
         GetEventRes getEventRes = GetEventRes.builder()
                 ._id(1L)
                 .title("test")
