@@ -2,7 +2,7 @@
   <div id="app">
     <div class="meeting-room-container">
       <div class="meeting-rooms">
-        <div v-for="(room, index) in mainStore.meetingRooms" :key="index"
+        <div v-for="(room, index) in mainStore.rooms" :key="index"
              :class="{ 'room': true, 'available': room.isAvailable, 'unavailable': !room.isAvailable }">
           <button @click="selectMeetingRoom(room.meetingRoomIdx)">{{ room.meetingRoomName }}</button>
         </div>

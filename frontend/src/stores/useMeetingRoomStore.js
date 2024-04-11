@@ -14,7 +14,6 @@ export const useMeetingRoomStore = defineStore('meetingRoom', {
                 if (response.data.isSuccess) {
                     this.rooms = response.data.result;
                 } else {
-                    // 오류 처리
                     console.error('회의실 목록을 불러오는 데 실패했습니다:', response.data.message);
                 }
             } catch (error) {
