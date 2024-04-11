@@ -21,7 +21,9 @@ export const useStompStore = defineStore("stomp", {
                 this.subscription.unsubscribe();
             }
             window.localStorage.setItem("chatRoomId", chatRoomId);
-            const stomp = Stomp.client(`${backend}/chat`);
+            let socket = new SockJS(`${backend}/chat`);
+            // const stomp = Stomp.client(`${backend}/chat`);
+            const stomp = Stomp.over(socket);
             stomp.connect({}, frame => {
                 console.log(frame.command);
                 stomp.connected = true;
