@@ -16,10 +16,10 @@ public enum ErrorCode {
 
 
     // 회원
-    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복된 경우"),
-    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없는 경우"),
-    DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_016", "회원의 패스워드가 저장된 데이터와 다른 경우"),
-    SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_036", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
+    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "MEMBER-007", "회원 이메일이 중복된 경우"),
+    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "MEMBER-008", "회원을 찾을 수 없는 경우"),
+    DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_009", "회원의 패스워드가 저장된 데이터와 다른 경우"),
+    SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_010", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
 
 
 
