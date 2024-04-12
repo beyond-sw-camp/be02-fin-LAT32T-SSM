@@ -32,26 +32,31 @@ export const useMessageStore = defineStore("message", {
              const amOrPm = date.getHours() >= 12 ? '오후 ' : '오전 ';
              const formatHour = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
              message.createdAt = amOrPm + formatHour + ':' + minutes;
-             try {
-                const result = await this.getChatProfile(message.memberId);
-                message.profileImage = result;
-            } catch (error) {
-                // 에러 처리 로직을 여기에 추가하세요. 예를 들어, 기본 이미지 설정 등
-                console.error("프로필 이미지를 가져오는 데 실패했습니다", error);
-            }
              this.recvList.push(message);
          },
         async getChatList(chatRoomId, token, page, size) {
-             try {
-                 let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
-                     headers: {
-                         Authorization: token
-                     },
-                 });
-                 response.data.result.forEach((message) => {
-                     this.addMessage(message);
-                 })
-             } catch (error) {
+            try {
+                let response = await axios.get(`${backend}/chat/room/chatlist?chatRoomId=${chatRoomId}&page=${page}&size=${size}`, {
+                    headers: {
+                        Authorization: token
+                    },
+                });
+                // 모든 메시지의 프로필 이미지를 비동기적으로 불러오고, 완료되면 순서대로 recvList에 추가
+                const messagesWithProfiles = await Promise.all(response.data.result.map(async (message) => {
+                    try {
+                        const profileImage = await this.getChatProfile(message.memberId);
+                        message.profileImage = profileImage;
+                    } catch (error) {
+                        console.error("프로필 이미지를 가져오는 데 실패했습니다", error);
+                        // 실패 시 기본 이미지 설정 등의 처리를 여기에 추가
+                    }
+                    return message;
+                }));
+        
+                messagesWithProfiles.forEach((message) => {
+                    this.addMessage(message); // 이미 프로필 이미지가 설정된 메시지를 순서대로 추가
+                });
+            } catch (error) {
                  if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
                      toast.error(error.response.data.message, {
                          timeout: timeout,
