@@ -26,7 +26,7 @@ public class NotificationService {
         log.info("조회가 되었다 {}", memberByEventTime.isEmpty());
         for (EventParticipants eventParticipants : memberByEventTime) {
             ProducerRecord<String, Object> record =
-                    new ProducerRecord<>("SseMessage",
+                    new ProducerRecord<>("notificationTopic",
                             ""+eventParticipants.getMember().getMemberId(),
                             eventParticipants.getEvent().getTitle() + " 일정이 곧 시작예정입니다.");
             kafkaTemplate.send(record);
