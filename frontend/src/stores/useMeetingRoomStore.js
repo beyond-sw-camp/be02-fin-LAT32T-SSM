@@ -1,28 +1,14 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import {toast} from "vue3-toastify";
 
 export const useMeetingRoomStore = defineStore('meetingRoom', {
     state: () => ({
-        rooms: [], // 회의실 목록을 저장할 배열
-        selectedRoom: null, // 선택된 회의실 정보
+        rooms: [],
+        selectedRoom: null,
     }),
     actions: {
-        // 회의실 목록을 가져오는 비동기 함수
-        async fetchRooms() {
-            try {
-                const response = await axios.get(`${process.env.VUE_APP_API_ENDPOINT}/meetingrooms`);
-                if (response.data.isSuccess) {
-                    this.rooms = response.data.result;
-                } else {
-                    console.error('회의실 목록을 불러오는 데 실패했습니다:', response.data.message);
-                }
-            } catch (error) {
-                console.error('서버 오류:', error);
-            }
-        },
-
-        // 특정 회의실의 예약 상태를 가져오는 비동기 함수
-        async fetchRoomReservations(roomIdx) {
+        async fetchRoomReservations(roomIdx, router) {
             try {
                 const response = await axios.get(`${process.env.VUE_APP_API_ENDPOINT}/meetingroom/select/` + roomIdx);
                 if (response.data.isSuccess && response.data.result) {
@@ -31,18 +17,24 @@ export const useMeetingRoomStore = defineStore('meetingRoom', {
                         ...response.data.result,
                         reservations: response.data.result.reservations,
                     };
-                } else {
-                    // 오류 처리
-                    console.error('회의실 예약 정보를 불러오는 데 실패했습니다:', response.data.message);
                 }
             } catch (error) {
-                console.error('서버 오류:', error);
+                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    });
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                } else if (error.response.data.code === 'MEETINGROOM_006') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    })
+                } else {
+                    router.push({name: 'error', params: {errorStatus: error.response.status, message: error.response.data.message}})
+                }
             }
-        },
-
-        // 모달을 닫고 선택된 회의실 정보를 초기화하는 함수
-        clearSelectedRoom() {
-            this.selectedRoom = null;
         },
     },
 });

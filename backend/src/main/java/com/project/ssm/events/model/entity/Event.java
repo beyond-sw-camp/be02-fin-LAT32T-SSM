@@ -1,11 +1,9 @@
 package com.project.ssm.events.model.entity;
 
-import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
-import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -72,6 +70,23 @@ public class Event {
                 .title(request.getTitle())
                 .startedAt(request.getStartedAt())
                 .closedAt(request.getClosedAt())
+                .eventContent(request.getEventContent())
+                .type(request.getType())
+                .eventMaker(member.getMemberIdx())
+                .backgroundColor(request.getBackgroundColor())
+                .textColor(request.getTextColor())
+                .allDay(request.getAllDay())
+                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .build();
+    }
+
+    public static Event buildAllDayEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
+        return Event.builder()
+                .meetingRoom(meetingRoom)
+                .title(request.getTitle())
+                .startedAt(request.getStartedAt() + " 00:00")
+                .closedAt(request.getClosedAt() + " 00:00")
                 .eventContent(request.getEventContent())
                 .type(request.getType())
                 .eventMaker(member.getMemberIdx())

@@ -102,6 +102,19 @@ var editEvent = function (event, element, view) {
             success: function (response) {
                 console.log(response)
                 alert('수정되었습니다.')
+            },
+            error: function (error) {
+                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    alert(error.responseJSON.message);
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    alert(error.responseJSON.message);
+                } else if (error.response.data.code === 'MEMBER-008') {
+                    alert(error.responseJSON.message);
+                } else if (error.responseJSON.code ==='CALENDAR_007' || error.responseJSON.code ==='CALENDAR_008') {
+                    alert(error.responseJSON.message);
+                } else {
+                    alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                }
             }
         });
 
