@@ -132,13 +132,6 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.1-jre</version> <!-- 사용할 Guava 버전을 명시하세요 -->
-        </dependency>
-
     </dependencies>
 
     <build>
