@@ -67,13 +67,6 @@ export default {
                 console.error('검색 실패:', error);
             }
         },
-        // async fetchMeetingRooms() {
-        //     try {
-        //         const response = await axios.get(backend + "/meetingroom/current");
-        //         this.rooms = response.data.result;
-        //     } catch (error) {
-        //     }
-        // },
         reservationOpenModal() {
             this.isModalOpen = true;
         },

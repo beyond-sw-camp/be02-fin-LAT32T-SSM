@@ -67,10 +67,7 @@ export default {
         document.body.appendChild(script4);
     },
     methods: {
-        chatRoomChange() {
-      // 선택된 채팅방의 이름을 외부 함수로 전달합니다.
-      // 여기서는 예시로 updateChatRoomName이라는 외부 함수를 호출합니다.
-      // 실제로는 이 함수를 외부 JavaScript에서 정의해야 합니다.
+      chatRoomChange() {
       if (this.mainStore.selectedChatRoom && typeof updateChatRoomName === "function") {
         updateChatRoomName(this.mainStore.selectedChatRoom.chatRoomName);
       }

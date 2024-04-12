@@ -20,13 +20,8 @@ export const useStompStore = defineStore("stomp", {
             if(this.subscription !== null){
                 this.subscription.unsubscribe();
             }
-
-            console.log(backend);
             window.localStorage.setItem("chatRoomId", chatRoomId);
             const stomp = Stomp.client(`${backend}/chat`);
-
-            console.log(stomp);
-
             stomp.connect({}, frame => {
                 console.log(frame.command);
                 stomp.connected = true;
@@ -35,16 +30,10 @@ export const useStompStore = defineStore("stomp", {
                 })
                 this.chatStomp = stomp;
                 this.subscription = stomp.subscribe("/sub/room/" + chatRoomId, res => {
-                    console.log("연결 후 채팅방 아이디", chatRoomId);
-                    console.log(res);
-                    console.log("구독으로 받은 메시지입니다.", res.body);
                     useMessageStore().addMessageFromSub(JSON.parse(res.body));
                 })
             }, error => {
-                console.log(error);
-                console.log('=======에러발생=======');
                 stomp.connected = false;
-                console.log(error.code);
                 if (error.code === 1001 || error.code === 1002 || error.code === 1006) {
                     this.retrySocketConnect(error, chatRoomId, router);
                 }

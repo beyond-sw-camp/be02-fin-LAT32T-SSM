@@ -122,17 +122,15 @@ var calendar = $('#calendar').fullCalendar({
         endDate   : moment(end).format('YYYY-MM-DD')
       },
       success: function (response) {
-        console.log(response)
-        if (response.result.length !== 0) {
-          var fixedDate = response.result.map(function (array) {
+        if (response.data.code === 'CALENDAR_002') {
+          let fixedDate = response.result.map(function (array) {
             if (array.allDay && array.start !== array.end) {
               array.end = moment(array.end).add(1, 'days'); // 이틀 이상 AllDay 일정인 경우 달력에 표기시 하루를 더해야 정상출력
             }
             return array;
           });
           callback(fixedDate);
-        } else {
-          // 콘솔 창이 아니라 다른 컴포넌트? 혹은 alert 사용하기
+        } else if (response.data.code === 'CALENDAR_003') {
           console.log(response.message);
         }
       },
@@ -353,7 +351,6 @@ function calDateWhenDragnDrop(event) {
 
   //하루짜리 all day
   if (event.allDay && event.end === event.start) {
-    console.log('1111')
     newDates.startDate = moment(event.start._d).format('YYYY-MM-DD');
     newDates.endDate = newDates.startDate;
   }

@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import axios from "axios";
-import { toast } from 'vue3-toastify';
+import {toast} from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 const backend = process.env.VUE_APP_API_ENDPOINT;
@@ -41,23 +41,24 @@ export const useMessageStore = defineStore("message", {
                         Authorization: token
                     },
                 });
-                // 모든 메시지의 프로필 이미지를 비동기적으로 불러오고, 완료되면 순서대로 recvList에 추가
-                const messagesWithProfiles = await Promise.all(response.data.result.map(async (message) => {
-                    try {
-                        const profileImage = await this.getChatProfile(message.memberId);
-                        message.profileImage = profileImage;
-                    } catch (error) {
-                        console.error("프로필 이미지를 가져오는 데 실패했습니다", error);
-                        // 실패 시 기본 이미지 설정 등의 처리를 여기에 추가
-                    }
-                    return message;
-                }));
-        
-                messagesWithProfiles.forEach((message) => {
-                    this.addMessage(message); // 이미 프로필 이미지가 설정된 메시지를 순서대로 추가
-                });
+                if (response.data.code === 'CHATTING_008') {
+                    const messagesWithProfiles = await Promise.all(response.data.result.map(async (message) => {
+                        try {
+                            message.profileImage = await this.getChatProfile(message.memberId);
+                        } catch (error) {
+                            console.error("프로필 이미지를 가져오는 데 실패했습니다", error);
+                            message.profileImage = './default-profile.png';
+                        }
+                        return message;
+                    }));
+                    messagesWithProfiles.forEach((message) => {
+                        this.addMessage(message);
+                    });
+                }
             } catch (error) {
-                 if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                if (error.message === 'Network Error') {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
                      toast.error(error.response.data.message, {
                          timeout: timeout,
                          onClose: () => window.location.href = '/'
@@ -67,7 +68,7 @@ export const useMessageStore = defineStore("message", {
                          timeout: timeout,
                          onClose: () => window.location.href = '/'
                      })
-                 } else if (error.response.data.code === 'MEMBER-001') {
+                 } else if (error.response.data.code === 'MEMBER-008') {
                      toast.error(error.response.data.message, {
                          timeout: timeout,
                          onClose: () => window.location.href = '/'
@@ -86,17 +87,41 @@ export const useMessageStore = defineStore("message", {
             try {
               const response = await axios.post(backend + '/member/profile', {
                 memberId: memberId
-              })
-              return response.data[0].imageAddr;
+              });
+              if (response.data.code === 'CHATTING_008') {
+                  if (response.data.length !== 0) {
+                      return response.data[0].imageAddr;
+                  } else {
+                      return '';
+                  }
+              }
             } catch (error) {
-                if (error.response.data.code === 'MEMBER-001') {
+                if (error.message === 'Network Error') {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
+                        onClose: () => window.location.href = '/'
+                    })
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                        onClose: () => window.location.href = '/'
+                    })
+                } else if (error.response.data.code === 'MEMBER-008') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                        onClose: () => window.location.href = '/'
+                    })
+                } else if (error.response.data.code === 'CHATTING_010') {
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                        onClose: () => window.location.href = '/'
                     })
                 } else {
                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
                 }
             }
-          },
+        },
     },
 })

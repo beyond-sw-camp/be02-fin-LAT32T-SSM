@@ -49,13 +49,11 @@ export default {
       try {
         // 스토어 응답 데이터 가져옴
         const responseData = await this.mainStore.onDateClick(this.date);
-        console.log(responseData)
         if (!responseData) {
           console.error('반환된 데이터 없음.');
           this.selectedDateDetails = [];
           return;
         }
-        console.log(responseData);
         if (responseData.result && responseData.result) {
           // title만 추출
           this.selectedDateDetails = responseData.result.map(event => event.title);
