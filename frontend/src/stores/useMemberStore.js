@@ -24,6 +24,12 @@ export const useMemberStore = defineStore("member", {
     actions: {
         async login(member, router) {
             let loginMember = { memberId: member.memberId, password: member.memberPw }
+            if(member.memberId === '' || member.memberPw === ''){
+                toast.error("ID나 비밀번호는 공백일 수 없습니다.", {
+                    timeout: timeout,
+                })
+                return;
+            }
             try{
                 let response = await axios.post(`${backend}/member/login`, loginMember, {
                     headers:{
@@ -32,21 +38,19 @@ export const useMemberStore = defineStore("member", {
                 });
                 localStorage.removeItem("accessToken")
                 localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
-                toast(response.data.result.message, {
-                    timeout: timeout
-                });
                 window.location.href = "/";
             }catch(error){
-                if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                if (error.response.data.code === 'USER-003' || error.response.data.code === 'MEMBER_016') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
                     localStorage.removeItem("accessToken");
                     this.member.memberId="";
                     this.member.memberPw="";
-                    this.sendErrorMessage(router);
+                    
                 } else {
                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                    this.sendErrorMessage(router);
                 }
             }          
           },
@@ -89,7 +93,7 @@ export const useMemberStore = defineStore("member", {
                     localStorage.setItem("toastMessage", response.data.message);                      
                     window.location.href = "/login";
                 } catch(error){
-                    if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                    if (error.response.data.code === 'USER-001' || error.response.data.code === 'COMMON-001') {
                         localStorage.removeItem("accessToken");
                         this.member.memberId="";
                         this.member.memberPw="";
@@ -165,7 +169,7 @@ export const useMemberStore = defineStore("member", {
 
             } catch (error) {
                 this.checkId = false;
-                if(error.response.data.code === "MEMBER-001"){
+                if(error.response.data.code === "MEMBER-001" || error.response.data.code === 'COMMON-001'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });

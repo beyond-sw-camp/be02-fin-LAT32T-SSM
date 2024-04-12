@@ -119,6 +119,14 @@ var newEvent = function (start, end, eventType) {
                 //DB연동시 중복이벤트 방지를 위한
                 $('#calendar').fullCalendar('removeEvents');
                 $('#calendar').fullCalendar('refetchEvents');
+            },
+            error: function (error) {
+                if (error.responseJSON.code ==='RESERVATION_006') {
+                    alert(error.responseJSON.message);
+                } else {
+                    // 오류 응답에 code가 없는 경우 일반적인 오류 메시지를 표시
+                    alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                }
             }
         });
     });
