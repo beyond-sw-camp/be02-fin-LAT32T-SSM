@@ -67,20 +67,39 @@ public class Event {
     private MeetingRoom meetingRoom;
 
     public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
-        return Event.builder()
-                .meetingRoom(meetingRoom)
-                .title(request.getTitle())
-                .startedAt(request.getStartedAt())
-                .closedAt(request.getClosedAt())
-                .eventContent(request.getEventContent())
-                .type(request.getType())
-                .eventMaker(member.getMemberIdx())
-                .backgroundColor(request.getBackgroundColor())
-                .textColor(request.getTextColor())
-                .allDay(request.getAllDay())
-                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .build();
+        if (request.getAllDay()) {
+            return Event.builder()
+                    .meetingRoom(meetingRoom)
+                    .title(request.getTitle())
+                    .startedAt(request.getStartedAt() + " 00:00")
+                    .closedAt(request.getClosedAt() + " 00:00")
+                    .eventContent(request.getEventContent())
+                    .type(request.getType())
+                    .eventMaker(member.getMemberIdx())
+                    .backgroundColor(request.getBackgroundColor())
+                    .textColor(request.getTextColor())
+                    .allDay(request.getAllDay())
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .build();
+
+        } else {
+
+            return Event.builder()
+                    .meetingRoom(meetingRoom)
+                    .title(request.getTitle())
+                    .startedAt(request.getStartedAt())
+                    .closedAt(request.getClosedAt())
+                    .eventContent(request.getEventContent())
+                    .type(request.getType())
+                    .eventMaker(member.getMemberIdx())
+                    .backgroundColor(request.getBackgroundColor())
+                    .textColor(request.getTextColor())
+                    .allDay(request.getAllDay())
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .build();
+        }
     }
 
     public static Event setEvent(PatchEventReq request, Event event) {
@@ -95,7 +114,7 @@ public class Event {
         return event;
     }
 
-    public static Event setReservation (PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
+    public static Event setReservation(PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
         event.setMeetingRoom(meetingRoom);
         event.setStartedAt(request.getReservationStart());
         event.setClosedAt(request.getReservationEnd());

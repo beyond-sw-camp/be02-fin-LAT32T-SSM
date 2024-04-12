@@ -20,7 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ssm" options="-parameters" />
       <module name="ssm (1)" options="-parameters" />
-      <module name="ssm (2)" options="-parameters" />
+      <module name="ssm (2)" options="" />
     </option>
   </component>
 </project>
