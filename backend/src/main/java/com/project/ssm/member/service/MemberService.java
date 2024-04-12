@@ -63,7 +63,7 @@ public class MemberService {
         }
         Member member = byMemberId.get();
         if (passwordEncoder.matches(req.getPassword(), member.getPassword()) && member.getStatus().equals(true)) {
-            return BaseResponse.successRes("MEMBER_011", true, "로그인에 성공하였습니다.", PostMemberLoginRes.buildLoginRes(member, secretKey, expiredTimeMs));
+            return BaseResponse.successRes("MEMBER_002", true, "로그인에 성공하였습니다.", PostMemberLoginRes.buildLoginRes(member, secretKey, expiredTimeMs));
         } else {
             throw MemberAccountException.forInvalidPassword();
         }
@@ -74,7 +74,7 @@ public class MemberService {
         if (byMemberId.isPresent()) {
             throw MemberDuplicateException.forMemberId(req.getMemberId());
         } else {
-            return BaseResponse.successRes("MEMBER_024", true, "아이디 검사를 완료하였습니다.", "ok");
+            return BaseResponse.successRes("MEMBER_003", true, "아이디 검사를 완료하였습니다.", "ok");
         }
     }
 
@@ -106,7 +106,7 @@ public class MemberService {
                 }
             }
         }
-        return BaseResponse.successRes("MEMBER_35", true, "비밀번호 변경이 완료되었습니다.", "ok");
+        return BaseResponse.successRes("MEMBER_004", true, "비밀번호 변경이 완료되었습니다.", "ok");
     }
 
     public BaseResponse<String> delete(Member m) {
@@ -119,7 +119,7 @@ public class MemberService {
             member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
             memberRepository.save(member);
 
-            return BaseResponse.successRes("MEMBER_48", true, "회원 삭제가 정상적으로 처리되었습니다.", "ok");
+            return BaseResponse.successRes("MEMBER_005", true, "회원 삭제가 정상적으로 처리되었습니다.", "ok");
         }
         return null;
     }
@@ -155,6 +155,6 @@ public class MemberService {
         for (RoomParticipants roomParticipants : memberNameByChatRoomInMember) {
             members.add(GetChatRoomMembersRes.buildReadRes(roomParticipants.getMember()));
         }
-        return BaseResponse.successRes("Member49",true, "채팅방 회원의 조회가 성공했습니다.", members);
+        return BaseResponse.successRes("MEMBER_006",true, "채팅방 회원의 조회가 성공했습니다.", members);
     }
 }

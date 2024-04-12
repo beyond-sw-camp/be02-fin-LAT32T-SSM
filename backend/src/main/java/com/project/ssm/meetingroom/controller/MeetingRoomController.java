@@ -16,7 +16,6 @@ public class MeetingRoomController {
     // 회의실 생성
     @RequestMapping(method = RequestMethod.POST, value = "/create")
     public ResponseEntity<Object> createMeetingRoom(@RequestBody PostMeetingRoomReq request){
-//        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(meetingRoomService.createMeetingRoom(request));
     }
 

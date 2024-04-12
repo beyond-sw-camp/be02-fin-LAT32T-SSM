@@ -7,12 +7,7 @@ public class ReservationDuplicateException extends EntityNotFoundException {
     public ReservationDuplicateException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
-    public ReservationDuplicateException(ErrorCode errorCode) {
-        super(errorCode);
+    public static ReservationDuplicateException forevent() {
+        return new ReservationDuplicateException(ErrorCode.RESERVATION_DUPLICATE, "해당 시간에 예약할 수 없습니다.");
     }
-
-    public static ReservationDuplicateException eventId(Long eventIdx) {
-        return new ReservationDuplicateException(ErrorCode.RESERVATION_DUPLICATE);
-    }
-
 }

@@ -16,10 +16,10 @@ public enum ErrorCode {
 
 
     // 회원
-    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "USER-001", "회원 이메일이 중복된 경우"),
-    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "USER-003", "회원을 찾을 수 없는 경우"),
-    DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_016", "회원의 패스워드가 저장된 데이터와 다른 경우"),
-    SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_036", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
+    DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "MEMBER-007", "회원 이메일이 중복된 경우"),
+    MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "MEMBER-008", "회원을 찾을 수 없는 경우"),
+    DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_009", "회원의 패스워드가 저장된 데이터와 다른 경우"),
+    SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_010", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
 
 
 
@@ -31,7 +31,7 @@ public enum ErrorCode {
     // 예약
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_005" , "예약을 찾을 수 없습니다."),
     RESERVATION_ACCESS(HttpStatus.BAD_REQUEST, "RESERVATION_006" , "인원이 초과 되었습니다."),
-    RESERVATION_DUPLICATE(HttpStatus.CONFLICT,"RESERVATION_007","이미 예약된 시간입니다."),
+    RESERVATION_DUPLICATE(HttpStatus.CONFLICT,"RESERVATION_007","이미 예약된 시간입니다.."),
 
     // 채팅방
     DUPLICATE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_009", "이미 존재하는 채팅방입니다."),
@@ -49,13 +49,12 @@ public enum ErrorCode {
     REJECT_DELETE_MESSAGE(HttpStatus.FORBIDDEN, "CHATTING_019", "메시지를 삭제할 수 없습니다."),
 
     // 일정
-    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_006", "일정을 찾을 수 없습니다."),
-    UNAUTHORIZED_ACCESS_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_007", "권한이 없는 사용자입니다."),
-    DUPLICATED_EVENT(HttpStatus.CONFLICT, "CALENDAR_008", "이미 존재하는 일정입니다."),
-    INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_009", "등록할 수 없는 시간입니다."),
-    EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_010", "필수 입력값을 입력하지 않았습니다."),
-    NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_011", "검색 결과가 없습니다."),
-    INVALID_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_012", "잘못된 입력값입니다.")
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR_007", "일정을 찾을 수 없습니다."),
+    UNAUTHORIZED_ACCESS_EVENT(HttpStatus.FORBIDDEN, "CALENDAR_008", "권한이 없는 사용자입니다."),
+    DUPLICATED_EVENT(HttpStatus.CONFLICT, "CALENDAR_009", "이미 존재하는 일정입니다."),
+    INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_010", "등록할 수 없는 시간입니다."),
+    EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_011", "필수 입력값을 입력하지 않았습니다."),
+    NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_012", "검색 결과가 없습니다."),
     ;
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
