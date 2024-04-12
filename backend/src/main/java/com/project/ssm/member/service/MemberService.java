@@ -42,10 +42,9 @@ public class MemberService {
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq req, MultipartFile profileImage) {
-        Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
-        if (byMemberId.isPresent()) {
-            throw MemberDuplicateException.forMemberId(req.getMemberId());
-        }
+        memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
+                MemberDuplicateException.forMemberId(req.getMemberId()));
+
         Member member = memberRepository.save(
                 Member.createMember(req.getMemberId(), passwordEncoder.encode(req.getPassword()),
                 req.getMemberName(), req.getDepartment(), req.getPosition()));
@@ -56,12 +55,9 @@ public class MemberService {
     }
 
     public BaseResponse<PostMemberLoginRes> login(PostMemberLoginReq req) {
-        Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
+        Member member = memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
+                MemberNotFoundException.forMemberId(req.getMemberId()));
 
-        if (byMemberId.isEmpty()) {
-            throw MemberNotFoundException.forMemberId(req.getMemberId());
-        }
-        Member member = byMemberId.get();
         if (passwordEncoder.matches(req.getPassword(), member.getPassword()) && member.getStatus().equals(true)) {
             return BaseResponse.successRes("MEMBER_002", true, "로그인에 성공하였습니다.", PostMemberLoginRes.buildLoginRes(member, secretKey, expiredTimeMs));
         } else {
@@ -70,40 +66,29 @@ public class MemberService {
     }
 
     public BaseResponse<String> checkId(GetMemberCheckIdReq req) {
-        Optional<Member> byMemberId = memberRepository.findByMemberId(req.getMemberId());
-        if (byMemberId.isPresent()) {
-            throw MemberDuplicateException.forMemberId(req.getMemberId());
-        } else {
-            return BaseResponse.successRes("MEMBER_003", true, "아이디 검사를 완료하였습니다.", "ok");
-        }
+        memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
+                MemberDuplicateException.forMemberId(req.getMemberId()));
+        return BaseResponse.successRes("MEMBER_003", true, "아이디 검사를 완료하였습니다.", "ok");
     }
 
     @Transactional
-    public BaseResponse<String> updatePassword(Member m, PatchMemberUpdatePasswordReq req, MultipartFile profileImage) {
-        Optional<Member> byId = memberRepository.findById(m.getMemberIdx());
-
-        if (byId.isPresent()) {
-            Member member = byId.get();
-            // 기존 비밀번호가 일치하지 않았을 때
-            if (!passwordEncoder.matches(req.getPassword(), member.getPassword())) {
-                throw MemberAccountException.forInvalidPassword();
-            }
-            // 기존 비밀번호를 제대로 입력했지만 새로운 비밀번호가 기존의 비밀번호와 같을 때
-            else if (passwordEncoder.matches(req.getPassword(), member.getPassword())
-                    && passwordEncoder.matches(req.getNewPassword(), member.getPassword())) {
-                throw MemberAccountException.forDifferentPassword();
-            } else {
-                member.setMemberPw(passwordEncoder.encode(req.getNewPassword()));
-                member.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
-                memberRepository.save(member);
-
-                if (profileImage != null) {
-                    // 기존 프로필 이미지 DB에서 삭제
-                    List<ProfileImage> profileImagesByMemberIdx = memberRepository.findByMemberIdx(m.getMemberIdx());
-                    profileImageRepository.deleteAll(profileImagesByMemberIdx);
-                    // 새로운 프로필 등록
-                    profileImageService.registerProfileImage(member, profileImage);
-                }
+    public BaseResponse<String> updatePassword(Member member, PatchMemberUpdatePasswordReq req, MultipartFile profileImage) {
+        Member findMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
+                MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
+        if (!passwordEncoder.matches(req.getPassword(), findMember.getPassword())) {
+            throw MemberAccountException.forInvalidPassword();
+        }
+        else if (passwordEncoder.matches(req.getPassword(), findMember.getPassword())
+                && passwordEncoder.matches(req.getNewPassword(), findMember.getPassword())) {
+            throw MemberAccountException.forDifferentPassword();
+        } else {
+            findMember.setMemberPw(passwordEncoder.encode(req.getNewPassword()));
+            findMember.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+            memberRepository.save(findMember);
+            if (profileImage != null) {
+                List<ProfileImage> profileImagesByMemberIdx = memberRepository.findByMemberIdx(member.getMemberIdx());
+                profileImageRepository.deleteAll(profileImagesByMemberIdx);
+                profileImageService.registerProfileImage(findMember, profileImage);
             }
         }
         return BaseResponse.successRes("MEMBER_004", true, "비밀번호 변경이 완료되었습니다.", "ok");

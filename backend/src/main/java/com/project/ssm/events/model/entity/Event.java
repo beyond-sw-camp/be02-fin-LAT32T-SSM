@@ -1,11 +1,9 @@
 package com.project.ssm.events.model.entity;
 
-import com.project.ssm.events.model.request.MeetingRoomReservationReq;
 import com.project.ssm.events.model.request.PatchEventReq;
 import com.project.ssm.events.model.request.PatchReservationReq;
 import com.project.ssm.events.model.request.PostEventReq;
 import com.project.ssm.meetingroom.model.entity.MeetingRoom;
-import com.project.ssm.meetingroom.model.request.PostReservationReq;
 import com.project.ssm.member.model.Member;
 import lombok.*;
 
@@ -67,11 +65,47 @@ public class Event {
     private MeetingRoom meetingRoom;
 
     public static Event buildEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
+        if (request.getAllDay()) {
+            return Event.builder()
+                    .meetingRoom(meetingRoom)
+                    .title(request.getTitle())
+                    .startedAt(request.getStartedAt() + " 00:00")
+                    .closedAt(request.getClosedAt() + " 00:00")
+                    .eventContent(request.getEventContent())
+                    .type(request.getType())
+                    .eventMaker(member.getMemberIdx())
+                    .backgroundColor(request.getBackgroundColor())
+                    .textColor(request.getTextColor())
+                    .allDay(request.getAllDay())
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .build();
+
+        } else {
+
+            return Event.builder()
+                    .meetingRoom(meetingRoom)
+                    .title(request.getTitle())
+                    .startedAt(request.getStartedAt())
+                    .closedAt(request.getClosedAt())
+                    .eventContent(request.getEventContent())
+                    .type(request.getType())
+                    .eventMaker(member.getMemberIdx())
+                    .backgroundColor(request.getBackgroundColor())
+                    .textColor(request.getTextColor())
+                    .allDay(request.getAllDay())
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .build();
+        }
+    }
+
+    public static Event buildAllDayEvent(Member member, PostEventReq request, MeetingRoom meetingRoom) {
         return Event.builder()
                 .meetingRoom(meetingRoom)
                 .title(request.getTitle())
-                .startedAt(request.getStartedAt())
-                .closedAt(request.getClosedAt())
+                .startedAt(request.getStartedAt() + " 00:00")
+                .closedAt(request.getClosedAt() + " 00:00")
                 .eventContent(request.getEventContent())
                 .type(request.getType())
                 .eventMaker(member.getMemberIdx())
@@ -84,18 +118,32 @@ public class Event {
     }
 
     public static Event setEvent(PatchEventReq request, Event event) {
-        event.setTitle(request.getTitle());
-        event.setEventContent(request.getEventContent());
-        event.setStartedAt(request.getStartedAt());
-        event.setClosedAt(request.getClosedAt());
-        event.setType(request.getType());
-        event.setBackgroundColor(request.getBackgroundColor());
-        event.setAllDay(request.getAllDay());
+        if(request.getAllDay()){
+            event.setAllDay(request.getAllDay());
+            event.setStartedAt(request.getStartedAt()+" 00:00");
+            event.setClosedAt(request.getClosedAt()+" 00:00");
+            event.setTitle(request.getTitle());
+            event.setEventContent(request.getEventContent());
+            event.setStartedAt(request.getStartedAt());
+            event.setClosedAt(request.getClosedAt());
+            event.setType(request.getType());
+            event.setBackgroundColor(request.getBackgroundColor());
+
+        } else {
+
+            event.setAllDay(request.getAllDay());
+            event.setTitle(request.getTitle());
+            event.setEventContent(request.getEventContent());
+            event.setStartedAt(request.getStartedAt());
+            event.setClosedAt(request.getClosedAt());
+            event.setType(request.getType());
+            event.setBackgroundColor(request.getBackgroundColor());
+        }
 
         return event;
     }
 
-    public static Event setReservation (PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
+    public static Event setReservation(PatchReservationReq request, MeetingRoom meetingRoom, Event event) {
         event.setMeetingRoom(meetingRoom);
         event.setStartedAt(request.getReservationStart());
         event.setClosedAt(request.getReservationEnd());

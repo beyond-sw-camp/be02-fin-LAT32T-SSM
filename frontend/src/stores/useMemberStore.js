@@ -40,7 +40,11 @@ export const useMemberStore = defineStore("member", {
                 localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
                 window.location.href = "/";
             }catch(error){
-                if (error.response.data.code === 'MEMBER-008' || error.response.data.code === 'MEMBER_009') {
+                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    });
+                } else if (error.response.data.code === 'MEMBER-008' || error.response.data.code === 'MEMBER_009') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
@@ -93,7 +97,11 @@ export const useMemberStore = defineStore("member", {
                     localStorage.setItem("toastMessage", response.data.message);                      
                     window.location.href = "/login";
                 } catch(error){
-                    if (error.response.data.code === 'MEMBER-007' || error.response.data.code === 'COMMON-001') {
+                    if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                        toast.error(error.response.data.message, {
+                            timeout: timeout,
+                        });
+                    } else if (error.response.data.code === 'MEMBER-007') {
                         localStorage.removeItem("accessToken");
                         this.member.memberId="";
                         this.member.memberPw="";
@@ -132,7 +140,11 @@ export const useMemberStore = defineStore("member", {
                     localStorage.setItem("toastMessage", response.data.message);
                     window.location.href = "/login";
                 }catch(error){
-                    if(error.response.data.code === "MEMBER_009" || error.response.data.code === "MEMBER_010"){
+                    if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                        toast.error(error.response.data.message, {
+                            timeout: timeout,
+                        });
+                    } else if(error.response.data.code === "MEMBER_008" || error.response.data.code === "MEMBER_009" || error.response.data.code === "MEMBER_010"){
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         });
@@ -169,7 +181,11 @@ export const useMemberStore = defineStore("member", {
 
             } catch (error) {
                 this.checkId = false;
-                if(error.response.data.code === "MEMBER-001" || error.response.data.code === 'COMMON-001'){
+                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    toast.error(error.response.data.message, {
+                        timeout: timeout,
+                    });
+                } else if (error.response.data.code === "MEMBER-007") {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });

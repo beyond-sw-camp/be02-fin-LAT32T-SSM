@@ -41,16 +41,12 @@ public class MeetingRoomService {
         return BaseResponse.successRes("MEETING_002",true, "회의실 현황 조회.",meetingRoomList);
     }
 
-    // 회의실 단일 조회
     public BaseResponse<GetMeetingRoomSelectRes> getMeetingRoom(Long meetingRoomIdx) {
         MeetingRoom meetingRoom = meetingRoomRepository.findById(meetingRoomIdx).orElseThrow(() ->
                 MeetingRoomNotFoundException.forMeetingRoomIdx());
-        // 회의실 ID에 대한 모든 예약을 List 반환
         List<Event> eventsList = eventRepository.findByMeetingRoom(meetingRoom);
-        // 정보 저장할 리스트 생성
         List<MeetingSelectResReservation> reservationList = new ArrayList<>();
 
-        // 예약 정보 탐색
         for (Event event : eventsList) {
             MeetingSelectResReservation reservationDetail = MeetingSelectResReservation.buildSelectReservation(event);
             reservationList.add(reservationDetail);

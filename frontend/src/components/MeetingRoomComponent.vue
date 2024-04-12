@@ -43,7 +43,7 @@ export default {
   methods: {
     async selectMeetingRoom(roomIdx) {
       const meetingRoomStore = useMeetingRoomStore();
-      await meetingRoomStore.fetchRoomReservations(roomIdx);
+      await meetingRoomStore.fetchRoomReservations(roomIdx, this.$router);
       this.showModal = true;
     },
   },

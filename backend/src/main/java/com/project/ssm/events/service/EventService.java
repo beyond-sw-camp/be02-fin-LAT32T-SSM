@@ -49,6 +49,14 @@ public class EventService {
         Member verifiedMember = memberRepository.findById(member.getMemberIdx()).orElseThrow(() ->
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
         MeetingRoom meetingRoom = null;
+
+        if (request.getAllDay()) {
+            Event event = eventRepository.save(Event.buildAllDayEvent(verifiedMember, request, null));
+            saveEventParticipants(request, event);
+            PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
+            return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
+        }
+
         if (request.getMeetingRoomIdx() == null) {
             Event event = eventRepository.save(Event.buildEvent(verifiedMember, request, null));
             saveEventParticipants(request, event);
@@ -56,14 +64,14 @@ public class EventService {
             return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
         } else {
             meetingRoom = meetingRoomRepository.findById(request.getMeetingRoomIdx()).orElseThrow(() ->
-                    ReservationDuplicateException.forevent());
+                    ReservationDuplicateException.forEvent());
             if (reservationFilter.reservationFilter(request.getMeetingRoomIdx(), request.getStartedAt(), request.getClosedAt())) {
                 Event event = eventRepository.save(Event.buildEvent(verifiedMember, request, meetingRoom));
                 saveEventParticipants(request, event);
                 PostEventRes postEventRes = PostEventRes.buildEventRes(event, verifiedMember);
                 return BaseResponse.successRes("CALENDAR_001", true, "일정이 등록되었습니다.", postEventRes);
             } else {
-                throw ReservationDuplicateException.forevent();
+                throw ReservationDuplicateException.forEvent();
             }
         }
     }
@@ -95,7 +103,6 @@ public class EventService {
                 MemberNotFoundException.forMemberIdx(member.getMemberIdx()));
         Long memberIdx = verifiedMember.getMemberIdx();
         List<Event> events = eventsOfDate.findEventsOfDate(date, memberIdx);
-//        List<Event> events = eventRepository.findEventsByDate(verifiedMember.getMemberIdx(), date);
         List<GetEventRes> eventsList = new ArrayList<>();
         if (!events.isEmpty()) {
             for (Event event : events) {
@@ -164,7 +171,7 @@ public class EventService {
         } else if (end.isBefore(start)) {
             throw ReservationAccessException.forReservationTime();
         } else {
-            throw ReservationDuplicateException.forevent();
+            throw ReservationDuplicateException.forEvent();
         }
     }
 

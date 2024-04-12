@@ -121,10 +121,16 @@ var newEvent = function (start, end, eventType) {
                 $('#calendar').fullCalendar('refetchEvents');
             },
             error: function (error) {
-                if (error.responseJSON.code ==='RESERVATION_006') {
+                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    alert(error.responseJSON.message);
+                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                    alert(error.responseJSON.message);
+                } else if (error.response.data.code === 'MEMBER-008') {
+                    alert(error.responseJSON.message);
+                }
+                else if (error.responseJSON.code ==='RESERVATION_007') {
                     alert(error.responseJSON.message);
                 } else {
-                    // 오류 응답에 code가 없는 경우 일반적인 오류 메시지를 표시
                     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
                 }
             }
