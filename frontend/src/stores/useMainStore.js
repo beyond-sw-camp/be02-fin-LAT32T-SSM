@@ -166,7 +166,7 @@ export const useMainStore = defineStore("main", {
     async readMeetingRooms() {
       try {
         const response = await axios.get(backend + '/meetingroom/current');
-        if (response.data.code === 'MEETINGROOM-001') {
+        if (response.data.code === 'MEETING_002') {
           this.meetingRooms = response.data.result;
           toast(response.data.message, {
             timeout: timeout
@@ -200,7 +200,7 @@ export const useMainStore = defineStore("main", {
     async readMember() {
       try {
         const response = await axios.get(backend + '/member/read');
-        if (response.data.code === 'tmp') {
+        if (response.data.code === 'MEMBER_007') {
           this.members = response.data.result;
           toast(response.data.message, {
             timeout: timeout
@@ -235,8 +235,8 @@ export const useMainStore = defineStore("main", {
           memberId: this.member.memberId
         })
         if (response.data.code === 'CHATTING-008') {
-          if (response.data[0].imageAddr !== null) {
-            this.member.profileImage = response.data[0].imageAddr;
+          if (response.data.result[0].imageAddr !== null) {
+            this.member.profileImage = response.data.result[0].imageAddr;
           } else {
             this.member.profileImage = '';
           }

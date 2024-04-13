@@ -122,7 +122,8 @@ var calendar = $('#calendar').fullCalendar({
         endDate   : moment(end).format('YYYY-MM-DD')
       },
       success: function (response) {
-        if (response.data.code === 'CALENDAR_002') {
+        console.log(response)
+        if (response.code === 'CALENDAR_002') {
           let fixedDate = response.result.map(function (array) {
             if (array.allDay && array.start !== array.end) {
               array.end = moment(array.end).add(1, 'days'); // 이틀 이상 AllDay 일정인 경우 달력에 표기시 하루를 더해야 정상출력
@@ -130,14 +131,14 @@ var calendar = $('#calendar').fullCalendar({
             return array;
           });
           callback(fixedDate);
-        } else if (response.data.code === 'CALENDAR_003') {
+        } else if (response.code === 'CALENDAR_003') {
           console.log(response.message);
         }
       },
       error: function (error) {
-        if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+        if(error.responseJSON.code === 'COMMON-001' || error.responseJSON.code === 'COMMON-002' || error.responseJSON.code === 'COMMON-003'){
           alert(error.responseJSON.message);
-        } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        } else if (error.responseJSON.code === 'ACCOUNT-001' || error.responseJSON.code === 'ACCOUNT-002' || error.responseJSON.code === 'ACCOUNT-003' || error.responseJSON.code === 'ACCOUNT-004') {
           alert(error.responseJSON.message);
         } else {
           alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');

@@ -54,6 +54,7 @@ public class MemberService {
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", PostMemberSignupRes.buildSignUpRes(member));
     }
 
+
     public BaseResponse<PostMemberLoginRes> login(PostMemberLoginReq req) {
         Member member = memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
                 MemberNotFoundException.forMemberId(req.getMemberId()));
@@ -117,10 +118,10 @@ public class MemberService {
         for (Member member : all) {
             members.add(GetMemberReadRes.buildReadRes(member));
         }
-        return BaseResponse.successRes("temp", true, "회원조회가 성공했습니다", members);
+        return BaseResponse.successRes("MEMBER_007", true, "회원조회가 성공했습니다", members);
     }
 
-    public List<GetProfileImageRes> getMemberProfile(GetProfileImageReq getProfileImageReq) {
+    public BaseResponse<List<GetProfileImageRes>> getMemberProfile(GetProfileImageReq getProfileImageReq) {
         Member member = memberRepository.findByMemberId(getProfileImageReq.getMemberId()).orElseThrow(() ->
                 MemberNotFoundException.forMemberId(getProfileImageReq.getMemberId()));
         List<GetProfileImageRes> getProfileImageRes = new ArrayList<>();
@@ -128,7 +129,7 @@ public class MemberService {
         for (ProfileImage profileImage : member.getProfileImage()) {
             getProfileImageRes.add(GetProfileImageRes.buildProfileImage(profileImage.getImageAddr()));
         }
-        return getProfileImageRes;
+        return BaseResponse.successRes("CHATTING-008", true, "프로필이미지 조회가 성공했습니다.", getProfileImageRes);
     }
 
     public BaseResponse<List<GetChatRoomMembersRes>> getChatRoomMembers(String chatRoomId){

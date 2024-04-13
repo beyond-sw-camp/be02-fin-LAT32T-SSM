@@ -37,7 +37,7 @@ export const useMemberStore = defineStore("member", {
                     }
                 });
 
-                if (response.data.code === 'MEMBER_001') {
+                if (response.data.code === 'MEMBER_002') {
                     localStorage.removeItem("accessToken")
                     localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
                     window.location.href = "/";
