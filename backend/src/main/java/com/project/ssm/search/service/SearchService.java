@@ -1,5 +1,6 @@
 package com.project.ssm.search.service;
 
+import com.project.ssm.common.BaseResponse;
 import com.project.ssm.member.model.Member;
 import com.project.ssm.member.repository.MemberRepository;
 import com.project.ssm.search.model.response.MemberSearchRes;
@@ -14,7 +15,7 @@ import java.util.List;
 public class SearchService {
     private final MemberRepository memberRepository;
 
-    public List<MemberSearchRes> searchMembers(String keyword) {
+    public BaseResponse<List<MemberSearchRes>> searchMembers(String keyword) {
         List<Member> members = memberRepository.findByMemberNameContaining(keyword);
         List<MemberSearchRes> searchResults = new ArrayList<>();
 
@@ -29,6 +30,6 @@ public class SearchService {
             searchResults.add(searchRes);
         }
 
-        return searchResults;
+        return BaseResponse.successRes("SEARCH-001", true, "회원 이름조회가 성공했습니다.", searchResults);
     }
 }

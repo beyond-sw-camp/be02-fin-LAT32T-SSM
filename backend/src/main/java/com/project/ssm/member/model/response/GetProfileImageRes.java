@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class GetProfileImageRes {
 
-    @NotBlank
+
     private String imageAddr;
 
     public static GetProfileImageRes buildProfileImage(String imageAddr) {
