@@ -124,12 +124,12 @@ export default {
 }
 
 .modal-footer button:nth-child(2) {
-  background-color: #f44336;
+  background-color: #4caf50;
   color: #ffffff;
 }
 
 .modal-footer button:last-child {
-  background-color: #4caf50;
+  background-color: #f44336;
   color: #ffffff;
 }
 

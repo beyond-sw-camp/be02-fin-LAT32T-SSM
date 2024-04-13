@@ -43,7 +43,7 @@
               </form>
 
               <div class="button-container">
-                <button @click="mainStore.searchMembers" class="search-button">검색</button>
+                <button @click="mainStore.searchMembers()" class="search-button">검색</button>
                 <button @click="mainStore.addFilteredMemberName()" class="add-button">추가</button>
               </div>
 

@@ -42,8 +42,9 @@ public class MemberService {
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq req, MultipartFile profileImage) {
-        memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
-                MemberDuplicateException.forMemberId(req.getMemberId()));
+        memberRepository.findByMemberId(req.getMemberId()).ifPresent(member -> {
+            MemberDuplicateException.forMemberId(req.getMemberId());
+        });
 
         Member member = memberRepository.save(
                 Member.createMember(req.getMemberId(), passwordEncoder.encode(req.getPassword()),
@@ -67,8 +68,9 @@ public class MemberService {
     }
 
     public BaseResponse<String> checkId(GetMemberCheckIdReq req) {
-        memberRepository.findByMemberId(req.getMemberId()).orElseThrow(() ->
-                MemberDuplicateException.forMemberId(req.getMemberId()));
+        memberRepository.findByMemberId(req.getMemberId()).ifPresent(member -> {
+            MemberDuplicateException.forMemberId(req.getMemberId());
+        });
         return BaseResponse.successRes("MEMBER_003", true, "아이디 검사를 완료하였습니다.", "ok");
     }
 

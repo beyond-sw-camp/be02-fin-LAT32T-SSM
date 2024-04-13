@@ -26,12 +26,7 @@ export const useMainStore = defineStore("main", {
 
     searchMemberName: "",
     // 검색 된 데이터가 들어가는 변수
-    searchedMember: {
-      memberId: "",
-      name: "",
-      department: "",
-      position: "",
-    },
+    searchedMember: [],
     // 필터 목록에 멤버이름 들어가는 곳
     filteredMemberNames: [],
     checkedMembers: [],
@@ -234,13 +229,11 @@ export const useMainStore = defineStore("main", {
         const response = await axios.post(backend + '/member/profile', {
           memberId: this.member.memberId
         })
-        if (response.data.code === 'CHATTING-008') {
-          if (response.data.result[0].imageAddr !== null) {
-            this.member.profileImage = response.data.result[0].imageAddr;
-          } else {
-            this.member.profileImage = '';
-          }
-        }
+        if (response.data.result && response.data.result[0]) {
+          this.member.profileImage = response.data.result[0].imageAddr;
+      } else {
+          this.member.profileImage = '';
+      }
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
@@ -277,7 +270,7 @@ export const useMainStore = defineStore("main", {
       try {
         const response = await axios.get(`${backend}/search/member/${this.searchMemberName}`);
         if (response.data.code === 'SEARCH-001') {
-          this.searchedMember = response.data;
+          this.searchedMember = response.data.result;
           toast(response.data.message, {
             timeout: timeout
           });
