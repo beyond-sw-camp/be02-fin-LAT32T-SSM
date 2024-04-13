@@ -115,17 +115,17 @@ var newEvent = function (start, end, eventType) {
                 "type":eventData.type,
             }),
             success: function (response) {
-                if (response.data.code === 'CALENDAR_001') {
+                if (response.code === 'CALENDAR_001') {
                     $('#calendar').fullCalendar('removeEvents');
                     $('#calendar').fullCalendar('refetchEvents');
                 }
             },
             error: function (error) {
-                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                if(error.responseJSON.code === 'COMMON-001' || error.responseJSON.code === 'COMMON-002' || error.responseJSON.code === 'COMMON-003'){
                     alert(error.responseJSON.message);
-                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                } else if (error.responseJSON.code === 'ACCOUNT-001' || error.responseJSON.code === 'ACCOUNT-002' || error.responseJSON.code === 'ACCOUNT-003' || error.responseJSON.code === 'ACCOUNT-004') {
                     alert(error.responseJSON.message);
-                } else if (error.response.data.code === 'MEMBER-008') {
+                } else if (error.responseJSON.code === 'MEMBER-008') {
                     alert(error.responseJSON.message);
                 }
                 else if (error.responseJSON.code ==='RESERVATION_007') {
