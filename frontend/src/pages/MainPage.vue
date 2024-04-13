@@ -172,10 +172,6 @@ export default {
       });
     },
     showChatting() {
-      // if (localStorage.getItem("chatRoomId") !== null) {
-      //   this.messageStore.getChatList(localStorage.getItem("chatRoomId"), localStorage.getItem("accessToken"), 1, 10);
-      // }
-
       this.isFullcalendarVisible = !this.isFullcalendarVisible;
     },
     setMember(token) {
@@ -185,8 +181,6 @@ export default {
       this.memberId = tokenData.memberId;
       this.memberName = tokenData.memberName;
     },
-
-    // isDetailsVisible 값을 반전시켜 세부 정보의 표시 여부를 토글합니다
     aboutmeDetails() {
       this.isAboutmeVisible = !this.isAboutmeVisible;
     },
@@ -203,11 +197,10 @@ export default {
     filterDetails() {
       this.isFilterVisible = !this.isFilterVisible;
     },
-    // 채팅 스크롤을 위한 메서드
     scrollToBottom() {
-      this.$nextTick(() => { // DOM 업데이트 후 스크롤 조정을 보장
+      this.$nextTick(() => {
         const container = this.$refs.getAllMessage;
-        container.scrollTop = container.scrollHeight; // 스크롤을 컨테이너의 가장 아래로 설정
+        container.scrollTop = container.scrollHeight;
       });
     }
   },
@@ -231,29 +224,24 @@ export default {
         });
       })
       .catch(() => {
-        // Failed to fetch script
+        window.location.href = 'error/404'
       });
     useChatRoomStore().getRoomList(this.$router);
     if (localStorage.getItem("accessToken") !== null) {
       this.setMember(localStorage.getItem("accessToken"));
     }
 
-    // 멤버정보를 불러온다.
     this.mainStore.readMember();
-
-    // 회의실정보를 불러온다.
     this.mainStore.readMeetingRooms();
-
-    // 프로필 이미지 불러오기
     this.mainStore.getProfileImage();
   },
   watch: {
-    getAllMessage() { // 메시지 목록이 변경될 때마다 스크롤 조정
+    getAllMessage() {
       this.scrollToBottom();
     }
   },
   updated() {
-    this.scrollToBottom(); // 컴포넌트가 업데이트될 때마다 스크롤을 가장 아래로 이동
+    this.scrollToBottom();
   },
 }
 </script>

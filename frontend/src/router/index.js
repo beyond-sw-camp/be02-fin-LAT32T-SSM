@@ -46,10 +46,7 @@ router.beforeEach((to, from, next) => {
         }).join(''));
         return JSON.parse(jsonPayload);
       };
-
       const tokenData = decodePayload(payload);
-
-      console.log(tokenData);
       const currentTime = Math.floor(Date.now() / 1000);
       if (tokenData.exp < currentTime) {
         localStorage.removeItem("accessToken");

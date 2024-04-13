@@ -89,11 +89,10 @@ export default {
       this.memberStore.checkIdDuplicate(this.$router);
     },
     handleFileUpload(event) {
-      const file = event.target.files[0]; // 사용자가 선택한 파일
-      this.memberStore.member.profileImage = file; // 파일을 Vue 모델에 할당
-
+      const file = event.target.files[0];
+      this.memberStore.member.profileImage = file;
       document.getElementById('fileName').textContent = file ? file.name : '선택된 파일 없음';
-      // 이미지 미리보기
+
       if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
 
@@ -101,8 +100,8 @@ export default {
           const imagePreview = document.getElementById('imagePreview');
           imagePreview.src = e.target.result;
           imagePreview.style.display = 'block';
-          imagePreview.style.width = '200px'; // 너비를 200px로 설정
-          imagePreview.style.height = '200px'; // 높이를 200px으로 조정
+          imagePreview.style.width = '200px';
+          imagePreview.style.height = '200px';
         };
 
         reader.readAsDataURL(file);

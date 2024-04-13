@@ -100,8 +100,9 @@ var editEvent = function (event, element, view) {
                 "allDay":statusAllDay,
             }),
             success: function (response) {
-                console.log(response)
-                alert('수정되었습니다.')
+                if (response.data.code === 'CALENDAR_005') {
+                    alert('수정되었습니다.')
+                }
             },
             error: function (error) {
                 if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
@@ -139,10 +140,11 @@ var editEvent = function (event, element, view) {
             
         },
         success: function (response) {
-            console.log(response)           
-            alert('삭제되었습니다.');
-            $('#calendar').fullCalendar('removeEvents');
-            $('#calendar').fullCalendar('refetchEvents');
+            if (response.data.code === 'CALENDAR_006') {
+                alert('삭제되었습니다.');
+                $('#calendar').fullCalendar('removeEvents');
+                $('#calendar').fullCalendar('refetchEvents');
+            }
         }
     });
 

@@ -31,7 +31,7 @@ var newEvent = function (start, end, eventType) {
     editEnd.val(end);
     editDesc.val('');
     editMember.val('');    
-    console.log(editMember.val(''));
+    // console.log(editMember.val(''));
     editRoom.val('');
 
     addBtnContainer.show();
@@ -115,10 +115,10 @@ var newEvent = function (start, end, eventType) {
                 "type":eventData.type,
             }),
             success: function (response) {
-                console.log(response)
-                //DB연동시 중복이벤트 방지를 위한
-                $('#calendar').fullCalendar('removeEvents');
-                $('#calendar').fullCalendar('refetchEvents');
+                if (response.data.code === 'CALENDAR_001') {
+                    $('#calendar').fullCalendar('removeEvents');
+                    $('#calendar').fullCalendar('refetchEvents');
+                }
             },
             error: function (error) {
                 if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){

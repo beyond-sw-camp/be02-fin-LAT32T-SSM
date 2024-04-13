@@ -75,13 +75,6 @@ export default {
     toggle(event) {
       this.$refs.op.toggle(event);
     },
-    addMember(memberId) {
-      this.memberList.push(memberId);
-    },
-    createNewChatRoom() {
-      this.chatRoomStore.createChatRoom(this.chatRoomName, this.memberList, this.$router);
-      this.visible = false;
-    },
     toggleArrow(){
       this.isArrowVisible = !this.isArrowVisible;
     },
@@ -91,7 +84,6 @@ export default {
     }
   },
   mounted() {
-    // 토큰 데이터 load
     this.mainStore.loadMemberData();
   }
 };

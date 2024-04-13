@@ -33,10 +33,6 @@
                 type="button"><span class="c-tabs__tab_content">멤버</span><span class="c-tabs__tab_count"
                   data-qa="tabs_item_render_count"></span></button>
             </div>
-            <!--대현님 작성분-->
-            <!-- <input class="c-filter_input__input mousetrap" data-qa="members_dialog_filter_input" type="text"
-              placeholder="멤버 찾기" aria-label="멤버 찾기" role="searchbox" v-model="keyword" @input="searchMembers"> -->
-            <!-- Search Section -->
             <div class="search-form-container">
               <form id="searchForm" class="search-form">
                 <div class="input-group">
@@ -56,10 +52,6 @@
               <h3>선택된 멤버:</h3>
               <span v-for="name in checkedMemberNames" :key="name">{{ name }}, </span>
             </div>
-            <!-- <div v-for="(member2, index) in mainStore.checkedMembers"  :key="index">
-                {{ member2.memberName }}
-            </div> -->
-            <!-- Members List -->
             <div class="members-list">
               <table>
                 <thead>
@@ -83,12 +75,6 @@
               </table>
             </div>
           </div>
-          <!-- <div class="c-tabs__tab_panel">
-            <div v-for="(member, index) in result" :key="index" class="member-info">
-              <p>멤버 ID: {{ member.memberId }}</p>
-              <p>멤버 이름: {{ member.memberName }}</p>
-            </div>
-          </div> -->
           <button @click="mainStore.openComponent"
             class="c-button-unstyled c-icon_button c-icon_button--size_medium c-sk-modal__close_button c-sk-modal__close_button--responsive c-icon_button--default"
             aria-label="닫기">
@@ -124,7 +110,7 @@ export default {
           .filter(member => member.checked)
           .map(member => member.memberName);
       } else {
-        return []; // 배열이 아닐 경우 빈 배열 반환
+        return [];
       }
     }
   },

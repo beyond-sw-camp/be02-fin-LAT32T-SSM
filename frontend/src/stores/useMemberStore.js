@@ -36,11 +36,16 @@ export const useMemberStore = defineStore("member", {
                         "Content-Type": "application/json",
                     }
                 });
-                localStorage.removeItem("accessToken")
-                localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
-                window.location.href = "/";
+
+                if (response.data.code === 'MEMBER_001') {
+                    localStorage.removeItem("accessToken")
+                    localStorage.setItem("accessToken", "Bearer " + response.data.result.token);
+                    window.location.href = "/";
+                }
             }catch(error){
-                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                if (error.message === 'Network Error') {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });
@@ -84,20 +89,21 @@ export const useMemberStore = defineStore("member", {
                     "member",
                     new Blob([json], { type: "application/json" })
                 );
-
                 formData.append("profileImage", this.member.profileImage);
-                
-                console.log(this.member.profileImage)
                 try{
                     let response = await axios.post(`${backend}/member/signup`, formData, {
                         headers:{
                             "Content-Type": "multipart/form-data",    
                         }
-                    });                
-                    localStorage.setItem("toastMessage", response.data.message);                      
-                    window.location.href = "/login";
+                    });
+                    if (response.data.code === 'MEMBER_001') {
+                        localStorage.setItem("toastMessage", response.data.message);
+                        window.location.href = "/login";
+                    }
                 } catch(error){
-                    if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    if (error.message === 'Network Error') {
+                        window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                    } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         });
@@ -135,12 +141,16 @@ export const useMemberStore = defineStore("member", {
                             "Content-Type": "multipart/form-data",
                             "Authorization": storedToken
                         }
-                    });                 
-                    localStorage.removeItem("accessToken")             
-                    localStorage.setItem("toastMessage", response.data.message);
-                    window.location.href = "/login";
+                    });
+                    if (response.data.code === 'MEMBER_004') {
+                        localStorage.removeItem("accessToken")
+                        localStorage.setItem("toastMessage", response.data.message);
+                        window.location.href = "/login";
+                    }
                 }catch(error){
-                    if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    if (error.message === 'Network Error') {
+                        window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                    } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         });
@@ -176,12 +186,15 @@ export const useMemberStore = defineStore("member", {
               const response = await axios.post(`${backend}/member/check/id`, req);
               toast(response.data.message, {
                 timeout: timeout,
-            })
-                this.checkId = true;
-
+              });
+              if (response.data.code === 'MEMBER_003') {
+                  this.checkId = true;
+              }
             } catch (error) {
                 this.checkId = false;
-                if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                if (error.message === 'Network Error') {
+                    window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+                } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });

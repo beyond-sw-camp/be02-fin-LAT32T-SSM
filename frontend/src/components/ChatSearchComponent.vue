@@ -77,10 +77,8 @@
                                                 </div>
                                             </div>
                                         </header>
-                                       
                                     </li>
                                 </ol>
-                        
                             </div>
                         </div>
                     </div>
@@ -103,9 +101,6 @@ export default {
         };
     },
     methods: {
-        chatSearchOpenModal() {
-            this.isModalOpen = true;
-        },
         chatSearchCloseModal() {
             this.isModalOpen = false;
         }

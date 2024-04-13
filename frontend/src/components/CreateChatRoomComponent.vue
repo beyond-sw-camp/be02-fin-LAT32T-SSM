@@ -45,22 +45,6 @@ export default {
     computed: {
         ...mapStores(useChatRoomStore, useMainStore)
     },
-    methods: {
-        searchMember() {
-            // 멤버 검색 로직 구현
-        },
-        addMember(member) {
-            if (!this.selectedMembers.some(m => m.id === member.id)) {
-                this.selectedMembers.push(member);
-            }
-        },
-        removeMember(memberId) {
-            this.selectedMembers = this.selectedMembers.filter(m => m.id !== memberId);
-        },
-        createChatRoom() {
-            // 채팅방 생성 로직 구현
-        }
-    }
 }
 </script>
 

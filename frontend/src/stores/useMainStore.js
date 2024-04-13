@@ -75,30 +75,47 @@ export const useMainStore = defineStore("main", {
             Authorization: localStorage.getItem('accessToken'),
           }
         })
-        toast(response.data.message, {
-          timeout: timeout
-        });
-        return response.data;
+        if (response.data.code === 'CALENDAR-003') {
+          toast(response.data.message, {
+            timeout: timeout
+          });
+          return response.data;
+        } else if (response.data.code === 'CALENDAR-004') {
+          toast(response.data.message, {
+            timeout: timeout
+          });
+          return response.data;
+        }
       } catch (error) {
-        console.log(error);
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
-        return null;
+        if (error.message === 'Network Error') {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'COMMON-002') {
+          window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+        }
+        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'MEMBER-008') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        }
       }
     },
     requestNotificationPermission() {
-      // 알림 기능을 지원하는지 확인
       if (!("Notification" in window)) {
         alert("이 브라우저는 알림을 지원하지 않습니다.");
       } else if (Notification.permission === "granted") {
-        // 이미 권한이 부여된 경우
         console.log("알림 권한이 이미 부여되었습니다.");
       } else if (Notification.permission !== "denied") {
-        // 권한 요청
         Notification.requestPermission().then(function (permission) {
-          // 사용자가 알림을 허용하면
           if (permission === "granted") {
             console.log("알림 권한이 부여되었습니다.");
           }
@@ -108,16 +125,14 @@ export const useMainStore = defineStore("main", {
     notificationData() {
       this.requestNotificationPermission();
 
-      const evtSource = new EventSource(backend + "/notification/" + this.member.memberId);
+      const evtSource = new EventSource(`${backend}/notification/` + this.member.memberId);
       evtSource.addEventListener("test", function (event) {
         console.log(event.data)
       })
       evtSource.addEventListener("notification", function (event) {
-        // 사용자에게 알림 표시 웹브라우저 알람
         if (Notification.permission === "granted") {
           new Notification("알람 이벤트", {
             body: event.data,
-            // icon: 'icon-url' // 알림에 표시할 아이콘 URL (선택 사항)
           });
         }
       }, false);
@@ -151,16 +166,33 @@ export const useMainStore = defineStore("main", {
     async readMeetingRooms() {
       try {
         const response = await axios.get(backend + '/meetingroom/current');
-        this.meetingRooms = response.data.result;
-        toast(response.data.message, {
-          timeout: timeout
-        });
+        if (response.data.code === 'MEETINGROOM-001') {
+          this.meetingRooms = response.data.result;
+          toast(response.data.message, {
+            timeout: timeout
+          });
+        }
       } catch (error) {
-        console.error('회의실 정보를 가져오지 못했습니다:', error);
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        if (error.message === 'Network Error') {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'COMMON-002') {
+          window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+        }
+        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'MEMBER-008') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        }
       }
     },
 
@@ -168,23 +200,69 @@ export const useMainStore = defineStore("main", {
     async readMember() {
       try {
         const response = await axios.get(backend + '/member/read');
-        this.members = response.data.result;
-        toast(response.data.message, {
-          timeout: timeout
-        });
+        if (response.data.code === 'tmp') {
+          this.members = response.data.result;
+          toast(response.data.message, {
+            timeout: timeout
+          });
+        }
       } catch (error) {
-        console.error('멤버 정보를 가져오지 못했습니다:', error);
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        if (error.message === 'Network Error') {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'COMMON-002') {
+          window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+        }
+        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'MEMBER-008') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        }
       }
     },
     async getProfileImage() {
-      const response = await axios.post(backend + '/member/profile', {
-        memberId: this.member.memberId
-      })
-      this.member.profileImage = response.data[0].imageAddr;
+      try {
+        const response = await axios.post(backend + '/member/profile', {
+          memberId: this.member.memberId
+        })
+        if (response.data.code === 'CHATTING-008') {
+          if (response.data[0].imageAddr !== null) {
+            this.member.profileImage = response.data[0].imageAddr;
+          } else {
+            this.member.profileImage = '';
+          }
+        }
+      } catch (error) {
+        if (error.message === 'Network Error') {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'COMMON-002') {
+          window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+        }
+        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'MEMBER-008') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        }
+      }
     },
 
 
@@ -198,15 +276,28 @@ export const useMainStore = defineStore("main", {
     async searchMembers() {
       try {
         const response = await axios.get(`${backend}/search/member/${this.searchMemberName}`);
-        this.searchedMember = response.data;
-        toast(response.data.message, {
-          timeout: timeout
-        });
+        if (response.data.code === 'SEARCH-001') {
+          this.searchedMember = response.data;
+          toast(response.data.message, {
+            timeout: timeout
+          });
+        }
       } catch (error) {
-        toast.error(error.response.data.message, {
-          timeout: timeout,
-          // 여기에 추가 옵션을 넣을 수 있습니다.
-        })
+        if (error.message === 'Network Error') {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else if (error.response.data.code === 'COMMON-002') {
+          window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+        } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          toast.error(error.response.data.message, {
+            timeout: timeout,
+          })
+        } else {
+          window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+        }
       }
     },
 
@@ -219,7 +310,7 @@ export const useMainStore = defineStore("main", {
       });
     },
 
-    // 그룹명에 따라서 멤버 선택
+    // 그룹명에 따라서 멤버 선택 ????
     async onChatRoomChange() {
       if (this.selectedChatRoom === '일반일정' || this.selectedChatRoom === '') {
         this.filteredMemberNames = []
@@ -228,15 +319,27 @@ export const useMainStore = defineStore("main", {
         try {
           // 선택된 채팅방 ID를 사용하여 Axios 요청
           const response = await axios.get(`${backend}/member/chatroommembers?chatRoomId=${this.selectedChatRoom.chatRoomId}`);
-          console.log(response.data.result)
-          this.filteredMemberNames = []
-          this.filteredMemberNames = response.data.result.map(member => member.memberName);
+          if (response.data.code === 'MEMBER-006') {
+            this.filteredMemberNames = []
+            this.filteredMemberNames = response.data.result.map(member => member.memberName);
+          }
         }
         catch (error) {
-          toast.error(error.response.message, {
-            timeout: timeout,
-            // 여기에 추가 옵션을 넣을 수 있습니다.
-          })
+          if (error.message === 'Network Error') {
+            window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+          } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+            toast.error(error.response.data.message, {
+              timeout: timeout,
+            })
+          } else if (error.response.data.code === 'COMMON-002') {
+            window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
+          } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+            toast.error(error.response.data.message, {
+              timeout: timeout,
+            })
+          } else {
+            window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
+          }
         }
       }
     },
