@@ -37,7 +37,7 @@ export const useChatRoomStore = defineStore("chatRoom", {
                         Authorization: storedToken,
                     }
                 });
-                if (response.data.code === 'CHATTING-001') {
+                if (response.data.code === 'CHATTING_001') {
                     toast(response.data.message, {
                         timeout: timeout
                     });
@@ -45,14 +45,14 @@ export const useChatRoomStore = defineStore("chatRoom", {
             } catch (error) {
                 if (error.message === 'Network Error') {
                     router.push({name: 'error', params: {errorStatus: 500, message: '서버가 예기치 못한 오류로 인해 종료되었습니다.'}})
-                } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+                } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
-                } else if (error.response.data.code === 'COMMON-002') {
+                } else if (error.response.data.code === 'COMMON_002') {
                     this.sendErrorMessage(router, error);
                 }
-                else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
@@ -83,12 +83,12 @@ export const useChatRoomStore = defineStore("chatRoom", {
             } catch (error) {
                 if (error.message === 'Network Error') {
                     router.push({name: 'error', params: {errorStatus: 500, message: '서버가 예기치 못한 오류로 인해 종료되었습니다.'}})
-                } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003') {
+                } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
                     this.sendErrorMessage(router, error);
-                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                } else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })

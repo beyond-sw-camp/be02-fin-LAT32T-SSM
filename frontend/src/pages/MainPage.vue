@@ -112,6 +112,9 @@ import { useStompStore } from "@/stores/useStompStore";
 import { useMainStore } from "@/stores/useMainStore";
 import { mapActions } from "pinia";
 import { useChatRoomStore } from "@/stores/useChatRoomStore";
+import {toast} from "vue3-toastify";
+
+const timeout = 10000;
 
 export default {
   name: 'MainPage',
@@ -151,6 +154,14 @@ export default {
       e.target.src = defaultImage;
     },
     sendMessage(e) {
+      if (this.$route.params.roomId === undefined) {
+        toast.error('채팅방에 먼저 접속해주세요', {
+          timeout: timeout,
+          limit: 2
+        });
+        $('#summernote').summernote('disable');
+      }
+
       this.message = $('#summernote').summernote('code')
       if (e.keyCode === 13 && this.memberId !== '' && this.message !== '') {
         this.message = this.message.replace(/<[^>]*>?/g, '');

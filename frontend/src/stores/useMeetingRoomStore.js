@@ -23,11 +23,11 @@ export const useMeetingRoomStore = defineStore('meetingRoom', {
             } catch (error) {
                 if (error.message === 'Network Error') {
                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-                } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                } else if(error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });
-                } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+                } else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })

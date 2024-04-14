@@ -19,17 +19,21 @@ public class SearchService {
         List<Member> members = memberRepository.findByMemberNameContaining(keyword);
         List<MemberSearchRes> searchResults = new ArrayList<>();
 
-        for (Member member : members) {
-            MemberSearchRes searchRes = MemberSearchRes.builder()
-                    .memberIdx(member.getMemberIdx())
-                    .memberId(member.getMemberId())
-                    .memberName(member.getMemberName())
-                    .position(member.getPosition())
-                    .department(member.getDepartment())
-                    .build();
-            searchResults.add(searchRes);
+        if (members.isEmpty()) {
+            return BaseResponse.successRes("SEARCH_002", false, "검색 결과가 없습니다." , searchResults);
+        } else {
+            for (Member member : members) {
+                MemberSearchRes searchRes = MemberSearchRes.builder()
+                        .memberIdx(member.getMemberIdx())
+                        .memberId(member.getMemberId())
+                        .memberName(member.getMemberName())
+                        .position(member.getPosition())
+                        .department(member.getDepartment())
+                        .build();
+                searchResults.add(searchRes);
+            }
         }
 
-        return BaseResponse.successRes("SEARCH-001", true, "회원 이름조회가 성공했습니다.", searchResults);
+        return BaseResponse.successRes("SEARCH_001", true, "회원 이름조회가 성공했습니다.", searchResults);
     }
 }
