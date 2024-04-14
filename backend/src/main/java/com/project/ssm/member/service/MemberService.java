@@ -131,7 +131,7 @@ public class MemberService {
         for (ProfileImage profileImage : member.getProfileImage()) {
             getProfileImageRes.add(GetProfileImageRes.buildProfileImage(profileImage.getImageAddr()));
         }
-        return BaseResponse.successRes("CHATTING-008", true, "프로필이미지 조회가 성공했습니다.", getProfileImageRes);
+        return BaseResponse.successRes("CHATTING_008", true, "프로필이미지 조회가 성공했습니다.", getProfileImageRes);
     }
 
     public BaseResponse<List<GetChatRoomMembersRes>> getChatRoomMembers(String chatRoomId){

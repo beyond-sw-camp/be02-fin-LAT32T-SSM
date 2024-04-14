@@ -70,12 +70,12 @@ export const useMainStore = defineStore("main", {
             Authorization: localStorage.getItem('accessToken'),
           }
         })
-        if (response.data.code === 'CALENDAR-003') {
+        if (response.data.code === 'CALENDAR_003') {
           toast(response.data.message, {
             timeout: timeout
           });
           return response.data;
-        } else if (response.data.code === 'CALENDAR-004') {
+        } else if (response.data.code === 'CALENDAR_004') {
           toast(response.data.message, {
             timeout: timeout
           });
@@ -84,18 +84,18 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+        } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'COMMON-002') {
+        } else if (error.response.data.code === 'COMMON_002') {
           window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
         }
-        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'MEMBER-008') {
+        } else if (error.response.data.code === 'MEMBER_008') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
@@ -170,18 +170,18 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+        } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'COMMON-002') {
+        } else if (error.response.data.code === 'COMMON_002') {
           window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
         }
-        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'MEMBER-008') {
+        } else if (error.response.data.code === 'MEMBER_008') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
@@ -204,18 +204,18 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+        } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'COMMON-002') {
+        } else if (error.response.data.code === 'COMMON_002') {
           window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
         }
-        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'MEMBER-008') {
+        } else if (error.response.data.code === 'MEMBER_008') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
@@ -237,18 +237,18 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+        } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'COMMON-002') {
+        } else if (error.response.data.code === 'COMMON_002') {
           window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
         }
-        else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'MEMBER-008') {
+        } else if (error.response.data.code === 'MEMBER_008') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
@@ -269,8 +269,13 @@ export const useMainStore = defineStore("main", {
     async searchMembers() {
       try {
         const response = await axios.get(`${backend}/search/member/${this.searchMemberName}`);
-        if (response.data.code === 'SEARCH-001') {
+        console.log(response);
+        if (response.data.code === 'SEARCH_001') {
           this.searchedMember = response.data.result;
+          toast(response.data.message, {
+            timeout: timeout
+          });
+        } else if (response.data.code === 'SEARCH_002') {
           toast(response.data.message, {
             timeout: timeout
           });
@@ -278,13 +283,13 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         if (error.message === 'Network Error') {
           window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-        } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+        } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
-        } else if (error.response.data.code === 'COMMON-002') {
+        } else if (error.response.data.code === 'COMMON_002') {
           window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
-        } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+        } else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
           toast.error(error.response.data.message, {
             timeout: timeout,
           })
@@ -320,13 +325,13 @@ export const useMainStore = defineStore("main", {
         catch (error) {
           if (error.message === 'Network Error') {
             window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-          } else if (error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-003') {
+          } else if (error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_003') {
             toast.error(error.response.data.message, {
               timeout: timeout,
             })
-          } else if (error.response.data.code === 'COMMON-002') {
+          } else if (error.response.data.code === 'COMMON_002') {
             window.location.href = '/error/500/서버에서 에러가 발생하였습니다.';
-          } else if (error.response.data.code === 'ACCOUNT-001' || error.response.data.code === 'ACCOUNT-002' || error.response.data.code === 'ACCOUNT-003' || error.response.data.code === 'ACCOUNT-004') {
+          } else if (error.response.data.code === 'ACCOUNT_001' || error.response.data.code === 'ACCOUNT_002' || error.response.data.code === 'ACCOUNT_003' || error.response.data.code === 'ACCOUNT_004') {
             toast.error(error.response.data.message, {
               timeout: timeout,
             })

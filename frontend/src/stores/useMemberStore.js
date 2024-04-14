@@ -45,11 +45,11 @@ export const useMemberStore = defineStore("member", {
             }catch(error){
                 if (error.message === 'Network Error') {
                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-                } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                } else if(error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });
-                } else if (error.response.data.code === 'MEMBER-008' || error.response.data.code === 'MEMBER_009') {
+                } else if (error.response.data.code === 'MEMBER_008' || error.response.data.code === 'MEMBER_009') {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     })
@@ -103,11 +103,11 @@ export const useMemberStore = defineStore("member", {
                 } catch(error){
                     if (error.message === 'Network Error') {
                         window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-                    } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    } else if(error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003'){
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         });
-                    } else if (error.response.data.code === 'MEMBER-007') {
+                    } else if (error.response.data.code === 'MEMBER_007') {
                         localStorage.removeItem("accessToken");
                         this.member.memberId="";
                         this.member.memberPw="";
@@ -150,7 +150,7 @@ export const useMemberStore = defineStore("member", {
                 }catch(error){
                     if (error.message === 'Network Error') {
                         window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-                    } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                    } else if(error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003'){
                         toast.error(error.response.data.message, {
                             timeout: timeout,
                         });
@@ -194,11 +194,11 @@ export const useMemberStore = defineStore("member", {
                 this.checkId = false;
                 if (error.message === 'Network Error') {
                     window.location.href = '/error/500/서버가 예기치 못한 오류로 인해 종료되었습니다.';
-                } else if(error.response.data.code === 'COMMON-001' || error.response.data.code === 'COMMON-002' || error.response.data.code === 'COMMON-003'){
+                } else if(error.response.data.code === 'COMMON_001' || error.response.data.code === 'COMMON_002' || error.response.data.code === 'COMMON_003'){
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });
-                } else if (error.response.data.code === "MEMBER-007") {
+                } else if (error.response.data.code === "MEMBER_007") {
                     toast.error(error.response.data.message, {
                         timeout: timeout,
                     });

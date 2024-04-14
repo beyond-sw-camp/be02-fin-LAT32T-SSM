@@ -105,7 +105,7 @@ export default {
   computed: {
     ...mapStores(useMainStore),
     checkedMemberNames() {
-      if (Array.isArray(this.mainStore.searchedMember)) {
+      if (Array.isArray(this.mainStore.searchedMember).length > 0) {
         return this.mainStore.searchedMember
           .filter(member => member.checked)
           .map(member => member.memberName);

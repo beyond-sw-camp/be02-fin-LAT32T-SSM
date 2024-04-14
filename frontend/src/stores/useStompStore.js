@@ -45,6 +45,7 @@ export const useStompStore = defineStore("stomp", {
             toast.error('채팅방과 연결이 끊어졌습니다.', {
                 timeout: timeout,
             })
+            window.localStorage.removeItem('chatRoomId');
             if (retry < 3) {
                 setTimeout(() => {
                     console.log('접속을 재시도 합니다.');
