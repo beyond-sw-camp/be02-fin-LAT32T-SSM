@@ -312,7 +312,7 @@ export const useMainStore = defineStore("main", {
         try {
           // 선택된 채팅방 ID를 사용하여 Axios 요청
           const response = await axios.get(`${backend}/member/chatroommembers?chatRoomId=${this.selectedChatRoom.chatRoomId}`);
-          if (response.data.code === 'MEMBER-006') {
+          if (response.data.code === 'MEMBER_006') {
             this.filteredMemberNames = []
             this.filteredMemberNames = response.data.result.map(member => member.memberName);
           }
