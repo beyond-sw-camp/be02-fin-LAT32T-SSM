@@ -13,6 +13,6 @@ public class MeetingRoomNotFoundException extends EntityNotFoundException {
     }
 
     public static MeetingRoomNotFoundException forMeetingRoomName (String meetingRoomName) {
-        return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, String.format("[%s]는 존재하지 않는 회의실입니다.", meetingRoomName));
+        return new MeetingRoomNotFoundException(ErrorCode.MEETINGROOM_NOT_FOUND, String.format("%s는 존재하지 않는 회의실입니다.", meetingRoomName));
     }
 }

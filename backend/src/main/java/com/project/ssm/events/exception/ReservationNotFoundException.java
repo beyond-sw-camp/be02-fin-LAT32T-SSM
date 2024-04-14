@@ -10,6 +10,6 @@ public class ReservationNotFoundException extends EntityNotFoundException {
         super(errorCode, message);
     }
     public static ReservationNotFoundException eventId(Long eventIdx) {
-        return new ReservationNotFoundException(ErrorCode.RESERVATION_NOT_FOUND, "예약을 찾을 수 없습니다.");
+        return new ReservationNotFoundException(ErrorCode.RESERVATION_NOT_FOUND, String.format("%d번 예약을 찾을 수 없습니다.", eventIdx));
     }
 }

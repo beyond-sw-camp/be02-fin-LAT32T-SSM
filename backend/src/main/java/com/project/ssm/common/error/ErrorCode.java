@@ -31,7 +31,7 @@ public enum ErrorCode {
     // 예약
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_005" , "예약을 찾을 수 없습니다."),
     RESERVATION_ACCESS(HttpStatus.BAD_REQUEST, "RESERVATION_006" , "인원이 초과 되었습니다."),
-    RESERVATION_DUPLICATE(HttpStatus.CONFLICT,"RESERVATION_007","이미 예약된 시간입니다.."),
+    RESERVATION_DUPLICATE(HttpStatus.CONFLICT,"RESERVATION_007","이미 예약된 시간입니다."),
 
     // 채팅방
     DUPLICATE_CHATROOM(HttpStatus.CONFLICT, "CHATTING_009", "이미 존재하는 채팅방입니다."),
