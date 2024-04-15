@@ -12,7 +12,7 @@ export const useMeetingRoomStore = defineStore('meetingRoom', {
         async fetchRoomReservations(roomIdx, router) {
             try {
                 const response = await axios.get(`${backend}/meetingroom/select/` + roomIdx);
-                if (response.data.code === 'MEETINGROOM_003') {
+                if (response.data.code === 'MEETING_003') {
                     if (response.data.result !== null) {
                         this.selectedRoom = {
                             ...response.data.result,
