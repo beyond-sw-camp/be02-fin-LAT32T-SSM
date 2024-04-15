@@ -137,7 +137,7 @@
 - Deployment로 k8s에서 작동하며 부하분산을 위해 2개의 pod로 운영된다.
 - RollingUpdate 방식으로 무중단 배포 된다.
 
-#### 🤔 [ Frontend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/frontend)
+#### 🤔 [ Frontend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/develop/frontend)
 <br>
 
 ### 👉&nbsp;&nbsp;Back
@@ -147,14 +147,14 @@
 - RollingUpdate 방식으로 무중단 배포 된다.
 - Front, DB, kafka와 cluster ip로 통신하여 외부에 노출되지 않는다.
 
-#### 🤔 [ Backend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/backend)
+#### 🤔 [ Backend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/develop/backend)
 <br>
 
 ### 👉&nbsp;&nbsp;CI/CD
 - 개발자 Github에 push하게 되면, webhook에 의해 Jenkins가 작동한다.
 - Jenkins는 pipeLine script에 따라 git cloone, build, docker image build, docker image push의 과정을 거치고 manifest 파일을 k8s master 서버 전송 후 deployment를 실행한다.
 
-#### 🤔 [ CICD 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/cicd)
+#### 🤔 [ CICD 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/develop/cicd)
 
 
 ---
