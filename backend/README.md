@@ -95,40 +95,73 @@
 </details>
 
 <details>
-<summary><b>채팅</b></summary>
-
-* WebSocket
-  * 양방향 통신을 가능하게 하는 기술
-  * 서버와 클라이언트 간에 지속적인 연결을 유지하며 데이터를 실시간으로 양방향으로 교환
-
-* STOMP(Simple Text Oriented Messaged Protocol)
-  * pub/sub 구조를 따르는 텍스트 기반의 프로토콜
-  * 클라이언트와 메시지 브로커 간의 비동기 통신을 위해 설계
-  * Subscriber, Sender, Broker를 따로 두어 처리
-    1. Subscriber : Subscriber는 채팅방으로부터 메시지를 받기 위해 Broker에 구독 신청
-    2. Sender : Sender는 메시지를 생성해서 채팅방에 발행하는 역할. 메시지는 Broker를 통해 Subscriber에게 전달
-    3. Broker : Sender로부터 메시지를 받아 해당 메시지를 Subscriber에게 전달
-
-    <br><img src="../img/StompDiagram.png">
-
-* WebSocket vs STOMP
-* Kafka vs RabbitMQ
+<summary><b>일정</b></summary>
 </details>
 
 <details>
-<summary><b>일정</b></summary>
+<summary><b>채팅</b></summary>
+
+### ✅ WebSocket과 STOMP를 이용한 채팅기능 구현
+
+> 실시간 채팅은 사내 사용자들간 소통을 향상시켜 일의 효율도를 높이고 프로젝트에 대한 적극적인 참여를 유도할 수 있을 것이라 고려되어 구현하게 되었다. 
+
+* **WebSocket**
+    * 하나의 TCP 연결을 통해 양방향 통신을 가능하게 하는 프로토콜 기술
+  * 서버와 클라이언트 간에 지속적인 연결을 유지하며 데이터를 실시간으로 양방향으로 교환
+  * 
+
+* **STOMP(Simple Text Oriented Messaged Protocol)**
+  * pub/sub 구조를 따르는 텍스트 기반의 프로토콜
+  * 클라이언트와 메시지 브로커 간의 비동기 통신을 위해 설계
+  * Subscriber, Sender, Broker를 따로 두어 처리
+    1. Sender : Sender는 메시지를 생성해서 채팅방에 발행하는 역할. 메시지는 Broker를 통해 Subscriber에게 전달 ➡️ 채팅방 생성
+    2. Subscriber : Subscriber는 채팅방으로부터 메시지를 받기 위해 Broker에 구독 신청 ➡️ 채팅방 입장
+    3. Broker : Sender로부터 메시지를 받아 해당 메시지를 Subscriber에게 전달 ➡️ 채팅방에서 메시지 송수신
+
+    <br><img src="../img/StompDiagram.png">
+
+* **WebSocket과 STOMP**
+  * STOMP는 WebSocket 위에서 동작
+  * WebSocet만으로 채팅을 구현할 경우 해당 메시지가 어떤 요청인지, 어떤 포맷으로 오는지, 메시지 통신 과정을 어떻게 처리해야 하는지 정해져 있지 않으므로 메시지 형식을 각각 커스터마이징해야 함.
+  * 하지만 STOMP는 메시지의 형식, 유형, 내용 등을 정의해주는 프로토콜이므로 규격을 갖춘 메시지를 보낼 수 있다.
+  * 
+  * MessageMapping 어노테이션을 이용해 메시지를 엔드포인트 별로 분리해서 관리할 수 있다. 
+    <br><img src="../img/StompCode.png">
+    > SSM은 일정 참여자들의 일정을 등록하고 관리하는 그룹채팅방이 필요했기에 STOMP로 채팅 기능을 고도화 시켰다.
+
 </details>
 
 <details>
 <summary><b>알람</b></summary>
 
-* SSE
-  * 
+* **SSE**
+    *
 
-* Spring Batch
-  * 
+* **Spring Batch**
+    *
 </details>
 
-<details>
-<summary><b>검색</b></summary>
-</details>
+<br>
+
+### ✅ Kafka
+
+> 서버 이중화로 인한 데이터 동기화 문제로 채팅과 알람 기능에 외부 메시지 브로커를 추가하였다.
+
+(문제가 되는 부분 그림 추가)
+
+> 인프라 비용 감소와 운영 리소스를 효율적으로 관리하기 위해 하나의 메시지 브로커를 사용하기로 판단하였고, Kafka를 채택하여 구현하였다.
+
+* **Kafka vs RabbitMQ**
+  1. 채팅과 알람 기능에서 발생하는 높은 트래픽
+     - 현재 LAT32T 서비스에서 가장 많은 트래픽이 발생하는 곳은 채팅과 알람 기능이다.
+     Kafka는 초당 수백만 건의 메시지를 처리할 수 있어 RabbitMQ 보다 더 많은 트래픽을 감당할 수 있다.
+
+  2. 높은 전송 속도
+     - 현재 LAT32T 서비스에서 많은 트래픽을 유발하는 채팅과 알람 기능은 실시간으로 이뤄진다.
+     Kafka는 RabbitMQ보다 더 높은 처리 속도를 보유하고 있어 실시간으로 채팅과 알람을 확인할 수 있다.
+
+  3. 전달된 메시지에 대한 휘발성
+     - RabbitMQ는 메시지 큐에 저장되어 있던 메시지를 Consumer가 가져가게 되면 메시지 큐에서 해당 메시지를 삭제한다.
+     반면에 Kafka는 메시지를 로그 파일에 추가하여 보존 기간이 만료될 때까지 보관된다.
+
+(문제를 해결한 그림 추가)
