@@ -29,6 +29,9 @@
 
 <br>
 
+### :rainbow: 시연사이트 바로가기
+#### :arrow_right: [www.ssm23.kro.kr](http://www.ssm23.kro.kr)
+
 ---
 
 
@@ -43,7 +46,7 @@
 <img src="https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D" style="border-radius: 5px;"> 
-<img src="https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white" style="border-radius: 5px;"> 
+
 <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" style="border-radius: 5px;"> 
 </div>
 
@@ -81,6 +84,12 @@
 <img src="https://img.shields.io/badge/webhook-2088FF?style=for-the-badge&logo=webhook&logoColor=white" style="border-radius: 5px;">
 </div>
 
+
+#### 🚀 TEST Tools
+<div align='center'>
+<img src="https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white" style="border-radius: 5px;"> 
+<img src="https://img.shields.io/badge/JUnit-123456?style=for-the-badge&logo=Junit&logoColor=white" style="border-radius: 5px;"> 
+</div>
 
 ---
 
