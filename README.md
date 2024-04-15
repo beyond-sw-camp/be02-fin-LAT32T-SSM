@@ -43,7 +43,6 @@
 <img src="https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D" style="border-radius: 5px;"> 
-<img src="https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white" style="border-radius: 5px;"> 
 <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" style="border-radius: 5px;"> 
 </div>
@@ -124,6 +123,11 @@
 
 <img src="img/system_architecture.png"/>
 
+</details>
+
+## :seven: &nbsp;기타 설명
+
+---
 
 ### 👉&nbsp;&nbsp;Front
 - LoadBalacer type의 서비스에 의해 외부에 연결되어 있다.
@@ -132,14 +136,13 @@
 - 채팅의 경우 header가 http에서 ws로 upgrade 할 수 있도록 설정한다.
 - Deployment로 k8s에서 작동하며 부하분산을 위해 2개의 pod로 운영된다.
 - RollingUpdate 방식으로 무중단 배포 된다.
-- 
 
 #### 🤔 [ Frontend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/frontend)
 <br>
 
 ### 👉&nbsp;&nbsp;Back
 - SCDF에 의해 batch서버가 1분에 한번씩 pod로 작동하며, 이때 회원의 일정을 조회를 해서 메세지를 produce 하여 Cluster Ip를 통해 kafka broker로 전달한다. kafka broker는 Backend 서버에게 메세지를 전달하며, Backend는 메세지를 consume 하여 Frontend에게 SseEmitter를 통해 데이터를 전송한다.
-- Deployment로 k8s에서 작동하며 부하분산을 위해 2개의 pod로 운영된다. 
+- Deployment로 k8s에서 작동하며 부하분산을 위해 2개의 pod로 운영된다.
 - 2개의 서버의 websocket session이 서로 달라 채팅 데이터가 누락이 될 수 있어, 채팅 메세지가 생성되면 kafka broker에게 전달하고 그 메세지를 2개의 서버가 consume한다.
 - RollingUpdate 방식으로 무중단 배포 된다.
 - Front, DB, kafka와 cluster ip로 통신하여 외부에 노출되지 않는다.
@@ -147,15 +150,11 @@
 #### 🤔 [ Backend 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/backend)
 <br>
 
-### 👉&nbsp;&nbsp;CI/CD 
+### 👉&nbsp;&nbsp;CI/CD
 - 개발자 Github에 push하게 되면, webhook에 의해 Jenkins가 작동한다.
 - Jenkins는 pipeLine script에 따라 git cloone, build, docker image build, docker image push의 과정을 거치고 manifest 파일을 k8s master 서버 전송 후 deployment를 실행한다.
 
 #### 🤔 [ CICD 설명 더보기 ](https://github.com/beyond-sw-camp/be02-fin-LAT32T-SSM/tree/main/cicd)
-
-</details>
-
-
 
 
 ---
