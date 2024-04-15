@@ -33,6 +33,7 @@
 <details>
     <summary>
 <span style="font-size:150%"> 상세 기술 스택 </span></summary>
+
 - OS : CentOS 8, Linux
 - Container : Docker v26.0.0
 - Orchestration : Kubernetes v1.27.12
