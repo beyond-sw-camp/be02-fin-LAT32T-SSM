@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import MainPage from "@/pages/MainPage.vue";
-import LoginPage from "@/pages/LoginPage.vue";
-import SignUpPage from "@/pages/SignUpPage.vue";
-import ChangeInfoPage from "@/pages/ChangeInfoPage.vue";
-import ErrorPage from "@/pages/ErrorPage.vue";
-import Error404Page from "@/pages/Error404Page.vue";
+import LoginPage from "@/pages/member/LoginPage.vue";
+import SignUpPage from "@/pages/member/SignUpPage.vue";
+import ChangeInfoPage from "@/pages/member/ChangeInfoPage.vue";
+import ErrorPage from "@/pages/error/ErrorPage.vue";
+import Error404Page from "@/pages/error/Error404Page.vue";
 
 
 const router = createRouter({

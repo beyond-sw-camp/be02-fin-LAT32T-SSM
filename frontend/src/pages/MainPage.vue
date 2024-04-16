@@ -97,13 +97,13 @@
 </template>
 
 <script>
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import SidebarComponent from '@/components/SidebarComponent.vue';
-import ChatBlockComponent from "@/components/ChatBlockComponent.vue";
-import CalendarComponent from '@/components/CalendarComponent.vue';
-import FullCalendarComponent from '@/components/FullCalendarComponent.vue';
-import FilterComponent from '@/components/FilterComponent.vue';
-import MeetingRoomComponent from "@/components/MeetingRoomComponent.vue";
+import HeaderComponent from '@/components/utils/HeaderComponent.vue';
+import SidebarComponent from '@/components/utils/SidebarComponent.vue';
+import ChatBlockComponent from "@/components/chatting/ChatBlockComponent.vue";
+import CalendarComponent from '@/components/calendar/CalendarComponent.vue';
+import FullCalendarComponent from '@/components/calendar/FullCalendarComponent.vue';
+import FilterComponent from '@/components/calendar/FilterComponent.vue';
+import MeetingRoomComponent from "@/components/meetingroom/MeetingRoomComponent.vue";
 import defaultImage from "../assets/basic_profile.jpg";
 
 import { mapStores } from "pinia";

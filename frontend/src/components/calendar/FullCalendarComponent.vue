@@ -144,7 +144,7 @@
 import {mapStores} from "pinia";
 import {useMainStore} from "@/stores/useMainStore";
 import {useChatRoomStore} from "@/stores/useChatRoomStore";
-import MemberSearchComponent from "./MemberSearchComponent.vue";
+import MemberSearchComponent from "../search/MemberSearchComponent.vue";
 
 export default {
   data() {
