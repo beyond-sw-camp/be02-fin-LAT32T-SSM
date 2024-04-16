@@ -90,7 +90,7 @@ export const useMessageStore = defineStore("message", {
               });
               if (response.data.code === 'CHATTING_008') {
                   if (response.data.length !== 0) {
-                      return response.data[0].imageAddr;
+                      return response.data.result[0].imageAddr;
                   } else {
                       return '';
                   }

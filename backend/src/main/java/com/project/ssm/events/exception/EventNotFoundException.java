@@ -9,7 +9,7 @@ public class EventNotFoundException extends EntityNotFoundException {
     }
 
     public static EventNotFoundException forEventId(Long eventIdx) {
-        return new EventNotFoundException(ErrorCode.EVENT_NOT_FOUND, "일정을 찾을 수 없습니다.");
+        return new EventNotFoundException(ErrorCode.EVENT_NOT_FOUND, String.format("%d번 일정을 찾을 수 없습니다.", eventIdx) );
     }
 
     public static EventNotFoundException forNoSearch(int year) {

@@ -8,7 +8,7 @@ public class MeetingDuplicateException extends EntityDuplicateException {
         super(errorCode, message);
     }
 
-    public static MeetingDuplicateException forMeetingRoomName(String MeetingRoomName) {
-        return new MeetingDuplicateException(ErrorCode.MEETINGROOM_DUPLOCATE, "이미 있는 회의실입니다.");
+    public static MeetingDuplicateException forMeetingRoomName(String meetingRoomName) {
+        return new MeetingDuplicateException(ErrorCode.MEETINGROOM_DUPLOCATE, String.format("$s는 이미 있는 회의실입니다.", meetingRoomName));
     }
 }

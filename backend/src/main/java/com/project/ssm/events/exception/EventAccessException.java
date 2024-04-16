@@ -8,7 +8,7 @@ public class EventAccessException extends BusinessException {
         super(errorCode, message);
     }
     public static EventAccessException forMemberId(String memberId) {
-        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, "일정에 접근 권한이 없습니다.");
+        return new EventAccessException(ErrorCode.UNAUTHORIZED_ACCESS_EVENT, String.format("%s님은 일정에 접근 권한이 없습니다.", memberId));
     }
 
 }
