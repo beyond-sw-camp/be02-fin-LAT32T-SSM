@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class CurrentMeetingRoom {
     private final MeetingRoomRepository meetingRoomRepository;
 
     public MeetingRoom meetingRoomNow(Long meetingRoomIdx) {
-        LocalDateTime now = LocalDateTime.now().withNano(0).withSecond(0);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul")).withNano(0).withSecond(0);
         List<Event> events = eventRepository.findAllByMeetingRoomIdx(meetingRoomIdx);
         Optional<MeetingRoom> result = meetingRoomRepository.findById(meetingRoomIdx);
         MeetingRoom meetingRoom;
