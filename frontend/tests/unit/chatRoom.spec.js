@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import SidebarComponent from '@/components/SidebarComponent.vue'
+import SidebarComponent from '@/components/utils/SidebarComponent.vue'
 import { createPinia, setActivePinia } from 'pinia'
 
 describe('SidebarComponent', () => {

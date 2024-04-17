@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import SignUpPage from '@/pages/SignUpPage.vue';
+import SignUpPage from '@/pages/member/SignUpPage.vue';
 
 beforeEach(() => {
   setActivePinia(createPinia());

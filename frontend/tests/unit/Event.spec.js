@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import CalendarComponent from '@/components/CalendarComponent.vue'; // 컴포넌트 경로를 정확하게 수정하세요.
+import CalendarComponent from '@/components/calendar/CalendarComponent.vue'; // 컴포넌트 경로를 정확하게 수정하세요.
 import { createPinia, setActivePinia } from 'pinia';
 
 describe('CalendarComponent', () => {

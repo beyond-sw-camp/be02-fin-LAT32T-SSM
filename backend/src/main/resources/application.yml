@@ -1,3 +1,4 @@
+
 address:
   domain: ${DOMAIN_ADDRESS}
   ws: ${WS_ADDRESS}
@@ -41,3 +42,7 @@ cloud:
       auto: false
     stack:
       auto: false
+logging:
+  level:
+    org:
+      springframework.security: DEBUG

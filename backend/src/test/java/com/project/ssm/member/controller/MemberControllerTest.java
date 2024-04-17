@@ -2,7 +2,9 @@ package com.project.ssm.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ssm.common.BaseResponse;
+import com.project.ssm.common.error.ErrorCode;
 import com.project.ssm.config.security.SecurityConfig;
+import com.project.ssm.member.exception.MemberNotFoundException;
 import com.project.ssm.member.exception.security.CustomAccessDeniedHandler;
 import com.project.ssm.member.model.request.PostMemberLoginReq;
 import com.project.ssm.member.model.request.PostMemberSignupReq;
@@ -30,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -131,4 +134,25 @@ public class MemberControllerTest {
         // Then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
+
+//    @Test
+//    void test_login_fail() throws Exception {
+//
+//        // Given
+//        PostMemberLoginReq req = PostMemberLoginReq.builder()
+//                .memberId("member0123")
+//                .password("qwer1234")
+//                .build();
+//
+//        // When
+//        when(memberService.login(any(PostMemberLoginReq.class))).thenThrow(MemberNotFoundException.forMemberId(req.getMemberId()));
+//
+//        ResultActions result = mvc.perform(post("/member/login")
+//                        .content(new ObjectMapper().writeValueAsString(req))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isUnauthorized());
+//
+//        // Then
+//        result.andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+//    }
 }
