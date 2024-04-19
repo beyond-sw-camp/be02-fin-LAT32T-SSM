@@ -136,7 +136,7 @@
 <details>
 <summary><b>시스템아키텍쳐 보기</b></summary><br>
 
-<img src="img/system_architecture.png"/>
+<img src="backend/img/system_architecture.png"/>
 
 </details>
 
